@@ -10,7 +10,7 @@
         <h1 class="page-title">Okudukça biriken notlar.</h1>
     </div>
 
-    {# ===== Etiket filtresi (hap'lar) ===== Şimdilik statik; ileride BlogPost.tags'tan dinamik gelecek. 'is-active' sınıfı, o an seçili etiketi gösterir. #}
+    {# ===== Etiket filtresi (hap'lar) ===== Şimdilik statik; ileride BlogPost.tags'tan dinamik gelecek. #}
     <div class="filter-pills">
         <a href="{% url 'post_detail' %}" class="pill-filter is-active">Tümü</a>
         <a href="{% url 'post_detail' %}" class="pill-filter">Ekonomi</a>
@@ -20,7 +20,7 @@
         <a href="{% url 'post_detail' %}" class="pill-filter">Tarih</a>
     </div>
 
-    {# ===== Öne çıkan yazı (büyük YATAY kart) ===== Sol: görsel, sağ: meta + başlık + özet. #}
+    {# ===== Öne çıkan yazı (büyük YATAY kart) ===== Şimdilik statik; ileride is_featured ile dinamik gelecek. #}
     <a href="{% url 'post_detail' %}" class="feature-card">
         <div class="feature-image"></div>
         <div class="feature-body">
@@ -34,29 +34,19 @@
         </div>
     </a>
 
-    {# ===== Diğer yazılar: 3'lü grid ===== Ana Sayfa'daki .card-grid / .card desenini AYNEN yeniden kullanıyoruz. #}
+    {# ===== Diğer yazılar: 3'lü grid ===== Artık veritabanından (BlogPost) geliyor. #}
     <div class="card-grid" style="margin-top:40px;">
+        {% for post in posts %}
         <a href="{% url 'post_detail' %}" class="card">
             <div class="card-image"></div>
             <div class="card-body">
-                <p class="card-meta"><span class="meta-tick"></span> Enerji · 8 Haz</p>
-                <h3 class="card-title">Yenilenebilir yatırımı neden bu kadar hızlandı</h3>
+                <p class="card-meta"><span class="meta-tick"></span> {{ post.published_at }}</p>
+                <h3 class="card-title">{{ post.title }}</h3>
             </div>
         </a>
-        <a href="{% url 'post_detail' %}" class="card">
-            <div class="card-image"></div>
-            <div class="card-body">
-                <p class="card-meta"><span class="meta-tick"></span> Tarih · 2 Haz</p>
-                <h3 class="card-title">Bir şehrin hafızası: sokak isimleri ne anlatır</h3>
-            </div>
-        </a>
-        <a href="{% url 'post_detail' %}" class="card">
-            <div class="card-image"></div>
-            <div class="card-body">
-                <p class="card-meta"><span class="meta-tick"></span> Teknoloji · 28 May</p>
-                <h3 class="card-title">Yapay zekâ araçlarını günlük işe nasıl kattım</h3>
-            </div>
-        </a>
+        {% empty %}
+        <p>Henüz yazı eklenmedi.</p>
+        {% endfor %}
     </div>
 
 {% endblock %}
