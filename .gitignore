@@ -1,0 +1,15 @@
+# Sanal ortam
+venv/
+
+# Python önbellek
+__pycache__/
+*.pyc
+
+# Veritabanı (yerel)
+db.sqlite3
+
+# macOS sistem dosyası
+.DS_Store
+
+# VS Code ayarları
+.vscode/

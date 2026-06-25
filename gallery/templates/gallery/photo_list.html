@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Galeri · Mert Orhan{% endblock %}
+
+{% block content %}
+
+    {# Sayfa basligi #}
+    <div class="page-head">
+        <p class="eyebrow"><span class="eyebrow-tick"></span> Galeri</p>
+        <h1 class="page-title">Yolda biriken kareler.</h1>
+    </div>
+
+    {# Kategori filtresi (Blog'daki hap deseni) #}
+    <div class="filter-pills">
+        <a href="#" class="pill-filter is-active">Tümü</a>
+        <a href="#" class="pill-filter">Manzara</a>
+        <a href="#" class="pill-filter">Sokak</a>
+        <a href="#" class="pill-filter">Portre</a>
+    </div>
+
+    {# Masonry grid: degisken yukseklikli fotograflar #}
+    <div class="masonry">
+        <div class="masonry-item" style="height:260px;"></div>
+        <div class="masonry-item" style="height:340px;"></div>
+        <div class="masonry-item" style="height:220px;"></div>
+        <div class="masonry-item" style="height:300px;"></div>
+        <div class="masonry-item" style="height:240px;"></div>
+        <div class="masonry-item" style="height:320px;"></div>
+        <div class="masonry-item" style="height:280px;"></div>
+        <div class="masonry-item" style="height:360px;"></div>
+        <div class="masonry-item" style="height:230px;"></div>
+    </div>
+
+
+    {# Lightbox: normalde gizli; bir foto tiklaninca acilir #}
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose">✕</button>
+        <div class="lightbox-content">
+            <div class="lightbox-image"></div>
+            <div class="lightbox-panel">
+                <p class="lightbox-eyebrow">Fotoğraf</p>
+                <h3 class="lightbox-title">Gün doğarken Göreme</h3>
+                <p class="lightbox-loc">Nevşehir · 14 Nisan 2026</p>
+                <div class="exif-grid">
+                    <div class="exif-item">
+                        <p class="exif-label">Kamera</p>
+                        <p class="exif-value">Sony A7 III</p>
+                    </div>
+                    <div class="exif-item">
+                        <p class="exif-label">Lens</p>
+                        <p class="exif-value">24-70mm</p>
+                    </div>
+                    <div class="exif-item">
+                        <p class="exif-label">ISO</p>
+                        <p class="exif-value">200</p>
+                    </div>
+                    <div class="exif-item">
+                        <p class="exif-label">Enstantane</p>
+                        <p class="exif-value">1/250s</p>
+                    </div>
+                    <div class="exif-item">
+                        <p class="exif-label">Diyafram</p>
+                        <p class="exif-value">f/2.8</p>
+                    </div>
+                    <div class="exif-item">
+                        <p class="exif-label">Odak</p>
+                        <p class="exif-value">50mm</p>
+                    </div>
+                </div>
+                <p class="lightbox-hint">← → ile gez · ESC ile kapat</p>
+            </div>
+        </div>
+    </div>
+
+
+    
+    {# JavaScript: lightbox ac/kapat davranisi #}
+    <script>
+        // Sayfadaki tum fotograflari ve lightbox'i bul
+        const items = document.querySelectorAll('.masonry-item');
+        const lightbox = document.getElementById('lightbox');
+        const closeBtn = document.getElementById('lightboxClose');
+
+        // Her fotografa tiklayinca lightbox'i ac
+        items.forEach(function(item) {
+            item.addEventListener('click', function() {
+                lightbox.classList.add('is-open');
+            });
+        });
+
+        // Kapat butonuna basinca kapat
+        closeBtn.addEventListener('click', function() {
+            lightbox.classList.remove('is-open');
+        });
+
+        // Koyu zemine (lightbox'in disina) tiklayinca kapat
+        lightbox.addEventListener('click', function(event) {
+            if (event.target === lightbox) {
+                lightbox.classList.remove('is-open');
+            }
+        });
+
+        // Klavyede ESC'e basinca kapat
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                lightbox.classList.remove('is-open');
+            }
+        });
+    </script>
+
+{% endblock %}

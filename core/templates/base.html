@@ -1,0 +1,48 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mert Orhan{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <nav class="site-nav">
+        <a href="{% url 'home' %}" class="nav-logo">Mert Orhan</a>
+        <div class="nav-links">
+            <a href="{% url 'guide_list' %}">Gezi & Öneri</a>
+            <a href="{% url 'post_list' %}">Blog</a>
+            <a href="{% url 'photo_list' %}">Galeri</a>
+            <a href="{% url 'about' %}">Hakkında</a>
+        </div>
+    </nav>
+
+
+    <div class="nav-rule">
+        <div class="thick"></div>
+        <div class="thin"></div>
+    </div>
+
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <span class="footer-logo">Mert Orhan</span>
+            <p class="footer-copy">© 2026 Mert Orhan · Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

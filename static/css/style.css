@@ -1,0 +1,1360 @@
+/* ============================================
+   1. TASARIM TOKEN'LARI (renkler + ölçüler)
+   ============================================ */
+:root {
+    /* Zeminler */
+    --paper: #f4f1e9;       /* sayfa arka planı (kağıt) */
+    --card: #fbf9f3;        /* kart içi */
+
+    /* Metin renkleri */
+    --ink: #232019;         /* en koyu (başlıklar) */
+    --body: #332f29;        /* gövde metni */
+    --secondary: #5f5a4f;   /* ikincil metin */
+    --faint: #9a9282;       /* soluk etiketler */
+
+    /* Vurgu */
+    --terracotta: #b4533a;  /* link, tik, hover */
+    --green: #5e8b5a;       /* durum noktası */
+
+    /* Çizgi/kenar */
+    --line: rgba(35, 32, 25, 0.15);
+
+    /* Fontlar */
+    --font-serif: 'Newsreader', serif;
+    --font-sans: 'Hanken Grotesk', sans-serif;
+
+    /* Ölçü */
+    --container: 1160px;
+}
+
+/* ============================================
+   2. TEMEL SIFIRLAMA (reset)
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--paper);
+    color: var(--body);
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+
+
+/* ============================================
+   3. NAVİGASYON (üst menü)
+   ============================================ */
+.site-nav {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 28px 40px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+/* Logo (Mert Orhan) */
+.nav-logo {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+}
+
+/* Sağdaki link grubu */
+.nav-links {
+    display: flex;
+    gap: 28px;
+}
+
+.nav-links a {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+    color: var(--terracotta);
+}
+
+/* "Cetvel" çift kural — sitenin imzası */
+.nav-rule {
+    max-width: var(--container);
+    margin: 16px auto 0;
+    padding: 0 40px;
+}
+.nav-rule .thick {
+    height: 3px;
+    background: var(--ink);
+}
+.nav-rule .thin {
+    height: 1px;
+    background: var(--ink);
+    margin-top: 3px;
+}
+
+
+
+/* ============================================
+   4. İÇERİK KABI (tüm sayfa içeriği için)
+   ============================================ */
+main {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 48px 40px 80px;
+}
+
+
+/* ============================================
+   5. ANA SAYFA — HERO (öne çıkan görsel)
+   ============================================ */
+.hero {
+    display: block;
+    position: relative;
+    height: 460px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 56px;
+    text-decoration: none;
+    /* görsel gelene kadar: çapraz çizgili yer tutucu */
+    background: repeating-linear-gradient(
+        135deg,
+        #e7e0d1, #e7e0d1 12px,
+        #eee8dc 12px, #eee8dc 24px
+    );
+}
+
+/* Alttaki karartma şeridi (yazılar okunsun diye) */
+.hero-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 40px;
+    background: linear-gradient(
+        to top,
+        rgba(35, 32, 25, 0.75),
+        rgba(35, 32, 25, 0)
+    );
+}
+
+/* Terracotta "hap" etiketi */
+.pill {
+    display: inline-block;
+    background: var(--terracotta);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+}
+
+/* Büyük beyaz başlık */
+.hero-title {
+    font-family: var(--font-serif);
+    font-size: 52px;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+
+
+/* ============================================
+   6. ANA SAYFA — KİMLİK ŞERİDİ
+   ============================================ */
+.identity {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding-bottom: 56px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 56px;
+}
+
+/* Yuvarlak portre yer tutucu */
+.identity-photo {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: repeating-linear-gradient(
+        135deg,
+        #e7e0d1, #e7e0d1 8px,
+        #eee8dc 8px, #eee8dc 16px
+    );
+}
+
+.identity-name {
+    font-family: var(--font-serif);
+    font-size: 21px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 4px;
+}
+
+.identity-role {
+    font-size: 13px;
+    color: var(--secondary);
+    margin-bottom: 10px;
+}
+
+/* Durum satırı (yeşil noktalı) */
+.identity-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--secondary);
+    margin-bottom: 12px;
+}
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    display: inline-block;
+}
+/* ikinci noktadan önce küçük boşluk */
+.identity-status .status-dot:nth-child(2) {
+    margin-left: 14px;
+}
+
+.identity-link {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--terracotta);
+    text-decoration: none;
+}
+.identity-link:hover {
+    text-decoration: underline;
+}
+
+
+
+
+/* ============================================
+   7. LEDGER BAŞLIK (her bölümde ortak)
+   ============================================ */
+.section {
+    margin-bottom: 56px;
+}
+
+.ledger-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+/* Solda terracotta dolu kare tik */
+.ledger-tick {
+    width: 10px;
+    height: 10px;
+    background: var(--terracotta);
+    flex-shrink: 0;
+}
+
+.ledger-title {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+}
+
+/* Sağa uzanan ince çizgi */
+.ledger-line {
+    flex-grow: 1;
+    height: 1px;
+    background: var(--line);
+}
+
+.ledger-all {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--secondary);
+    text-decoration: none;
+    white-space: nowrap;
+}
+.ledger-all:hover {
+    color: var(--terracotta);
+}
+
+/* ============================================
+   8. KART GRID (3 kolon)
+   ============================================ */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+}
+
+.card {
+    background: var(--paper);
+    padding: 0 24px;
+    text-decoration: none;
+}
+.card:first-child {
+    padding-left: 0;
+}
+.card:last-child {
+    padding-right: 0;
+}
+
+.card-image {
+    height: 180px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    background: repeating-linear-gradient(
+        135deg,
+        #e7e0d1, #e7e0d1 12px,
+        #eee8dc 12px, #eee8dc 24px
+    );
+}
+
+/* tik'li meta satırı */
+.card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--faint);
+    margin-bottom: 10px;
+}
+.meta-tick {
+    width: 16px;
+    height: 1px;
+    background: var(--terracotta);
+    display: inline-block;
+}
+
+.card-title {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.3;
+}
+.card:hover .card-title {
+    color: var(--terracotta);
+}
+
+
+
+
+/* ============================================
+   9. ANA SAYFA — GALERİ ŞERİDİ
+   ============================================ */
+.gallery-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.gallery-item {
+    height: 200px;
+    border-radius: 4px;
+    display: block;
+    background: repeating-linear-gradient(
+        135deg,
+        #e7e0d1, #e7e0d1 12px,
+        #eee8dc 12px, #eee8dc 24px
+    );
+}
+
+
+/* ============================================
+   10. FOOTER (tüm sayfalarda ortak)
+   ============================================ */
+.site-footer {
+    border-top: 1px solid var(--line);
+    margin-top: 40px;
+}
+
+.footer-inner {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 32px 40px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-logo {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.footer-copy {
+    font-size: 12px;
+    color: var(--faint);
+}
+
+
+
+/* ============================================
+   11. ANİMASYONLAR & HOVER
+   ============================================ */
+
+/* --- Hover efektleri --- */
+
+/* Hero: üstüne gelince görsel hafif büyür */
+.hero {
+    transition: box-shadow 0.4s ease;
+}
+.hero:hover {
+    box-shadow: 0 12px 40px rgba(40, 36, 28, 0.18);
+}
+
+/* Kart: üstüne gelince hafif yukarı kalkar + gölge */
+.card {
+    transition: transform 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-4px);
+}
+
+/* Galeri görselleri: üstüne gelince hafif parlar */
+.gallery-item {
+    transition: opacity 0.3s ease;
+}
+.gallery-item:hover {
+    opacity: 0.8;
+}
+
+/* --- Açılış animasyonu (mo-up) --- */
+
+@keyframes mo-up {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Hero, kimlik ve bölümler sırayla belirsin */
+.hero,
+.identity,
+.section {
+    animation: mo-up 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Kademeli gecikme — biri diğerinden sonra gelsin */
+.identity { animation-delay: 0.08s; }
+.section:nth-of-type(1) { animation-delay: 0.16s; }
+.section:nth-of-type(2) { animation-delay: 0.24s; }
+.section:nth-of-type(3) { animation-delay: 0.32s; }
+
+
+
+
+/* ============================================
+   12. SAYFA BAŞLIĞI (eyebrow + büyük başlık)
+   --- Blog, Gezi, Galeri, Hakkında'da ortak ---
+   ============================================ */
+.page-head {
+    margin-bottom: 28px;
+}
+
+/* Küçük üst etiket (örn. "■ BLOG") */
+.eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--terracotta);
+    margin-bottom: 16px;
+}
+/* eyebrow'un solundaki küçük dolu kare */
+.eyebrow-tick {
+    width: 8px;
+    height: 8px;
+    background: var(--terracotta);
+    display: inline-block;
+}
+
+/* Sayfanın büyük serif başlığı */
+.page-title {
+    font-family: var(--font-serif);
+    font-size: 44px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+/* ============================================
+   13. ETİKET FİLTRESİ (hap butonlar)
+   ============================================ */
+.filter-pills {
+    display: flex;
+    flex-wrap: wrap;          /* dar ekranda alt satıra kaysın */
+    gap: 10px;
+    margin-bottom: 40px;
+}
+
+.pill-filter {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--secondary);
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1px solid var(--line);
+    border-radius: 999px;     /* tam hap şekli */
+    transition: all 0.2s ease;
+}
+.pill-filter:hover {
+    border-color: var(--terracotta);
+    color: var(--terracotta);
+}
+/* Seçili (aktif) etiket: koyu dolu */
+.pill-filter.is-active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #fff;
+}
+
+/* ============================================
+   14. ÖNE ÇIKAN YAZI (büyük yatay kart)
+   ============================================ */
+.feature-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;   /* sol görsel, sağ metin: eşit */
+    gap: 40px;
+    align-items: center;
+    text-decoration: none;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--line);
+}
+
+.feature-image {
+    height: 320px;
+    border-radius: 4px;
+    background: repeating-linear-gradient(
+        135deg,
+        #e7e0d1, #e7e0d1 12px,
+        #eee8dc 12px, #eee8dc 24px
+    );
+}
+
+.feature-title {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 14px;
+}
+.feature-card:hover .feature-title {
+    color: var(--terracotta);
+}
+
+.feature-excerpt {
+    font-size: 16px;
+    color: var(--secondary);
+    line-height: 1.7;
+}
+
+
+
+
+/* ============================================
+   15. SAYFA AÇIKLAMA METNİ (baslik alti)
+   ============================================ */
+.page-desc {
+    font-size: 17px;
+    color: var(--secondary);
+    line-height: 1.7;
+    max-width: 560px;       /* cok uzamasin, okunakli kalsin */
+    margin-top: 14px;
+}
+
+/* ============================================
+   16. ÖNE ÇIKAN KARTTAKİ META ETİKETLER
+   (kucuk cerceveli bilgi rozetleri: sehir, butce...)
+   ============================================ */
+.meta-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+}
+.meta-tag {
+    font-size: 12px;
+    color: var(--secondary);
+    padding: 5px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+}
+
+/* ============================================
+   17. FİLTRE ÇUBUĞU (gezi listesine ozel)
+   ============================================ */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 40px;
+}
+
+/* Acilir kutular (dropdown) */
+.filter-select {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--body);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 8px 14px;
+    cursor: pointer;
+}
+
+/* Harita gorunumu linki: en saga itilir */
+.filter-map {
+    margin-left: auto;        /* sihir: kalan boslugu yiyip saga iter */
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--terracotta);
+    text-decoration: none;
+}
+.filter-map:hover {
+    text-decoration: underline;
+}
+
+/* ============================================
+   18. KART ROZETİ (ROTA / MEKAN)
+   --- Kart gorseli uzerine sol-uste oturur ---
+   ============================================ */
+/* Rozetin gorselin icinde konumlanmasi icin gorseli 'relative' yapiyoruz */
+.card-image {
+    position: relative;
+}
+.badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 5px 11px;
+    border-radius: 999px;
+    color: #fff;
+}
+/* Rota rozeti = koyu murekkep; Mekan rozeti = kahve tonu (spec) */
+.badge-rota  { background: var(--ink); }
+.badge-mekan { background: #8a7f63; }
+
+/* ============================================
+   19. "DAHA FAZLA YÜKLE" BUTONU
+   ============================================ */
+.load-more-wrap {
+    text-align: center;
+    margin-top: 48px;
+}
+.load-more {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 12px 28px;
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    transition: all 0.2s ease;
+}
+.load-more:hover {
+    background: var(--ink);
+    color: #fff;
+}
+
+
+
+/* ============================================
+   20. HAKKINDA — İKİ KOLON YERLEŞİM
+   ============================================ */
+.about-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;   /* sol sabit 300px, sag esnek */
+    gap: 56px;
+    align-items: start;                 /* sticky calismasi icin sart */
+}
+
+/* Sol profil karti: sayfa kayinca ekranda SABIT kalir */
+.profile-card {
+    position: sticky;
+    top: 40px;                          /* ust kenardan 40px bosluk birakip yapisir */
+}
+
+/* Kare portre yer tutucu */
+.profile-photo {
+    width: 100%;
+    aspect-ratio: 1 / 1;                /* tam kare */
+    border-radius: 4px;
+    margin-bottom: 18px;
+    background: repeating-linear-gradient(
+        135deg,
+        #e7e0d1, #e7e0d1 12px,
+        #eee8dc 12px, #eee8dc 24px
+    );
+}
+
+.profile-name {
+    font-family: var(--font-serif);
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--ink);
+}
+.profile-role {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--terracotta);
+    margin-top: 4px;
+}
+
+/* Buton grubu (alt alta) */
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* ============================================
+   21. BUTONLAR (genel: profil + form)
+   ============================================ */
+.btn {
+    display: block;
+    text-align: center;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 12px 20px;
+    border-radius: 999px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+/* Dolu (koyu) buton */
+.btn-primary {
+    background: var(--ink);
+    color: #fff;
+    border: 1px solid var(--ink);
+}
+.btn-primary:hover {
+    background: var(--terracotta);
+    border-color: var(--terracotta);
+}
+/* Cerceveli buton */
+.btn-outline {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+}
+.btn-outline:hover {
+    border-color: var(--terracotta);
+    color: var(--terracotta);
+}
+/* Form icindeki buton tam genislik degil, icerik kadar olsun */
+.btn-inline {
+    display: inline-block;
+}
+
+/* ============================================
+   22. BİYOGRAFİ METNİ
+   ============================================ */
+.about-bio {
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--body);
+    margin-bottom: 56px;
+    max-width: 620px;
+}
+
+/* ============================================
+   23. DENEYİM TIMELINE
+   ============================================ */
+.timeline {
+    padding-left: 4px;
+}
+.timeline-item {
+    position: relative;
+    padding-left: 28px;
+    padding-bottom: 28px;
+    border-left: 1px solid var(--line);   /* dikey cizgi */
+}
+.timeline-item:last-child {
+    padding-bottom: 0;
+    border-left: 1px solid transparent;   /* son maddede cizgi gorunmesin */
+}
+/* Cizginin uzerindeki terracotta yuvarlak nokta */
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -5px;                           /* cizginin tam ustune otursun */
+    top: 3px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--terracotta);
+}
+.timeline-date {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--faint);
+    margin-bottom: 6px;
+}
+.timeline-role {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 6px;
+}
+.timeline-desc {
+    font-size: 15px;
+    color: var(--secondary);
+    line-height: 1.6;
+    max-width: 520px;
+}
+
+/* ============================================
+   24. İLETİŞİM FORMU
+   ============================================ */
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 600px;
+}
+/* Ad + E-posta yan yana */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+.form-field {
+    display: flex;
+    flex-direction: column;
+}
+.form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--secondary);
+    margin-bottom: 6px;
+}
+/* Hem input hem textarea ayni gorunum */
+.form-input {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--body);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 12px 14px;
+    transition: border-color 0.2s ease;
+}
+/* Tiklayinca (odaklaninca) kenar terracotta olur */
+.form-input:focus {
+    outline: none;
+    border-color: var(--terracotta);
+}
+.form-textarea {
+    min-height: 140px;
+    resize: vertical;            /* kullanici sadece dikey buyutebilsin */
+}
+.form-kvkk {
+    font-size: 12px;
+    color: var(--faint);
+    line-height: 1.5;
+}
+
+/* ============================================
+   25. BLOG DETAY — DAR OKUMA KOLONU
+   ============================================ */
+.article {
+    max-width: 680px;     /* okuma icin ideal genislik */
+    margin: 0 auto;       /* sayfada ortala */
+}
+
+/* Geri linki */
+.article-back {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--secondary);
+    text-decoration: none;
+    margin-bottom: 32px;
+    transition: color 0.2s ease;
+}
+.article-back:hover {
+    color: var(--terracotta);
+}
+
+/* Kategori etiketi */
+.article-cat {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--terracotta);
+    margin-bottom: 14px;
+}
+
+/* Buyuk yazi basligi */
+.article-title {
+    font-family: var(--font-serif);
+    font-size: 44px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+}
+
+/* Yazar + tarih satiri */
+.article-byline {
+    font-size: 13px;
+    color: var(--faint);
+    margin-bottom: 36px;
+}
+
+/* Kapak gorseli */
+.article-cover {
+    height: 320px;
+    border-radius: 4px;
+    margin-bottom: 40px;
+    background: repeating-linear-gradient(
+        135deg,
+        #e7e0d1, #e7e0d1 12px,
+        #eee8dc 12px, #eee8dc 24px
+    );
+}
+
+/* Yazi paragraflari (okunakli olcek) */
+.article-p {
+    font-size: 17px;
+    line-height: 1.8;
+    color: var(--body);
+    margin-bottom: 24px;
+}
+
+/* ============================================
+   26. PULLQUOTE (vurgulu alinti)
+   ============================================ */
+.pullquote {
+    font-family: var(--font-serif);
+    font-size: 25px;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--ink);
+    border-left: 3px solid var(--terracotta);   /* sol terracotta kenar */
+    padding-left: 24px;
+    margin: 36px 0;
+}
+
+
+/* ============================================
+   27. GEZİ DETAY — HERO (tam genislik)
+   ============================================ */
+.detail-hero {
+    position: relative;
+    height: 440px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: repeating-linear-gradient(
+        135deg,
+        #d8d2c4, #d8d2c4 12px,
+        #e2dccf 12px, #e2dccf 24px
+    );
+}
+
+/* Sag ustteki Kaydet / Paylas butonlari */
+.detail-hero-actions {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    display: flex;
+    gap: 10px;
+}
+.hero-btn {
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+.hero-btn:hover {
+    background: #fff;
+}
+
+/* Alt karartma + baslik bloku */
+.detail-hero-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 40px;
+    background: linear-gradient(
+        to top,
+        rgba(35, 32, 25, 0.78),
+        rgba(35, 32, 25, 0)
+    );
+}
+.detail-title {
+    font-family: var(--font-serif);
+    font-size: 48px;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-top: 12px;
+}
+.detail-sub {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.85);
+    margin-top: 8px;
+}
+
+/* ============================================
+   28. "BİR BAKIŞTA" ŞERİDİ (5 sutun)
+   --- Hero'nun uzerine -32px bindirir ---
+   ============================================ */
+.glance {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    margin: -32px 32px 56px;       /* ust: negatif = hero'ya biner */
+    position: relative;            /* hero'nun ustunde gorunsun */
+    box-shadow: 0 8px 30px rgba(40, 36, 28, 0.10);
+}
+.glance-item {
+    padding: 22px 20px;
+    text-align: center;
+    border-right: 1px solid var(--line);
+}
+.glance-item:last-child {
+    border-right: none;            /* son sutunda ayirici cizgi olmasin */
+}
+.glance-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--faint);
+    margin-bottom: 6px;
+}
+.glance-value {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    color: var(--ink);
+}
+
+
+/* ============================================
+   29. GEZİ DETAY — İÇERİK BÖLÜMLERİ
+   ============================================ */
+.detail-section {
+    margin-bottom: 48px;
+}
+.detail-text {
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--body);
+}
+
+/* Yeme-Icme kutulari */
+.food-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+.food-box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 20px;
+}
+.food-name {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    color: var(--ink);
+    margin-bottom: 4px;
+}
+.food-meta {
+    font-size: 12px;
+    color: var(--faint);
+}
+
+/* ============================================
+   30. ROTA TIMELINE + HARİTA (iki kolon)
+   ============================================ */
+.route-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;   /* sol adimlar, sag harita */
+    gap: 40px;
+    align-items: start;               /* sticky icin */
+}
+
+/* Sol: numarali adimlar */
+.route-step {
+    display: flex;
+    gap: 16px;
+    padding-bottom: 28px;
+}
+.route-step:last-child {
+    padding-bottom: 0;
+}
+/* Numarali terracotta yuvarlak */
+.route-num {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.route-time {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--faint);
+    margin-bottom: 5px;
+}
+.route-name {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    color: var(--ink);
+    margin-bottom: 5px;
+}
+.route-desc {
+    font-size: 14px;
+    color: var(--secondary);
+    line-height: 1.6;
+}
+
+/* Sag: sticky harita yer tutucu */
+.route-map {
+    position: sticky;
+    top: 40px;
+    height: 360px;
+    border-radius: 6px;
+    background: repeating-linear-gradient(
+        135deg,
+        #dfe4dc, #dfe4dc 12px,
+        #e8ece6 12px, #e8ece6 24px
+    );
+}
+
+/* ============================================
+   31. DÜRÜST DEĞERLENDİRME KUTUSU
+   ============================================ */
+.verdict {
+    background: #f7ece4;                /* spec: acik terracotta zemin */
+    border: 1px solid #e7c9b8;
+    border-radius: 8px;
+    padding: 28px 32px;
+}
+.verdict-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--terracotta);
+    margin-bottom: 12px;
+}
+.verdict-text {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--ink);
+}
+
+
+/* ============================================
+   32. GALERİ — MASONRY GRID
+   --- column-count ile Pinterest tarzi dizilim ---
+   ============================================ */
+.masonry {
+    column-count: 3;        /* 3 dikey kolon */
+    column-gap: 14px;
+}
+
+.masonry-item {
+    border-radius: 4px;
+    margin-bottom: 14px;
+    break-inside: avoid;    /* bir foto iki kolona bolunmesin */
+    cursor: pointer;        /* tiklanabilir hissi (lightbox icin hazirlik) */
+    background: repeating-linear-gradient(
+        135deg,
+        #e7e0d1, #e7e0d1 12px,
+        #eee8dc 12px, #eee8dc 24px
+    );
+    transition: opacity 0.3s ease;
+}
+.masonry-item:hover {
+    opacity: 0.85;
+}
+
+/* ============================================
+   33. GALERİ — LIGHTBOX (acilir pencere)
+   ============================================ */
+/* Normalde gizli (display:none) */
+.lightbox {
+    display: none;
+    position: fixed;          /* ekrana sabitlenir, kaydirmadan etkilenmez */
+    inset: 0;                 /* top/right/bottom/left = 0, tum ekran */
+    background: rgba(26, 24, 21, 0.92);   /* koyu yari saydam zemin */
+    z-index: 1000;            /* her seyin ustunde */
+    padding: 40px;
+    align-items: center;
+    justify-content: center;
+}
+/* JS 'is-open' eklediginde gorunur olur */
+.lightbox.is-open {
+    display: flex;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 24px;
+    right: 28px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 26px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+/* Icerik: sol buyuk gorsel + sag bilgi paneli */
+.lightbox-content {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 0;
+    max-width: 1100px;
+    width: 100%;
+    max-height: 80vh;
+    background: #26241f;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+}
+
+/* Sol: buyuk gorsel yer tutucu */
+.lightbox-image {
+    background: repeating-linear-gradient(
+        135deg,
+        #3a3730, #3a3730 14px,
+        #423f37 14px, #423f37 28px
+    );
+    min-height: 500px;
+}
+
+/* Sag: bilgi paneli */
+.lightbox-panel {
+    padding: 32px;
+    color: #fff;
+}
+.lightbox-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 14px;
+}
+.lightbox-title {
+    font-family: var(--font-serif);
+    font-size: 26px;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+.lightbox-loc {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 28px;
+}
+
+/* EXIF bilgileri: 2 kolonlu kucuk grid */
+.exif-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+.exif-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 4px;
+}
+.exif-value {
+    font-size: 14px;
+    color: #fff;
+}
+
+.lightbox-hint {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.45);
+    margin-top: 28px;
+}

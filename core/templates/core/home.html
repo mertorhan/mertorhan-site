@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Ana Sayfa · Mert Orhan{% endblock %}
+
+{% block content %}
+    <a href="{% url 'guide_detail' %}" class="hero"></a>
+        <div class="hero-overlay">
+            <span class="pill">Öne çıkan · Rota</span>
+            <h2 class="hero-title">Kapadokya'da 2 Gün</h2>
+        </div>
+    </a>
+
+
+    <section class="identity">
+        <div class="identity-photo"></div>
+        <div class="identity-text">
+            <h3 class="identity-name">Ben Mert — işi göstererek anlatırım.</h3>
+            <p class="identity-role">İş Analisti & Product Owner</p>
+            <div class="identity-status">
+                <span class="status-dot"></span> Yeni projelere açık
+                <span class="status-dot"></span> İçerik üretiyor
+            </div>
+            <a href="{% url 'about' %}" class="identity-link">Hakkımda →</a>
+        </div>
+    </section>
+
+
+    <section class="section">
+        <div class="ledger-head">
+            <span class="ledger-tick"></span>
+            <h2 class="ledger-title">Öne çıkan yazılar</h2>
+            <span class="ledger-line"></span>
+            <a href="{% url 'post_list' %}" class="ledger-all">Tümü →</a>
+        </div>
+
+        <div class="card-grid">
+            <a href="{% url 'post_detail' %}" class="card"></a>
+                <div class="card-image"></div>
+                <div class="card-body">
+                    <p class="card-meta"><span class="meta-tick"></span> Ekonomi · 12 Haz</p>
+                    <h3 class="card-title">Enflasyon verisini okurken nelere dikkat etmeli</h3>
+                </div>
+            </a>
+            <a href="{% url 'post_detail' %}" class="card"></a>
+                <div class="card-image"></div>
+                <div class="card-body">
+                    <p class="card-meta"><span class="meta-tick"></span> Enerji · 8 Haz</p>
+                    <h3 class="card-title">Yenilenebilir yatırımı neden bu kadar hızlandı</h3>
+                </div>
+            </a>
+            <a href="{% url 'post_detail' %}" class="card"></a>
+                <div class="card-image"></div>
+                <div class="card-body">
+                    <p class="card-meta"><span class="meta-tick"></span> Tarih · 2 Haz</p>
+                    <h3 class="card-title">Bir şehrin hafızası: sokak isimleri ne anlatır</h3>
+                </div>
+            </a>
+        </div>
+    </section>
+
+
+    <section class="section">
+        <div class="ledger-head">
+            <span class="ledger-tick"></span>
+            <h2 class="ledger-title">Öne çıkan rotalar</h2>
+            <span class="ledger-line"></span>
+            <a href="{% url 'guide_list' %}" class="ledger-all">Tümü →</a>
+        </div>
+
+        <div class="card-grid">
+            <a href="{% url 'guide_detail' %}" class="card"></a>
+                <div class="card-image"></div>
+                <div class="card-body">
+                    <p class="card-meta"><span class="meta-tick"></span> Nevşehir · Rota</p>
+                    <h3 class="card-title">Kapadokya'da 2 Gün</h3>
+                </div>
+            </a>
+            <a href="{% url 'guide_detail' %}" class="card"></a>
+                <div class="card-image"></div>
+                <div class="card-body">
+                    <p class="card-meta"><span class="meta-tick"></span> İzmir · Mekan</p>
+                    <h3 class="card-title">Alaçatı'da bir hafta sonu</h3>
+                </div>
+            </a>
+            <a href="{% url 'guide_detail' %}" class="card"></a>
+                <div class="card-image"></div>
+                <div class="card-body">
+                    <p class="card-meta"><span class="meta-tick"></span> Artvin · Rota</p>
+                    <h3 class="card-title">Karadeniz yaylalarında 3 gün</h3>
+                </div>
+            </a>
+        </div>
+    </section>
+
+
+
+    <section class="section">
+        <div class="ledger-head">
+            <span class="ledger-tick"></span>
+            <h2 class="ledger-title">Galeri</h2>
+            <span class="ledger-line"></span>
+            <a href="{% url 'photo_list' %}" class="ledger-all">Tümü →</a>
+        </div>
+
+        <div class="gallery-strip">
+            <a href="{% url 'photo_list' %}" class="gallery-item"></a>
+            <a href="{% url 'photo_list' %}" class="gallery-item"></a>
+            <a href="{% url 'photo_list' %}" class="gallery-item"></a>
+            <a href="{% url 'photo_list' %}" class="gallery-item"></a>
+        </div>
+    </section>
+
+
+
+
+{% endblock %}

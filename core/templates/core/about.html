@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Hakkında · Mert Orhan{% endblock %}
+
+{% block content %}
+
+    {# Iki kolon: sol sticky profil, sag icerik #}
+    <div class="about-layout">
+
+        {# SOL KOLON: sticky profil karti #}
+        <aside class="profile-card">
+            <div class="profile-photo"></div>
+            <h2 class="profile-name">Mert Orhan</h2>
+            <p class="profile-role">İş Analisti & Product Owner</p>
+            <div class="profile-actions">
+                <a href="#" class="btn btn-primary">in · LinkedIn</a>
+                <a href="#" class="btn btn-outline">E-posta</a>
+                <a href="#" class="btn btn-outline">CV (PDF)</a>
+            </div>
+        </aside>
+
+        {# SAG KOLON: biyografi + deneyim + iletisim #}
+        <div class="about-content">
+
+            <div class="page-head">
+                <p class="eyebrow"><span class="eyebrow-tick"></span> Hakkında</p>
+                <h1 class="page-title">İnsanları dinleyip, karmaşığı sadeleştirmeyi severim.</h1>
+            </div>
+
+            <p class="about-bio">
+                On yılı aşkın süredir iş analizi ve ürün yönetimi yapıyorum. İşin özünde
+                hep aynı şey var: bir ihtiyacı doğru anlamak ve onu net, çalışır bir çözüme
+                dönüştürmek. Aynı merakı yola çıktığımda da taşıyorum — gördüğüm yerleri
+                fotoğraflar, dürüst rotalar olarak buraya yazarım.
+            </p>
+
+            {# Deneyim: ledger baslik + timeline #}
+            <section class="section">
+                <div class="ledger-head">
+                    <span class="ledger-tick"></span>
+                    <h2 class="ledger-title">Deneyim</h2>
+                    <span class="ledger-line"></span>
+                </div>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <p class="timeline-date">2022 — Bugün</p>
+                        <h3 class="timeline-role">Product Owner · [Şirket]</h3>
+                        <p class="timeline-desc">
+                            Ürün yol haritası, paydaş yönetimi ve ekip ritmi; ölçülebilir
+                            sonuçlara odaklı çalışma.
+                        </p>
+                    </div>
+                    <div class="timeline-item">
+                        <p class="timeline-date">2018 — 2022</p>
+                        <h3 class="timeline-role">İş Analisti · [Şirket]</h3>
+                        <p class="timeline-desc">
+                            Gereksinim analizi, süreç tasarımı ve geliştirme ekipleriyle
+                            köprü kurma.
+                        </p>
+                    </div>
+                    <div class="timeline-item">
+                        <p class="timeline-date">2014 — 2018</p>
+                        <h3 class="timeline-role">Junior Analist · [Şirket]</h3>
+                        <p class="timeline-desc">
+                            Veriyle ilk tanışma; raporlama ve dokümantasyon temelleri.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            {# Iletisim: ledger baslik + form #}
+            <section class="section">
+                <div class="ledger-head">
+                    <span class="ledger-tick"></span>
+                    <h2 class="ledger-title">İletişim</h2>
+                    <span class="ledger-line"></span>
+                </div>
+
+                <form class="contact-form">
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label class="form-label">Ad Soyad</label>
+                            <input type="text" class="form-input" placeholder="Adınız">
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">E-posta</label>
+                            <input type="email" class="form-input" placeholder="ornek@eposta.com">
+                        </div>
+                    </div>
+                    <div class="form-field">
+                        <label class="form-label">Mesaj</label>
+                        <textarea class="form-input form-textarea" placeholder="Mesajınız..."></textarea>
+                    </div>
+                    <p class="form-kvkk">
+                        Gönderdiğinizde, mesajınızın size dönüş yapmak amacıyla saklanmasını
+                        kabul etmiş olursunuz.
+                    </p>
+                    <button type="button" class="btn btn-primary btn-inline">Gönder →</button>
+                </form>
+            </section>
+
+        </div>
+    </div>
+
+{% endblock %}

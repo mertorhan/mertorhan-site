@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Gezi & Öneri · Mert Orhan{% endblock %}
+
+{% block content %}
+
+    {# Sayfa basligi: eyebrow + baslik + aciklama #}
+    <div class="page-head">
+        <p class="eyebrow"><span class="eyebrow-tick"></span> Gezi & Öneri</p>
+        <h1 class="page-title">Gittiğim yerler, dürüst notlar.</h1>
+        <p class="page-desc">
+            Tek tek gezdiğim mekanlar ve günü gününe planladığım rotalar — abartısız, denenmiş.
+        </p>
+    </div>
+
+    {# One cikan gezi: buyuk yatay kart (feature-card yeniden kullaniliyor) #}
+    <a href="{% url 'guide_detail' %}" class="feature-card">
+        <div class="feature-image"></div>
+        <div class="feature-body">
+            <p class="card-meta"><span class="meta-tick"></span> Öne çıkan · Rota</p>
+            <h2 class="feature-title">Kapadokya'da 2 Gün</h2>
+            <p class="feature-excerpt">
+                Balonların altında iki dolu gün: vadiler, yerel sofralar ve
+                doğru saatte doğru manzara.
+            </p>
+            <div class="meta-tags">
+                <span class="meta-tag">Nevşehir</span>
+                <span class="meta-tag">₺₺</span>
+                <span class="meta-tag">6 Durak</span>
+                <span class="meta-tag">İlkbahar</span>
+            </div>
+        </div>
+    </a>
+
+    {# Filtre cubugu: gezi listesine ozel #}
+    <div class="filter-bar">
+        <select class="filter-select">
+            <option>Şehir</option>
+            <option>Nevşehir</option>
+            <option>İzmir</option>
+            <option>Artvin</option>
+        </select>
+        <select class="filter-select">
+            <option>Kategori</option>
+            <option>Rota</option>
+            <option>Mekan</option>
+        </select>
+        <select class="filter-select">
+            <option>Bütçe</option>
+            <option>₺</option>
+            <option>₺₺</option>
+            <option>₺₺₺</option>
+        </select>
+        <select class="filter-select">
+            <option>En iyi zaman</option>
+            <option>İlkbahar</option>
+            <option>Yaz</option>
+            <option>Sonbahar</option>
+            <option>Kış</option>
+        </select>
+        <a href="{% url 'guide_detail' %}" class="filter-map">Harita görünümü →</a>
+    </div>
+
+    {# Gezi kartlari: 3'lu grid + ROTA/MEKAN rozeti #}
+    <div class="card-grid">
+        <a href="{% url 'guide_detail' %}" class="card">
+            <div class="card-image">
+                <span class="badge badge-rota">Rota</span>
+            </div>
+            <div class="card-body">
+                <p class="card-meta"><span class="meta-tick"></span> Nevşehir · 6 Durak</p>
+                <h3 class="card-title">Kapadokya'da 2 Gün</h3>
+            </div>
+        </a>
+        <a href="{% url 'guide_detail' %}" class="card">
+            <div class="card-image">
+                <span class="badge badge-mekan">Mekan</span>
+            </div>
+            <div class="card-body">
+                <p class="card-meta"><span class="meta-tick"></span> İzmir · Alaçatı</p>
+                <h3 class="card-title">Alaçatı'da bir kahvaltı durağı</h3>
+            </div>
+        </a>
+        <a href="{% url 'guide_detail' %}" class="card">
+            <div class="card-image">
+                <span class="badge badge-rota">Rota</span>
+            </div>
+            <div class="card-body">
+                <p class="card-meta"><span class="meta-tick"></span> Artvin · 4 Durak</p>
+                <h3 class="card-title">Karadeniz yaylalarında 3 gün</h3>
+            </div>
+        </a>
+    </div>
+
+    {# Daha fazla yukle butonu (simdilik gorsel) #}
+    <div class="load-more-wrap">
+        <a href="#" class="load-more">Daha fazla yükle</a>
+    </div>
+
+{% endblock %}

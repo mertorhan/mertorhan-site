@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Blog · Mert Orhan{% endblock %}
+
+{% block content %}
+
+    {# ===== Sayfa başlığı (eyebrow + büyük başlık) ===== #}
+    <div class="page-head">
+        <p class="eyebrow"><span class="eyebrow-tick"></span> Blog</p>
+        <h1 class="page-title">Okudukça biriken notlar.</h1>
+    </div>
+
+    {# ===== Etiket filtresi (hap'lar) ===== Şimdilik statik; ileride BlogPost.tags'tan dinamik gelecek. 'is-active' sınıfı, o an seçili etiketi gösterir. #}
+    <div class="filter-pills">
+        <a href="{% url 'post_detail' %}" class="pill-filter is-active">Tümü</a>
+        <a href="{% url 'post_detail' %}" class="pill-filter">Ekonomi</a>
+        <a href="{% url 'post_detail' %}" class="pill-filter">Enerji</a>
+        <a href="{% url 'post_detail' %}" class="pill-filter">Geri Dönüşüm</a>
+        <a href="{% url 'post_detail' %}" class="pill-filter">Teknoloji</a>
+        <a href="{% url 'post_detail' %}" class="pill-filter">Tarih</a>
+    </div>
+
+    {# ===== Öne çıkan yazı (büyük YATAY kart) ===== Sol: görsel, sağ: meta + başlık + özet. #}
+    <a href="{% url 'post_detail' %}" class="feature-card">
+        <div class="feature-image"></div>
+        <div class="feature-body">
+            <p class="card-meta"><span class="meta-tick"></span> Öne çıkan · Ekonomi</p>
+            <h2 class="feature-title">Enflasyon verisini okurken nelere dikkat etmeli</h2>
+            <p class="feature-excerpt">
+                Manşet rakamın altında ne var? Çekirdek enflasyon,
+                baz etkisi ve sepetin nasıl okunacağına dair pratik bir rehber.
+            </p>
+            <p class="card-meta" style="margin-top:14px;">12 Haziran · 6 dk okuma</p>
+        </div>
+    </a>
+
+    {# ===== Diğer yazılar: 3'lü grid ===== Ana Sayfa'daki .card-grid / .card desenini AYNEN yeniden kullanıyoruz. #}
+    <div class="card-grid" style="margin-top:40px;">
+        <a href="{% url 'post_detail' %}" class="card">
+            <div class="card-image"></div>
+            <div class="card-body">
+                <p class="card-meta"><span class="meta-tick"></span> Enerji · 8 Haz</p>
+                <h3 class="card-title">Yenilenebilir yatırımı neden bu kadar hızlandı</h3>
+            </div>
+        </a>
+        <a href="{% url 'post_detail' %}" class="card">
+            <div class="card-image"></div>
+            <div class="card-body">
+                <p class="card-meta"><span class="meta-tick"></span> Tarih · 2 Haz</p>
+                <h3 class="card-title">Bir şehrin hafızası: sokak isimleri ne anlatır</h3>
+            </div>
+        </a>
+        <a href="{% url 'post_detail' %}" class="card">
+            <div class="card-image"></div>
+            <div class="card-body">
+                <p class="card-meta"><span class="meta-tick"></span> Teknoloji · 28 May</p>
+                <h3 class="card-title">Yapay zekâ araçlarını günlük işe nasıl kattım</h3>
+            </div>
+        </a>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Kapadokya'da 2 Gün · Mert Orhan{% endblock %}
+
+{% block content %}
+
+    {# Hero: tam genislik gorsel + rozet + baslik + kaydet/paylas #}
+    <div class="detail-hero">
+        <div class="detail-hero-actions">
+            <a href="#" class="hero-btn">♡ Kaydet</a>
+            <a href="#" class="hero-btn">↗ Paylaş</a>
+        </div>
+        <div class="detail-hero-overlay">
+            <span class="badge badge-rota">Rota</span>
+            <h1 class="detail-title">Kapadokya'da 2 Gün</h1>
+            <p class="detail-sub">Nevşehir · 6 Durak</p>
+        </div>
+    </div>
+
+    {# "Bir Bakista" serit: 5 sutunlu ozet, hero'ya bindirmeli #}
+    <div class="glance">
+        <div class="glance-item">
+            <p class="glance-label">Süre</p>
+            <p class="glance-value">2 gün</p>
+        </div>
+        <div class="glance-item">
+            <p class="glance-label">Bütçe</p>
+            <p class="glance-value">₺₺</p>
+        </div>
+        <div class="glance-item">
+            <p class="glance-label">En iyi zaman</p>
+            <p class="glance-value">İlkbahar</p>
+        </div>
+        <div class="glance-item">
+            <p class="glance-label">Kime uygun</p>
+            <p class="glance-value">Çift</p>
+        </div>
+        <div class="glance-item">
+            <p class="glance-label">Durak</p>
+            <p class="glance-value">6</p>
+        </div>
+    </div>
+
+
+
+{# Genel bakis #}
+    <section class="detail-section">
+        <div class="ledger-head">
+            <span class="ledger-tick"></span>
+            <h2 class="ledger-title">Genel Bakış</h2>
+            <span class="ledger-line"></span>
+        </div>
+        <p class="detail-text">
+            Kapadokya'yı iki güne sığdırmak mümkün — yeter ki saatleri doğru kullan.
+            Sabahı balon ve vadilere, öğleyi yerel sofralara, akşamı ise gün batımına
+            ayırdığın dengeli bir plan, bölgeyi koşturmadan görmeni sağlıyor.
+        </p>
+    </section>
+
+    {# Yeme-Icme: iki kutu #}
+    <section class="detail-section">
+        <div class="ledger-head">
+            <span class="ledger-tick"></span>
+            <h2 class="ledger-title">Yeme-İçme</h2>
+            <span class="ledger-line"></span>
+        </div>
+        <div class="food-grid">
+            <div class="food-box">
+                <h3 class="food-name">Topdeck Cave</h3>
+                <p class="food-meta">₺₺ · Ev Yemeği</p>
+            </div>
+            <div class="food-box">
+                <h3 class="food-name">Seki Restaurant</h3>
+                <p class="food-meta">₺₺₺ · Manzara</p>
+            </div>
+        </div>
+    </section>
+
+    {# Rota - Adim Adim: sol numarali timeline + sag sticky harita #}
+    <section class="detail-section">
+        <div class="ledger-head">
+            <span class="ledger-tick"></span>
+            <h2 class="ledger-title">Rota — Adım Adım</h2>
+            <span class="ledger-line"></span>
+        </div>
+
+        <div class="route-layout">
+            {# SOL: numarali zaman cizelgesi #}
+            <div class="route-steps">
+                <div class="route-step">
+                    <div class="route-num">1</div>
+                    <div class="route-info">
+                        <p class="route-time">1. Gün · 05:30 · Gezilecek</p>
+                        <h3 class="route-name">Balon turu · Göreme</h3>
+                        <p class="route-desc">Gün doğmadan kalkış; en iyi ışık ilk dakikada.</p>
+                    </div>
+                </div>
+                <div class="route-step">
+                    <div class="route-num">2</div>
+                    <div class="route-info">
+                        <p class="route-time">1. Gün · 13:00 · Yeme-İçme</p>
+                        <h3 class="route-name">Öğle · Topdeck Cave</h3>
+                        <p class="route-desc">Rezervasyon şart; testi kebabı için erken söyle.</p>
+                    </div>
+                </div>
+                <div class="route-step">
+                    <div class="route-num">3</div>
+                    <div class="route-info">
+                        <p class="route-time">2. Gün · 09:00 · Gezilecek</p>
+                        <h3 class="route-name">Uçhisar Kalesi</h3>
+                        <p class="route-desc">Panoramik manzara; sabah kalabalık olmadan çık.</p>
+                    </div>
+                </div>
+            </div>
+
+            {# SAG: sticky harita yer tutucu #}
+            <div class="route-map"></div>
+        </div>
+    </section>
+
+    {# Durust Degerlendirme: terracotta kutu #}
+    <section class="detail-section">
+        <div class="verdict">
+            <p class="verdict-label">Dürüst Değerlendirme</p>
+            <p class="verdict-text">
+                "Balon turu pahalı ama bir kez yapılmaya değer. Geri kalan her şeyi
+                yürüyerek ve toplu taşımayla halledebilirsin — araç kiralamak şart değil."
+            </p>
+        </div>
+    </section>
+
+    {# Benzer rotalar: 3'lu kart grid (yeniden kullanim) #}
+    <section class="section">
+        <div class="ledger-head">
+            <span class="ledger-tick"></span>
+            <h2 class="ledger-title">Benzer rotalar</h2>
+            <span class="ledger-line"></span>
+            <a href="{% url 'guide_list' %}" class="ledger-all">Tümü →</a>
+        </div>
+        <div class="card-grid">
+            <a href="{% url 'guide_detail' %}" class="card">
+                <div class="card-image"><span class="badge badge-rota">Rota</span></div>
+                <div class="card-body">
+                    <p class="card-meta"><span class="meta-tick"></span> İzmir · 4 Durak</p>
+                    <h3 class="card-title">Şirince & Tire turu</h3>
+                </div>
+            </a>
+            <a href="{% url 'guide_detail' %}" class="card">
+                <div class="card-image"><span class="badge badge-rota">Rota</span></div>
+                <div class="card-body">
+                    <p class="card-meta"><span class="meta-tick"></span> Muğla · 5 Durak</p>
+                    <h3 class="card-title">Datça yarımadası</h3>
+                </div>
+            </a>
+            <a href="{% url 'guide_detail' %}" class="card">
+                <div class="card-image"><span class="badge badge-mekan">Mekan</span></div>
+                <div class="card-body">
+                    <p class="card-meta"><span class="meta-tick"></span> Bolu · Mekan</p>
+                    <h3 class="card-title">Abant göl kenarı</h3>
+                </div>
+            </a>
+        </div>
+    </section>
+
+{% endblock %}
+
