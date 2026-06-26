@@ -305,19 +305,25 @@ main {
 .card-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--line);
+    column-gap: 0;
+    row-gap: 40px;
+    background: transparent;
 }
 
 .card {
     background: var(--paper);
     padding: 0 24px;
     text-decoration: none;
+    border-left: 1px solid var(--line);
 }
-.card:first-child {
+
+/* Her satırın İLK kartı (1., 4., 7. ...): soldaki çizgi ve boşluk olmasın */
+.card:nth-child(3n + 1) {
+    border-left: none;
     padding-left: 0;
 }
-.card:last-child {
+/* Her satırın SON kartı (3., 6., 9. ...): sağ boşluk olmasın (kenara dayansın) */
+.card:nth-child(3n) {
     padding-right: 0;
 }
 
@@ -974,6 +980,14 @@ main {
 
 /* Yazi paragraflari (okunakli olcek) */
 .article-p {
+    font-size: 17px;
+    line-height: 1.8;
+    color: var(--body);
+    margin-bottom: 24px;
+}
+
+/* Admin'den gelen gövde paragrafları (.article-p ile aynı görünüm) */
+.article-body p {
     font-size: 17px;
     line-height: 1.8;
     color: var(--body);

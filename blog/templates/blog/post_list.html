@@ -4,48 +4,54 @@
 
 {% block content %}
 
-    {# ===== Sayfa başlığı (eyebrow + büyük başlık) ===== #}
     <div class="page-head">
         <p class="eyebrow"><span class="eyebrow-tick"></span> Blog</p>
         <h1 class="page-title">Okudukça biriken notlar.</h1>
     </div>
 
-    {# ===== Etiket filtresi (hap'lar) ===== Şimdilik statik; ileride BlogPost.tags'tan dinamik gelecek. #}
+    {# ===== Etiket filtresi: kategoriler veritabanından gelir, tıklayınca filtreler ===== #}
     <div class="filter-pills">
-        <a href="{% url 'post_detail' %}" class="pill-filter is-active">Tümü</a>
-        <a href="{% url 'post_detail' %}" class="pill-filter">Ekonomi</a>
-        <a href="{% url 'post_detail' %}" class="pill-filter">Enerji</a>
-        <a href="{% url 'post_detail' %}" class="pill-filter">Geri Dönüşüm</a>
-        <a href="{% url 'post_detail' %}" class="pill-filter">Teknoloji</a>
-        <a href="{% url 'post_detail' %}" class="pill-filter">Tarih</a>
+        <a href="{% url 'post_list' %}" class="pill-filter{% if not selected %} is-active{% endif %}">Tümü</a>
+        {% for cat in categories %}
+        <a href="?kategori={{ cat.name|urlencode }}" class="pill-filter{% if selected == cat.name %} is-active{% endif %}">{{ cat.name }}</a>
+        {% endfor %}
     </div>
 
-    {# ===== Öne çıkan yazı (büyük YATAY kart) ===== Şimdilik statik; ileride is_featured ile dinamik gelecek. #}
-    <a href="{% url 'post_detail' %}" class="feature-card">
+    {# ===== Öne çıkan yazı ===== #}
+    {% if featured %}
+    <a href="{% url 'post_detail' featured.slug %}" class="feature-card">
         <div class="feature-image"></div>
         <div class="feature-body">
-            <p class="card-meta"><span class="meta-tick"></span> Öne çıkan · Ekonomi</p>
-            <h2 class="feature-title">Enflasyon verisini okurken nelere dikkat etmeli</h2>
-            <p class="feature-excerpt">
-                Manşet rakamın altında ne var? Çekirdek enflasyon,
-                baz etkisi ve sepetin nasıl okunacağına dair pratik bir rehber.
+            <p class="card-meta">
+                <span class="meta-tick"></span>
+                Öne çıkan{% if featured.category %} · {{ featured.category }}{% endif %}
             </p>
-            <p class="card-meta" style="margin-top:14px;">12 Haziran · 6 dk okuma</p>
+            <h2 class="feature-title">{{ featured.title }}</h2>
+            {% if featured.summary %}
+            <p class="feature-excerpt">{{ featured.summary }}</p>
+            {% endif %}
+            <p class="card-meta" style="margin-top:14px;">
+                {{ featured.published_at|date:"d.m.Y" }} · {{ featured.reading_time }} dk okuma
+            </p>
         </div>
     </a>
+    {% endif %}
 
-    {# ===== Diğer yazılar: 3'lü grid ===== Artık veritabanından (BlogPost) geliyor. #}
+    {# ===== Diğer yazılar: grid ===== #}
     <div class="card-grid" style="margin-top:40px;">
         {% for post in posts %}
-        <a href="{% url 'post_detail' %}" class="card">
+        <a href="{% url 'post_detail' post.slug %}" class="card">
             <div class="card-image"></div>
             <div class="card-body">
-                <p class="card-meta"><span class="meta-tick"></span> {{ post.published_at }}</p>
+                <p class="card-meta">
+                    <span class="meta-tick"></span>
+                    {% if post.category %}{{ post.category }} · {% endif %}{{ post.published_at|date:"d.m.Y" }}
+                </p>
                 <h3 class="card-title">{{ post.title }}</h3>
             </div>
         </a>
         {% empty %}
-        <p>Henüz yazı eklenmedi.</p>
+        <p>Bu kategoride henüz yazı yok.</p>
         {% endfor %}
     </div>
 

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Enflasyon verisini okurken · Mert Orhan{% endblock %}
+{% block title %}{{ post.title }} · Mert Orhan{% endblock %}
 
 {% block content %}
 
@@ -9,41 +9,19 @@
 
         <a href="{% url 'post_list' %}" class="article-back">← Blog</a>
 
-        <p class="article-cat">Ekonomi</p>
-        <h1 class="article-title">Enflasyon verisini okurken nelere dikkat etmeli</h1>
-        <p class="article-byline">Mert Orhan · 12 Haziran 2026 · 6 dk okuma</p>
+        {% if post.category %}
+        <p class="article-cat">{{ post.category }}</p>
+        {% endif %}
+        <h1 class="article-title">{{ post.title }}</h1>
+        <p class="article-byline">Mert Orhan · {{ post.published_at|date:"d.m.Y" }} · {{ post.reading_time }} dk okuma</p>
 
-        {# Kapak gorseli #}
+        {# Kapak gorseli (su an yer tutucu; cover_image alanini ileride ekleyecegiz) #}
         <div class="article-cover"></div>
 
-        {# Yazi govdesi #}
-        <p class="article-p">
-            Manşet enflasyon rakamı açıklandığında çoğu kişi yalnızca tek bir sayıya bakar.
-            Oysa o sayının altında, gerçekte ne olduğunu anlatan birkaç katman daha vardır.
-            Bu yazıda, bir veriyi okurken aklımdan geçen pratik kontrol listesini paylaşıyorum.
-        </p>
-
-        <p class="article-p">
-            İlk durağım her zaman çekirdek enflasyon olur. Gıda ve enerji gibi oynak
-            kalemleri dışarıda bırakan bu ölçüt, fiyat artışının ne kadarının kalıcı
-            olduğuna dair daha sakin bir resim verir.
-        </p>
-
-        {# Pullquote: vurgulu alinti #}
-        <blockquote class="pullquote">
-            Bir veri, hangi soruyu sorduğunu bilmeyen için sadece bir sayıdır.
-        </blockquote>
-
-        <p class="article-p">
-            İkinci olarak baz etkisine bakarım. Geçen yılın aynı ayındaki düşük ya da
-            yüksek değerler, bu yılki yüzdeyi olduğundan farklı gösterebilir. Yani rakamın
-            kendisi kadar, neyle kıyaslandığı da önemlidir.
-        </p>
-
-        <p class="article-p">
-            Son olarak sepetin bileşimini incelerim. Hangi kalemler artmış, hangileri
-            gerilemiş? Çünkü ortalama bir rakam, bireysel deneyimi nadiren tam yansıtır.
-        </p>
+        {# Yazi govdesi: admin'de girilen metin, paragraflara cevrilir #}
+        <div class="article-body">
+            {{ post.body|linebreaks }}
+        </div>
 
     </article>
 
