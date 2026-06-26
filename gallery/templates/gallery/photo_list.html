@@ -10,61 +10,70 @@
         <h1 class="page-title">Yolda biriken kareler.</h1>
     </div>
 
-    {# Kategori filtresi (Blog'daki hap deseni) #}
+    {# Kategori filtresi: tiklayinca ?kategori=... ile filtreler #}
     <div class="filter-pills">
-        <a href="#" class="pill-filter is-active">Tümü</a>
-        <a href="#" class="pill-filter">Manzara</a>
-        <a href="#" class="pill-filter">Sokak</a>
-        <a href="#" class="pill-filter">Portre</a>
+        <a href="{% url 'photo_list' %}" class="pill-filter{% if not selected %} is-active{% endif %}">Tümü</a>
+        <a href="?kategori=Manzara" class="pill-filter{% if selected == 'Manzara' %} is-active{% endif %}">Manzara</a>
+        <a href="?kategori=Sokak" class="pill-filter{% if selected == 'Sokak' %} is-active{% endif %}">Sokak</a>
+        <a href="?kategori=Portre" class="pill-filter{% if selected == 'Portre' %} is-active{% endif %}">Portre</a>
     </div>
 
-    {# Masonry grid: degisken yukseklikli fotograflar #}
+    {# Masonry grid: fotograflar veritabanindan; her kart kendi bilgisini data-... ile tasir #}
     <div class="masonry">
-        <div class="masonry-item" style="height:260px;"></div>
-        <div class="masonry-item" style="height:340px;"></div>
-        <div class="masonry-item" style="height:220px;"></div>
-        <div class="masonry-item" style="height:300px;"></div>
-        <div class="masonry-item" style="height:240px;"></div>
-        <div class="masonry-item" style="height:320px;"></div>
-        <div class="masonry-item" style="height:280px;"></div>
-        <div class="masonry-item" style="height:360px;"></div>
-        <div class="masonry-item" style="height:230px;"></div>
+        {% for photo in photos %}
+        <div class="masonry-item"
+             data-image="{{ photo.image.url }}"
+             data-title="{{ photo.title }}"
+             data-category="{{ photo.category }}"
+             data-location="{{ photo.location }}"
+             data-date="{% if photo.taken_at %}{{ photo.taken_at|date:'d.m.Y' }}{% endif %}"
+             data-camera="{{ photo.camera }}"
+             data-lens="{{ photo.lens }}"
+             data-iso="{{ photo.iso }}"
+             data-shutter="{{ photo.shutter_speed }}"
+             data-aperture="{{ photo.aperture }}"
+             data-focal="{{ photo.focal_length }}">
+            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" style="width:100%; display:block; border-radius:4px;">
+        </div>
+        {% empty %}
+        <p>Henüz fotoğraf eklenmedi.</p>
+        {% endfor %}
     </div>
 
 
-    {# Lightbox: normalde gizli; bir foto tiklaninca acilir #}
+    {# Lightbox: tek paylasilan pencere; JS tiklanan fotonun bilgisini doldurur #}
     <div class="lightbox" id="lightbox">
         <button class="lightbox-close" id="lightboxClose">✕</button>
         <div class="lightbox-content">
-            <div class="lightbox-image"></div>
+            <div class="lightbox-image" id="lbImage"></div>
             <div class="lightbox-panel">
-                <p class="lightbox-eyebrow">Fotoğraf</p>
-                <h3 class="lightbox-title">Gün doğarken Göreme</h3>
-                <p class="lightbox-loc">Nevşehir · 14 Nisan 2026</p>
+                <p class="lightbox-eyebrow" id="lbEyebrow">Fotoğraf</p>
+                <h3 class="lightbox-title" id="lbTitle"></h3>
+                <p class="lightbox-loc" id="lbLoc"></p>
                 <div class="exif-grid">
-                    <div class="exif-item">
+                    <div class="exif-item" id="exifCamera">
                         <p class="exif-label">Kamera</p>
-                        <p class="exif-value">Sony A7 III</p>
+                        <p class="exif-value" id="lbCamera"></p>
                     </div>
-                    <div class="exif-item">
+                    <div class="exif-item" id="exifLens">
                         <p class="exif-label">Lens</p>
-                        <p class="exif-value">24-70mm</p>
+                        <p class="exif-value" id="lbLens"></p>
                     </div>
-                    <div class="exif-item">
+                    <div class="exif-item" id="exifIso">
                         <p class="exif-label">ISO</p>
-                        <p class="exif-value">200</p>
+                        <p class="exif-value" id="lbIso"></p>
                     </div>
-                    <div class="exif-item">
+                    <div class="exif-item" id="exifShutter">
                         <p class="exif-label">Enstantane</p>
-                        <p class="exif-value">1/250s</p>
+                        <p class="exif-value" id="lbShutter"></p>
                     </div>
-                    <div class="exif-item">
+                    <div class="exif-item" id="exifAperture">
                         <p class="exif-label">Diyafram</p>
-                        <p class="exif-value">f/2.8</p>
+                        <p class="exif-value" id="lbAperture"></p>
                     </div>
-                    <div class="exif-item">
+                    <div class="exif-item" id="exifFocal">
                         <p class="exif-label">Odak</p>
-                        <p class="exif-value">50mm</p>
+                        <p class="exif-value" id="lbFocal"></p>
                     </div>
                 </div>
                 <p class="lightbox-hint">← → ile gez · ESC ile kapat</p>
@@ -73,37 +82,80 @@
     </div>
 
 
-    
-    {# JavaScript: lightbox ac/kapat davranisi #}
+    {# JavaScript: tiklanan fotonun bilgisini lightbox'a doldur, ac/kapat, ok tuslariyla gez #}
     <script>
-        // Sayfadaki tum fotograflari ve lightbox'i bul
-        const items = document.querySelectorAll('.masonry-item');
+        const items = Array.from(document.querySelectorAll('.masonry-item'));
         const lightbox = document.getElementById('lightbox');
         const closeBtn = document.getElementById('lightboxClose');
+        let current = 0;
 
-        // Her fotografa tiklayinca lightbox'i ac
-        items.forEach(function(item) {
-            item.addEventListener('click', function() {
-                lightbox.classList.add('is-open');
-            });
+        // Bir EXIF hucresini doldur; deger bossa hucreyi gizle
+        function setExif(boxId, valueId, value) {
+            const box = document.getElementById(boxId);
+            const val = document.getElementById(valueId);
+            if (value) {
+                val.textContent = value;
+                box.style.display = '';
+            } else {
+                box.style.display = 'none';
+            }
+        }
+
+        // i numarali fotografi lightbox'ta goster
+        function showPhoto(i) {
+            const d = items[i].dataset;
+
+            const img = document.getElementById('lbImage');
+            img.style.backgroundImage = "url('" + d.image + "')";
+            img.style.backgroundSize = "cover";
+            img.style.backgroundPosition = "center";
+
+            document.getElementById('lbEyebrow').textContent = d.category || 'Fotoğraf';
+            document.getElementById('lbTitle').textContent = d.title;
+
+            // Konum · tarih (dolu olanlari birlestir)
+            const parts = [];
+            if (d.location) parts.push(d.location);
+            if (d.date) parts.push(d.date);
+            document.getElementById('lbLoc').textContent = parts.join(' · ');
+
+            setExif('exifCamera', 'lbCamera', d.camera);
+            setExif('exifLens', 'lbLens', d.lens);
+            setExif('exifIso', 'lbIso', d.iso);
+            setExif('exifShutter', 'lbShutter', d.shutter);
+            setExif('exifAperture', 'lbAperture', d.aperture);
+            setExif('exifFocal', 'lbFocal', d.focal);
+
+            current = i;
+            lightbox.classList.add('is-open');
+        }
+
+        // Her fotografa tiklayinca o fotografi ac
+        items.forEach(function(item, i) {
+            item.addEventListener('click', function() { showPhoto(i); });
         });
 
-        // Kapat butonuna basinca kapat
+        // Kapat butonu
         closeBtn.addEventListener('click', function() {
             lightbox.classList.remove('is-open');
         });
 
-        // Koyu zemine (lightbox'in disina) tiklayinca kapat
+        // Koyu zemine tiklayinca kapat
         lightbox.addEventListener('click', function(event) {
             if (event.target === lightbox) {
                 lightbox.classList.remove('is-open');
             }
         });
 
-        // Klavyede ESC'e basinca kapat
+        // Klavye: ESC kapatir, ok tuslari gezer
         document.addEventListener('keydown', function(event) {
+            if (!lightbox.classList.contains('is-open')) return;
             if (event.key === 'Escape') {
                 lightbox.classList.remove('is-open');
+            } else if (event.key === 'ArrowRight') {
+                showPhoto((current + 1) % items.length);
+            } else if (event.key === 'ArrowLeft') {
+                showPhoto((current - 1 + items.length) % items.length);
             }
         });
     </script>

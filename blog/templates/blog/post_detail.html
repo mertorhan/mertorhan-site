@@ -15,8 +15,8 @@
         <h1 class="article-title">{{ post.title }}</h1>
         <p class="article-byline">Mert Orhan · {{ post.published_at|date:"d.m.Y" }} · {{ post.reading_time }} dk okuma</p>
 
-        {# Kapak gorseli (su an yer tutucu; cover_image alanini ileride ekleyecegiz) #}
-        <div class="article-cover"></div>
+        {# Kapak gorseli: varsa goster, yoksa cizgili yer tutucu #}
+        <div class="article-cover"{% if post.cover_image %} style="background-image:url('{{ post.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
 
         {# Yazi govdesi: once ilk paragraf, sonra (varsa) alinti, sonra geri kalani #}
         <div class="article-body">

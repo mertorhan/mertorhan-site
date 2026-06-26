@@ -20,7 +20,7 @@
     {# ===== Öne çıkan yazı ===== #}
     {% if featured %}
     <a href="{% url 'post_detail' featured.slug %}" class="feature-card">
-        <div class="feature-image"></div>
+        <div class="feature-image"{% if featured.cover_image %} style="background-image:url('{{ featured.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
         <div class="feature-body">
             <p class="card-meta">
                 <span class="meta-tick"></span>
@@ -41,7 +41,7 @@
     <div class="card-grid" style="margin-top:40px;">
         {% for post in posts %}
         <a href="{% url 'post_detail' post.slug %}" class="card">
-            <div class="card-image"></div>
+            <div class="card-image"{% if post.cover_image %} style="background-image:url('{{ post.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
             <div class="card-body">
                 <p class="card-meta">
                     <span class="meta-tick"></span>
