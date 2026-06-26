@@ -25,6 +25,7 @@ class BlogPost(models.Model):
     )
     summary = models.TextField("Özet", blank=True, default="")
     body = models.TextField("İçerik")
+    pullquote = models.CharField("Vurgulu alıntı", max_length=300, blank=True, default="")
     reading_time = models.PositiveIntegerField("Okuma süresi (dk)", default=1)
     is_featured = models.BooleanField("Öne çıkan", default=False)
     is_published = models.BooleanField("Yayında", default=True)

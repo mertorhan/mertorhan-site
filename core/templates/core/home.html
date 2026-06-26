@@ -33,28 +33,22 @@
             <a href="{% url 'post_list' %}" class="ledger-all">Tümü →</a>
         </div>
 
+        {# Ana sayfadaki yazi kartlari: artik veritabanindan (view'deki "posts") geliyor #}
         <div class="card-grid">
-            <a href="{% url 'post_detail' %}" class="card">
+            {% for post in posts %}
+            <a href="{% url 'post_detail' post.slug %}" class="card">
                 <div class="card-image"></div>
                 <div class="card-body">
-                    <p class="card-meta"><span class="meta-tick"></span> Ekonomi · 12 Haz</p>
-                    <h3 class="card-title">Enflasyon verisini okurken nelere dikkat etmeli</h3>
+                    <p class="card-meta">
+                        <span class="meta-tick"></span>
+                        {% if post.category %}{{ post.category }} · {% endif %}{{ post.published_at|date:"d.m.Y" }}
+                    </p>
+                    <h3 class="card-title">{{ post.title }}</h3>
                 </div>
             </a>
-            <a href="{% url 'post_detail' %}" class="card">
-                <div class="card-image"></div>
-                <div class="card-body">
-                    <p class="card-meta"><span class="meta-tick"></span> Enerji · 8 Haz</p>
-                    <h3 class="card-title">Yenilenebilir yatırımı neden bu kadar hızlandı</h3>
-                </div>
-            </a>
-            <a href="{% url 'post_detail' %}" class="card">
-                <div class="card-image"></div>
-                <div class="card-body">
-                    <p class="card-meta"><span class="meta-tick"></span> Tarih · 2 Haz</p>
-                    <h3 class="card-title">Bir şehrin hafızası: sokak isimleri ne anlatır</h3>
-                </div>
-            </a>
+            {% empty %}
+            <p>Henüz yazı eklenmedi.</p>
+            {% endfor %}
         </div>
     </section>
 
@@ -109,7 +103,6 @@
             <a href="{% url 'photo_list' %}" class="gallery-item"></a>
         </div>
     </section>
-
 
 
 

@@ -992,6 +992,7 @@ main {
     line-height: 1.8;
     color: var(--body);
     margin-bottom: 24px;
+    text-indent: 2em;
 }
 
 /* ============================================
@@ -1005,7 +1006,7 @@ main {
     color: var(--ink);
     border-left: 3px solid var(--terracotta);   /* sol terracotta kenar */
     padding-left: 24px;
-    margin: 36px 0;
+    margin: 36px 0 10px;
 }
 
 

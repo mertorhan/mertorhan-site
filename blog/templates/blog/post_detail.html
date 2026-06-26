@@ -18,9 +18,15 @@
         {# Kapak gorseli (su an yer tutucu; cover_image alanini ileride ekleyecegiz) #}
         <div class="article-cover"></div>
 
-        {# Yazi govdesi: admin'de girilen metin, paragraflara cevrilir #}
+        {# Yazi govdesi: once ilk paragraf, sonra (varsa) alinti, sonra geri kalani #}
         <div class="article-body">
-            {{ post.body|linebreaks }}
+            {{ first_part|linebreaks }}
+
+            {% if post.pullquote %}
+            <blockquote class="pullquote">{{ post.pullquote }}</blockquote>
+            {% endif %}
+
+            {{ rest_part|linebreaks }}
         </div>
 
     </article>

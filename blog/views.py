@@ -31,4 +31,18 @@ def post_list(request):
 
 def post_detail(request, slug):
     post = get_object_or_404(BlogPost, slug=slug, is_published=True)
-    return render(request, "blog/post_detail.html", {"post": post})
+
+    # Once satir sonlarini tek tipe cevir (\r\n -> \n),
+    # cunku form metni Windows tarzi \r\n ile gelir; yoksa split bulamaz.
+    body = post.body.replace("\r\n", "\n").replace("\r", "\n")
+
+    # Ilk paragraf + geri kalani (alintiyi aralarina koymak icin)
+    parts = body.split("\n\n", 1)
+    first_part = parts[0]
+    rest_part = parts[1] if len(parts) > 1 else ""
+
+    return render(request, "blog/post_detail.html", {
+        "post": post,
+        "first_part": first_part,
+        "rest_part": rest_part,
+    })
