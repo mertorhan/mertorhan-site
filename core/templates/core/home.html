@@ -3,12 +3,16 @@
 {% block title %}Ana Sayfa · Mert Orhan{% endblock %}
 
 {% block content %}
-    <a href="{% url 'guide_detail' %}" class="hero">
+
+    {# Hero: en one cikan gezi (hero_guide). Gezi yoksa hero gizlenir. #}
+    {% if hero_guide %}
+    <a href="{% url 'guide_detail' hero_guide.slug %}" class="hero">
         <div class="hero-overlay">
-            <span class="pill">Öne çıkan · Rota</span>
-            <h2 class="hero-title">Kapadokya'da 2 Gün</h2>
+            <span class="pill">Öne çıkan · {{ hero_guide.get_entry_type_display }}</span>
+            <h2 class="hero-title">{{ hero_guide.title }}</h2>
         </div>
     </a>
+    {% endif %}
 
 
     <section class="identity">
@@ -61,28 +65,22 @@
             <a href="{% url 'guide_list' %}" class="ledger-all">Tümü →</a>
         </div>
 
+        {# Rota kartlari: artik veritabanindan (view'deki "guides") geliyor #}
         <div class="card-grid">
-            <a href="{% url 'guide_detail' %}" class="card">
-                <div class="card-image"></div>
+            {% for guide in guides %}
+            <a href="{% url 'guide_detail' guide.slug %}" class="card">
+                <div class="card-image"{% if guide.cover_image %} style="background-image:url('{{ guide.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
                 <div class="card-body">
-                    <p class="card-meta"><span class="meta-tick"></span> Nevşehir · Rota</p>
-                    <h3 class="card-title">Kapadokya'da 2 Gün</h3>
+                    <p class="card-meta">
+                        <span class="meta-tick"></span>
+                        {% if guide.city %}{{ guide.city }} · {% endif %}{{ guide.get_entry_type_display }}
+                    </p>
+                    <h3 class="card-title">{{ guide.title }}</h3>
                 </div>
             </a>
-            <a href="{% url 'guide_detail' %}" class="card">
-                <div class="card-image"></div>
-                <div class="card-body">
-                    <p class="card-meta"><span class="meta-tick"></span> İzmir · Mekan</p>
-                    <h3 class="card-title">Alaçatı'da bir hafta sonu</h3>
-                </div>
-            </a>
-            <a href="{% url 'guide_detail' %}" class="card">
-                <div class="card-image"></div>
-                <div class="card-body">
-                    <p class="card-meta"><span class="meta-tick"></span> Artvin · Rota</p>
-                    <h3 class="card-title">Karadeniz yaylalarında 3 gün</h3>
-                </div>
-            </a>
+            {% empty %}
+            <p>Henüz rota eklenmedi.</p>
+            {% endfor %}
         </div>
     </section>
 
