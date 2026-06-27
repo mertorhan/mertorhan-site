@@ -1,63 +1,81 @@
 {% extends "base.html" %}
 
-{% block title %}Kapadokya'da 2 Gün · Mert Orhan{% endblock %}
+{% block title %}{{ guide.title }} · Mert Orhan{% endblock %}
 
 {% block content %}
 
-    {# Hero: tam genislik gorsel + rozet + baslik + kaydet/paylas #}
-    <div class="detail-hero">
+    {# Hero: tam genislik gorsel + rozet + baslik + vurucu cumle + kaydet/paylas #}
+    <div class="detail-hero"{% if guide.cover_image %} style="background-image:url('{{ guide.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}>
         <div class="detail-hero-actions">
             <a href="#" class="hero-btn">♡ Kaydet</a>
             <a href="#" class="hero-btn">↗ Paylaş</a>
         </div>
         <div class="detail-hero-overlay">
-            <span class="badge badge-rota">Rota</span>
-            <h1 class="detail-title">Kapadokya'da 2 Gün</h1>
-            <p class="detail-sub">Nevşehir · 6 Durak</p>
+            {% if guide.entry_type == "rota" %}
+                <span class="badge badge-rota">Rota</span>
+            {% else %}
+                <span class="badge badge-mekan">Mekan</span>
+            {% endif %}
+            <h1 class="detail-title">{{ guide.title }}</h1>
+            {% if guide.highlight %}
+            <p class="detail-highlight">{{ guide.highlight }}</p>
+            {% endif %}
+            <p class="detail-sub">
+                {% if guide.city %}{{ guide.city }}{% endif %}{% if guide.entry_type == "rota" %} · {{ stops.count }} Durak{% endif %}
+            </p>
         </div>
     </div>
 
-    {# "Bir Bakista" serit: 5 sutunlu ozet, hero'ya bindirmeli #}
+    {# "Bir Bakista" serit: ozet bilgiler, hero'ya bindirmeli #}
     <div class="glance">
+        {% if guide.duration %}
         <div class="glance-item">
             <p class="glance-label">Süre</p>
-            <p class="glance-value">2 gün</p>
+            <p class="glance-value">{{ guide.duration }}</p>
         </div>
+        {% endif %}
+        {% if guide.budget %}
         <div class="glance-item">
             <p class="glance-label">Bütçe</p>
-            <p class="glance-value">₺₺</p>
+            <p class="glance-value">{{ guide.budget }}</p>
         </div>
+        {% endif %}
+        {% if guide.best_time %}
         <div class="glance-item">
             <p class="glance-label">En iyi zaman</p>
-            <p class="glance-value">İlkbahar</p>
+            <p class="glance-value">{{ guide.get_best_time_display }}</p>
         </div>
+        {% endif %}
+        {% if guide.suitable_for %}
         <div class="glance-item">
             <p class="glance-label">Kime uygun</p>
-            <p class="glance-value">Çift</p>
+            <p class="glance-value">{{ guide.get_suitable_for_display }}</p>
         </div>
+        {% endif %}
+        {% if guide.entry_type == "rota" %}
         <div class="glance-item">
             <p class="glance-label">Durak</p>
-            <p class="glance-value">6</p>
+            <p class="glance-value">{{ stops.count }}</p>
         </div>
+        {% endif %}
     </div>
 
 
 
 {# Genel bakis #}
+    {% if guide.overview %}
     <section class="detail-section">
         <div class="ledger-head">
             <span class="ledger-tick"></span>
             <h2 class="ledger-title">Genel Bakış</h2>
             <span class="ledger-line"></span>
         </div>
-        <p class="detail-text">
-            Kapadokya'yı iki güne sığdırmak mümkün — yeter ki saatleri doğru kullan.
-            Sabahı balon ve vadilere, öğleyi yerel sofralara, akşamı ise gün batımına
-            ayırdığın dengeli bir plan, bölgeyi koşturmadan görmeni sağlıyor.
-        </p>
+        <div class="detail-text article-body">{{ guide.overview|linebreaks }}</div>
     </section>
+    {% endif %}
 
-    {# Yeme-Icme: iki kutu #}
+    {# Yeme-Icme: yalnizca "yeme-icme" turundeki duraklar (baslik her zaman kalir) #}
+    {% if guide.entry_type == "rota" %}
     <section class="detail-section">
         <div class="ledger-head">
             <span class="ledger-tick"></span>
@@ -65,18 +83,23 @@
             <span class="ledger-line"></span>
         </div>
         <div class="food-grid">
-            <div class="food-box">
-                <h3 class="food-name">Topdeck Cave</h3>
-                <p class="food-meta">₺₺ · Ev Yemeği</p>
-            </div>
-            <div class="food-box">
-                <h3 class="food-name">Seki Restaurant</h3>
-                <p class="food-meta">₺₺₺ · Manzara</p>
-            </div>
+            {% for stop in stops %}
+                {% if stop.point_type == "yeme-icme" %}
+                <div class="food-box">
+                    <h3 class="food-name">{{ stop.name }}</h3>
+                    {% if stop.cost %}<p class="food-meta">{{ stop.cost }}</p>{% endif %}
+                </div>
+                {% endif %}
+            {% endfor %}
+            {% if not stops %}
+            <p>Henüz durak eklenmedi.</p>
+            {% endif %}
         </div>
     </section>
+    {% endif %}
 
-    {# Rota - Adim Adim: sol numarali timeline + sag sticky harita #}
+    {# Rota - Adim Adim: yalnizca "rota" tipinde gosterilir #}
+    {% if guide.entry_type == "rota" %}
     <section class="detail-section">
         <div class="ledger-head">
             <span class="ledger-tick"></span>
@@ -85,82 +108,60 @@
         </div>
 
         <div class="route-layout">
-            {# SOL: numarali zaman cizelgesi #}
+            {# SOL: numarali zaman cizelgesi (veritabanindaki duraklar) #}
             <div class="route-steps">
+                {% for stop in stops %}
                 <div class="route-step">
-                    <div class="route-num">1</div>
+                    <div class="route-num">{{ stop.order }}</div>
                     <div class="route-info">
-                        <p class="route-time">1. Gün · 05:30 · Gezilecek</p>
-                        <h3 class="route-name">Balon turu · Göreme</h3>
-                        <p class="route-desc">Gün doğmadan kalkış; en iyi ışık ilk dakikada.</p>
+                        <p class="route-time">
+                            {{ stop.get_point_type_display }}{% if stop.hours %} · {{ stop.hours }}{% endif %}
+                        </p>
+                        <h3 class="route-name">{{ stop.name }}</h3>
+                        {% if stop.description %}<p class="route-desc">{{ stop.description }}</p>{% endif %}
                     </div>
                 </div>
-                <div class="route-step">
-                    <div class="route-num">2</div>
-                    <div class="route-info">
-                        <p class="route-time">1. Gün · 13:00 · Yeme-İçme</p>
-                        <h3 class="route-name">Öğle · Topdeck Cave</h3>
-                        <p class="route-desc">Rezervasyon şart; testi kebabı için erken söyle.</p>
-                    </div>
-                </div>
-                <div class="route-step">
-                    <div class="route-num">3</div>
-                    <div class="route-info">
-                        <p class="route-time">2. Gün · 09:00 · Gezilecek</p>
-                        <h3 class="route-name">Uçhisar Kalesi</h3>
-                        <p class="route-desc">Panoramik manzara; sabah kalabalık olmadan çık.</p>
-                    </div>
-                </div>
+                {% empty %}
+                <p>Henüz durak eklenmedi.</p>
+                {% endfor %}
             </div>
 
-            {# SAG: sticky harita yer tutucu #}
+            {# SAG: sticky harita yer tutucu (Faz 1'de bos) #}
             <div class="route-map"></div>
         </div>
     </section>
+    {% endif %}
 
-    {# Durust Degerlendirme: terracotta kutu #}
+    {# Durust Degerlendirme: terracotta kutu (varsa) #}
+    {% if guide.verdict %}
     <section class="detail-section">
         <div class="verdict">
             <p class="verdict-label">Dürüst Değerlendirme</p>
-            <p class="verdict-text">
-                "Balon turu pahalı ama bir kez yapılmaya değer. Geri kalan her şeyi
-                yürüyerek ve toplu taşımayla halledebilirsin — araç kiralamak şart değil."
-            </p>
+            <p class="verdict-text">{{ guide.verdict|linebreaks }}</p>
         </div>
     </section>
+    {% endif %}
 
-    {# Benzer rotalar: 3'lu kart grid (yeniden kullanim) #}
+    {# Pratik bilgi (varsa) #}
+    {% if guide.practical_info %}
+    <section class="detail-section">
+        <div class="ledger-head">
+            <span class="ledger-tick"></span>
+            <h2 class="ledger-title">Pratik Bilgi</h2>
+            <span class="ledger-line"></span>
+        </div>
+        <div class="detail-text article-body">{{ guide.practical_info|linebreaks }}</div>
+    </section>
+    {% endif %}
+
+    {# Diger geziler (eski statik "Benzer rotalar" kartlari kaldirildi; NoReverseMatch'i onler) #}
     <section class="section">
         <div class="ledger-head">
             <span class="ledger-tick"></span>
-            <h2 class="ledger-title">Benzer rotalar</h2>
+            <h2 class="ledger-title">Diğer geziler</h2>
             <span class="ledger-line"></span>
             <a href="{% url 'guide_list' %}" class="ledger-all">Tümü →</a>
-        </div>
-        <div class="card-grid">
-            <a href="{% url 'guide_detail' %}" class="card">
-                <div class="card-image"><span class="badge badge-rota">Rota</span></div>
-                <div class="card-body">
-                    <p class="card-meta"><span class="meta-tick"></span> İzmir · 4 Durak</p>
-                    <h3 class="card-title">Şirince & Tire turu</h3>
-                </div>
-            </a>
-            <a href="{% url 'guide_detail' %}" class="card">
-                <div class="card-image"><span class="badge badge-rota">Rota</span></div>
-                <div class="card-body">
-                    <p class="card-meta"><span class="meta-tick"></span> Muğla · 5 Durak</p>
-                    <h3 class="card-title">Datça yarımadası</h3>
-                </div>
-            </a>
-            <a href="{% url 'guide_detail' %}" class="card">
-                <div class="card-image"><span class="badge badge-mekan">Mekan</span></div>
-                <div class="card-body">
-                    <p class="card-meta"><span class="meta-tick"></span> Bolu · Mekan</p>
-                    <h3 class="card-title">Abant göl kenarı</h3>
-                </div>
-            </a>
         </div>
     </section>
 
 {% endblock %}
-

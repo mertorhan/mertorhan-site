@@ -1373,3 +1373,27 @@ main {
     color: rgba(255, 255, 255, 0.45);
     margin-top: 28px;
 }
+
+/* ============================================
+   GEZİ DETAY — vurucu cümle (hero) + genel bakış paragraf
+   ============================================ */
+
+/* Hero'daki vurucu cümle (highlight) — baslik altinda italik */
+.detail-highlight {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-style: italic;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, .92);
+    margin: 8px 0 12px;
+    max-width: 600px;
+}
+
+/* Genel Bakis / Pratik Bilgi paragraflari: arasi bosluk + ilk satir girintisi */
+.detail-text.article-body p {
+    font-size: 17px;
+    line-height: 1.8;
+    color: var(--body);
+    margin-bottom: 20px;
+    text-indent: 2em;
+}
