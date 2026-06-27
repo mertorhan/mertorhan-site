@@ -6,7 +6,7 @@
 
     {# Hero: en one cikan gezi (hero_guide). Gezi yoksa hero gizlenir. #}
     {% if hero_guide %}
-    <a href="{% url 'guide_detail' hero_guide.slug %}" class="hero">
+    <a href="{% url 'guide_detail' hero_guide.slug %}" class="hero"{% if hero_guide.cover_image %} style="background-image:url('{{ hero_guide.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}>
         <div class="hero-overlay">
             <span class="pill">Öne çıkan · {{ hero_guide.get_entry_type_display }}</span>
             <h2 class="hero-title">{{ hero_guide.title }}</h2>
@@ -15,11 +15,12 @@
     {% endif %}
 
 
+    {# Kimlik bandi: foto + slogan + unvan artik Profil modelinden #}
     <section class="identity">
-        <div class="identity-photo"></div>
+        <div class="identity-photo"{% if profile.photo %} style="background-image:url('{{ profile.photo.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
         <div class="identity-text">
-            <h3 class="identity-name">Ben Mert — işi göstererek anlatırım.</h3>
-            <p class="identity-role">İş Analisti & Product Owner</p>
+            <h3 class="identity-name">{% if profile.tagline %}{{ profile.tagline }}{% else %}Ben Mert — işi göstererek anlatırım.{% endif %}</h3>
+            <p class="identity-role">{% if profile.role %}{{ profile.role }}{% else %}İş Analisti & Product Owner{% endif %}</p>
             <div class="identity-status">
                 <span class="status-dot"></span> Yeni projelere açık
                 <span class="status-dot"></span> İçerik üretiyor
@@ -37,7 +38,7 @@
             <a href="{% url 'post_list' %}" class="ledger-all">Tümü →</a>
         </div>
 
-        {# Ana sayfadaki yazi kartlari: artik veritabanindan (view'deki "posts") geliyor #}
+        {# Ana sayfadaki yazi kartlari: veritabanindan (view'deki "posts") #}
         <div class="card-grid">
             {% for post in posts %}
             <a href="{% url 'post_detail' post.slug %}" class="card">
@@ -65,7 +66,7 @@
             <a href="{% url 'guide_list' %}" class="ledger-all">Tümü →</a>
         </div>
 
-        {# Rota kartlari: artik veritabanindan (view'deki "guides") geliyor #}
+        {# Rota kartlari: veritabanindan (view'deki "guides") #}
         <div class="card-grid">
             {% for guide in guides %}
             <a href="{% url 'guide_detail' guide.slug %}" class="card">
@@ -94,11 +95,16 @@
             <a href="{% url 'photo_list' %}" class="ledger-all">Tümü →</a>
         </div>
 
+        {# Galeri seridi: artik veritabanindan (view'deki "gallery_photos") #}
         <div class="gallery-strip">
+            {% for photo in gallery_photos %}
+            <a href="{% url 'photo_list' %}" class="gallery-item"{% if photo.image %} style="background-image:url('{{ photo.image.url }}'); background-size:cover; background-position:center;"{% endif %}></a>
+            {% empty %}
             <a href="{% url 'photo_list' %}" class="gallery-item"></a>
             <a href="{% url 'photo_list' %}" class="gallery-item"></a>
             <a href="{% url 'photo_list' %}" class="gallery-item"></a>
             <a href="{% url 'photo_list' %}" class="gallery-item"></a>
+            {% endfor %}
         </div>
     </section>
 

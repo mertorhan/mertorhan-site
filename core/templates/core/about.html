@@ -7,15 +7,15 @@
     {# Iki kolon: sol sticky profil, sag icerik #}
     <div class="about-layout">
 
-        {# SOL KOLON: sticky profil karti #}
+        {# SOL KOLON: sticky profil karti (Profil modelinden) #}
         <aside class="profile-card">
-            <div class="profile-photo"></div>
-            <h2 class="profile-name">Mert Orhan</h2>
-            <p class="profile-role">İş Analisti & Product Owner</p>
+            <div class="profile-photo"{% if profile.photo %} style="background-image:url('{{ profile.photo.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
+            <h2 class="profile-name">{{ profile.full_name }}</h2>
+            {% if profile.role %}<p class="profile-role">{{ profile.role }}</p>{% endif %}
             <div class="profile-actions">
-                <a href="#" class="btn btn-primary">in · LinkedIn</a>
-                <a href="#" class="btn btn-outline">E-posta</a>
-                <a href="#" class="btn btn-outline">CV (PDF)</a>
+                {% if profile.linkedin_url %}<a href="{{ profile.linkedin_url }}" class="btn btn-primary">in · LinkedIn</a>{% endif %}
+                {% if profile.email %}<a href="mailto:{{ profile.email }}" class="btn btn-outline">E-posta</a>{% endif %}
+                {% if profile.cv %}<a href="{{ profile.cv.url }}" class="btn btn-outline">CV (PDF)</a>{% endif %}
             </div>
         </aside>
 
@@ -24,17 +24,14 @@
 
             <div class="page-head">
                 <p class="eyebrow"><span class="eyebrow-tick"></span> Hakkında</p>
-                <h1 class="page-title">İnsanları dinleyip, karmaşığı sadeleştirmeyi severim.</h1>
+                <h1 class="page-title">{% if profile.about_title %}{{ profile.about_title }}{% else %}Hakkımda{% endif %}</h1>
             </div>
 
-            <p class="about-bio">
-                On yılı aşkın süredir iş analizi ve ürün yönetimi yapıyorum. İşin özünde
-                hep aynı şey var: bir ihtiyacı doğru anlamak ve onu net, çalışır bir çözüme
-                dönüştürmek. Aynı merakı yola çıktığımda da taşıyorum — gördüğüm yerleri
-                fotoğraflar, dürüst rotalar olarak buraya yazarım.
-            </p>
+            {% if profile.bio %}
+            <div class="about-bio">{{ profile.bio|linebreaks }}</div>
+            {% endif %}
 
-            {# Deneyim: ledger baslik + timeline #}
+            {# Deneyim: ledger baslik + timeline (Profil'e bagli Experience kayitlari) #}
             <section class="section">
                 <div class="ledger-head">
                     <span class="ledger-tick"></span>
@@ -43,33 +40,19 @@
                 </div>
 
                 <div class="timeline">
+                    {% for exp in profile.experiences.all %}
                     <div class="timeline-item">
-                        <p class="timeline-date">2022 — Bugün</p>
-                        <h3 class="timeline-role">Product Owner · [Şirket]</h3>
-                        <p class="timeline-desc">
-                            Ürün yol haritası, paydaş yönetimi ve ekip ritmi; ölçülebilir
-                            sonuçlara odaklı çalışma.
-                        </p>
+                        <p class="timeline-date">{{ exp.date_range }}</p>
+                        <h3 class="timeline-role">{{ exp.role }}</h3>
+                        {% if exp.description %}<p class="timeline-desc">{{ exp.description }}</p>{% endif %}
                     </div>
-                    <div class="timeline-item">
-                        <p class="timeline-date">2018 — 2022</p>
-                        <h3 class="timeline-role">İş Analisti · [Şirket]</h3>
-                        <p class="timeline-desc">
-                            Gereksinim analizi, süreç tasarımı ve geliştirme ekipleriyle
-                            köprü kurma.
-                        </p>
-                    </div>
-                    <div class="timeline-item">
-                        <p class="timeline-date">2014 — 2018</p>
-                        <h3 class="timeline-role">Junior Analist · [Şirket]</h3>
-                        <p class="timeline-desc">
-                            Veriyle ilk tanışma; raporlama ve dokümantasyon temelleri.
-                        </p>
-                    </div>
+                    {% empty %}
+                    <p>Henüz deneyim eklenmedi.</p>
+                    {% endfor %}
                 </div>
             </section>
 
-            {# Iletisim: ledger baslik + form #}
+            {# Iletisim: ledger baslik + form (simdilik statik) #}
             <section class="section">
                 <div class="ledger-head">
                     <span class="ledger-tick"></span>
