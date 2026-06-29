@@ -1397,3 +1397,48 @@ main {
     margin-bottom: 20px;
     text-indent: 2em;
 }
+
+/* ============================================
+   34. İLETİŞİM FORMU — HATA & POP-UP
+   ============================================ */
+
+/* Bos birakilan alanin kirmizi cercevesi (JS 'input-error' ekler) */
+.form-input.input-error {
+    border-color: #c0392b;            /* net kirmizi */
+    background-color: #faeae6;        /* cok hafif kirmizi zemin */
+}
+/* Hatali alana tiklayinca da kirmizi kalsin (focus'u ezsin) */
+.form-input.input-error:focus {
+    outline: none;
+    border-color: #c0392b;
+}
+
+/* Basari pop-up'i: formun ortasinda belirir (JS gosterir) */
+.contact-popup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--green);          /* basari = yesil */
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 16px 28px;
+    border-radius: 999px;
+    box-shadow: 0 10px 30px rgba(35, 32, 25, 0.25);
+    white-space: nowrap;
+    z-index: 10;
+    animation: popup-in 0.3s ease both; /* yumusak belirme */
+}
+
+/* Pop-up'in belirme animasyonu */
+@keyframes popup-in {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -42%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}

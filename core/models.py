@@ -44,3 +44,19 @@ class Experience(models.Model):
 
     def __str__(self):
         return self.role
+    
+
+class ContactMessage(models.Model):
+    name = models.CharField("Ad Soyad", max_length=120)
+    email = models.EmailField("E-posta")
+    message = models.TextField("Mesaj")
+    created_at = models.DateTimeField("Gönderilme tarihi", auto_now_add=True)
+    is_read = models.BooleanField("Okundu", default=False)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "İletişim Mesajı"
+        verbose_name_plural = "İletişim Mesajları"
+
+    def __str__(self):
+        return f"{self.name} — {self.created_at:%d.%m.%Y %H:%M}"

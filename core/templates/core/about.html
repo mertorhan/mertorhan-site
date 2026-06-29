@@ -52,7 +52,7 @@
                 </div>
             </section>
 
-            {# Iletisim: ledger baslik + form (simdilik statik) #}
+            {# Iletisim: ledger baslik + form #}
             <section class="section">
                 <div class="ledger-head">
                     <span class="ledger-tick"></span>
@@ -60,30 +60,88 @@
                     <span class="ledger-line"></span>
                 </div>
 
-                <form class="contact-form">
+                {# Form: position:relative -> pop-up'i ortalamak icin #}
+                {# data-sent -> sunucudan gelen "gonderildi mi?" bilgisini buraya koyduk #}
+                <form class="contact-form" id="contact-form" method="post" novalidate
+                      style="position:relative;"
+                      data-sent="{% if sent %}true{% else %}false{% endif %}">
+                    {% csrf_token %}
                     <div class="form-row">
                         <div class="form-field">
                             <label class="form-label">Ad Soyad</label>
-                            <input type="text" class="form-input" placeholder="Adınız">
+                            {{ form.name }}
                         </div>
                         <div class="form-field">
                             <label class="form-label">E-posta</label>
-                            <input type="email" class="form-input" placeholder="ornek@eposta.com">
+                            {{ form.email }}
                         </div>
                     </div>
                     <div class="form-field">
                         <label class="form-label">Mesaj</label>
-                        <textarea class="form-input form-textarea" placeholder="Mesajınız..."></textarea>
+                        {{ form.message }}
                     </div>
                     <p class="form-kvkk">
                         Gönderdiğinizde, mesajınızın size dönüş yapmak amacıyla saklanmasını
                         kabul etmiş olursunuz.
                     </p>
-                    <button type="button" class="btn btn-primary btn-inline">Gönder →</button>
+                    <button type="submit" class="btn btn-primary btn-inline">Gönder →</button>
+
+                    {# Basari pop-up'i: normalde gizli, JS gosterir #}
+                    <div id="contact-popup" class="contact-popup" style="display:none;">
+                        Mesajınız iletildi, teşekkürler!
+                    </div>
                 </form>
             </section>
 
         </div>
     </div>
+
+    <script>
+        (function () {
+            var form = document.getElementById("contact-form");
+            if (!form) return;
+
+            // Sunucudan gelen bilgi artik formun data-sent ozelliginde -> temiz JS
+            var sent = form.dataset.sent === "true";
+
+            // 1) Gonder'e basildiginda: bos alanlari kirmizi cerceveyle isaretle
+            form.addEventListener("submit", function (e) {
+                var fields = form.querySelectorAll(".form-input");
+                var hasEmpty = false;
+
+                fields.forEach(function (field) {
+                    if (field.value.trim() === "") {
+                        field.classList.add("input-error");  // kirmizi cerceve
+                        hasEmpty = true;
+                    } else {
+                        field.classList.remove("input-error");
+                    }
+                });
+
+                // Bos alan varsa formu gondermeyi durdur
+                if (hasEmpty) {
+                    e.preventDefault();
+                }
+            });
+
+            // 2) Kullanici bir alana yazmaya baslayinca kirmizi cerceveyi kaldir
+            form.querySelectorAll(".form-input").forEach(function (field) {
+                field.addEventListener("input", function () {
+                    field.classList.remove("input-error");
+                });
+            });
+
+            // 3) Sunucu "gonderildi" dediyse pop-up'i goster, 3.5 sn sonra gizle
+            if (sent) {
+                var popup = document.getElementById("contact-popup");
+                if (popup) {
+                    popup.style.display = "block";
+                    setTimeout(function () {
+                        popup.style.display = "none";
+                    }, 3500);
+                }
+            }
+        })();
+    </script>
 
 {% endblock %}

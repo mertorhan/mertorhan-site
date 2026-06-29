@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from blog.models import BlogPost
 from guide.models import Guide
 from gallery.models import Photo
 from .models import Profile
+from .forms import ContactForm
 
 
 def home(request):
@@ -37,4 +38,23 @@ def home(request):
 def about(request):
     # Hakkında sayfası tek Profil kaydından beslenir
     profile = Profile.objects.first()
-    return render(request, "core/about.html", {"profile": profile})
+
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()                       # mesajı veritabanına kaydet
+            # PRG: kaydettikten sonra temiz bir sayfaya yönlendir.
+            # ?sent=1 -> yönlendirilen sayfada pop-up göstermek için işaret
+            return redirect("/hakkinda/?sent=1")
+        # form geçersizse: asagiya dusup hatalarla birlikte formu geri gosteririz
+    else:
+        form = ContactForm()
+
+    # "sent" artik POST'tan degil, adresteki ?sent=1'den okunuyor
+    sent = request.GET.get("sent") == "1"
+
+    return render(request, "core/about.html", {
+        "profile": profile,
+        "form": form,
+        "sent": sent,
+    })
