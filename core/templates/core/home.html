@@ -28,14 +28,9 @@
             <p class="identity-tagline">Karmaşık problemlerle uğraşmayı, onları çözüp dijital ürünlere ve süreçlere dönüştürmeyi seven; dünyayı fotoğraflayarak anlamaya çalışan biri.</p>
             {% endif %}
 
-            {% if profile.role %}
             <div class="identity-chips">
-                {% for chip in profile.role|split_chips %}<span class="chip">{{ chip }}</span>{% endfor %}
-            </div>
-            {% endif %}
-
-            <div class="identity-status">
-                <span class="status-dot"></span> Yeni projelere açık
+                {% if profile.role %}{% for chip in profile.role|split_chips %}<span class="chip">{{ chip }}</span>{% endfor %}{% endif %}
+                <span class="chip">Yeni projelere açık</span>
             </div>
 
             <a href="{% url 'about' %}" class="identity-link">Hakkımda →</a>

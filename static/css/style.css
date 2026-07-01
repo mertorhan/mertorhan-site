@@ -1541,3 +1541,53 @@ main {
 .exp-text {
     margin-bottom: 6px;
 }
+
+
+/* ============================================
+   FORMAT DÜZELTMELERİ (2. tur)
+   ============================================ */
+
+/* [1] Tanım cümlesi tek satır — ortadan bölünmesin */
+.identity-tagline {
+    max-width: none;
+}
+
+/* [2] Kimlik çipleri: yeşil tonlu + başında nokta (durum çipiyle aynı dil) */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(94, 139, 90, 0.12);
+    border: 1px solid rgba(94, 139, 90, 0.35);
+    color: #4a6b47;
+}
+.chip::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+/* [3] Durum çipi kendi satırında; "Hakkımda" linki en altta tek başına */
+.identity-status {
+    display: flex;
+    width: fit-content;
+}
+.identity-link {
+    display: inline-block;
+    margin-top: 6px;
+}
+
+/* [5] Hakkımda paragrafları: her paragrafın ilk satırı içeriden başlasın */
+.about-bio p {
+    text-indent: 1.6em;
+    margin-bottom: 0.7em;
+}
+
+/* [6] Hakkımda metni iki yana yaslı (justify) */
+.about-bio {
+    text-align: justify;
+}
