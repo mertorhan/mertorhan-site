@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load experience_extras %}
 
 {% block title %}Ana Sayfa · Mert Orhan{% endblock %}
 
@@ -15,16 +16,28 @@
     {% endif %}
 
 
-    {# Kimlik bandi: foto + slogan + unvan artik Profil modelinden #}
+    {# Kimlik bandi: isim (buyuk baslik) + tanim cumlesi + kimlik cipleri + durum #}
     <section class="identity">
         <div class="identity-photo"{% if profile.photo %} style="background-image:url('{{ profile.photo.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
         <div class="identity-text">
-            <h3 class="identity-name">{% if profile.tagline %}{{ profile.tagline }}{% else %}Ben Mert — işi göstererek anlatırım.{% endif %}</h3>
-            <p class="identity-role">{% if profile.role %}{{ profile.role }}{% else %}İş Analisti & Product Owner{% endif %}</p>
+            <h3 class="identity-name">{{ profile.full_name|default:"Mert Orhan" }}</h3>
+
+            {% if profile.tagline %}
+            <p class="identity-tagline">{{ profile.tagline }}</p>
+            {% else %}
+            <p class="identity-tagline">Karmaşık problemlerle uğraşmayı, onları çözüp dijital ürünlere ve süreçlere dönüştürmeyi seven; dünyayı fotoğraflayarak anlamaya çalışan biri.</p>
+            {% endif %}
+
+            {% if profile.role %}
+            <div class="identity-chips">
+                {% for chip in profile.role|split_chips %}<span class="chip">{{ chip }}</span>{% endfor %}
+            </div>
+            {% endif %}
+
             <div class="identity-status">
                 <span class="status-dot"></span> Yeni projelere açık
-                <span class="status-dot"></span> İçerik üretiyor
             </div>
+
             <a href="{% url 'about' %}" class="identity-link">Hakkımda →</a>
         </div>
     </section>

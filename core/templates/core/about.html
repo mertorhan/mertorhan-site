@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load experience_extras %}
 
 {% block title %}Hakkında · Mert Orhan{% endblock %}
 
@@ -44,7 +45,7 @@
                     <div class="timeline-item">
                         <p class="timeline-date">{{ exp.date_range }}</p>
                         <h3 class="timeline-role">{{ exp.role }}</h3>
-                        {% if exp.description %}<p class="timeline-desc">{{ exp.description }}</p>{% endif %}
+                        {% if exp.description %}<div class="timeline-desc">{{ exp.description|experience_body }}</div>{% endif %}
                     </div>
                     {% empty %}
                     <p>Henüz deneyim eklenmedi.</p>
