@@ -7,8 +7,7 @@
     {# Hero: tam genislik gorsel + rozet + baslik + vurucu cumle + kaydet/paylas #}
     <div class="detail-hero"{% if guide.cover_image %} style="background-image:url('{{ guide.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}>
         <div class="detail-hero-actions">
-            <a href="#" class="hero-btn">♡ Kaydet</a>
-            <a href="#" class="hero-btn">↗ Paylaş</a>
+            <a href="#" class="hero-btn js-share">↗ Paylaş</a>
         </div>
         <div class="detail-hero-overlay">
             {% if guide.entry_type == "rota" %}

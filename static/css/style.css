@@ -602,7 +602,6 @@ main {
     font-size: 17px;
     color: var(--secondary);
     line-height: 1.7;
-    max-width: 560px;       /* cok uzamasin, okunakli kalsin */
     margin-top: 14px;
 }
 
@@ -1590,4 +1589,53 @@ main {
 /* [6] Hakkımda metni iki yana yaslı (justify) */
 .about-bio {
     text-align: justify;
+}
+
+
+/* #2 Hakkında sol kolon: statüler alt alta + terracotta bullet */
+.profile-role-list {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+}
+.profile-role-list li {
+    position: relative;
+    padding-left: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--terracotta);
+    line-height: 1.9;
+}
+.profile-role-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--terracotta);
+}
+
+
+/* #3 Form hata mesajı: bordo, italik, başında * */
+.form-error {
+    color: #9c3a26;
+    font-style: italic;
+    font-size: 13px;
+    margin-top: 6px;
+}
+.has-error .form-input {
+    border-color: #9c3a26;
+}
+
+/* Paylaş linki (blog gibi metin bağlamları için) */
+.share-link {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--terracotta);
+    text-decoration: none;
+}
+.share-link:hover {
+    text-decoration: underline;
 }

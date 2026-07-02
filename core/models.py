@@ -14,6 +14,7 @@ class Profile(models.Model):
 
     # --- İletişim / bağlantılar ---
     linkedin_url = models.URLField("LinkedIn adresi", blank=True, default="")
+    instagram_url = models.URLField("Instagram adresi", blank=True, default="")
     email = models.EmailField("E-posta", blank=True, default="")
     cv = models.FileField("CV (PDF)", upload_to="cv/", blank=True, null=True)
 

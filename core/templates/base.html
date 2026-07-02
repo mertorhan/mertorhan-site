@@ -13,6 +13,11 @@
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
+
+
+
+
+
 <body>
 
     <nav class="site-nav">
@@ -43,6 +48,30 @@
             <p class="footer-copy">© 2026 Mert Orhan · Tüm hakları saklıdır.</p>
         </div>
     </footer>
+
+
+    <script>
+        // Paylaş motoru: sayfadaki tüm .js-share butonlarını çalıştırır
+        (function () {
+            document.querySelectorAll(".js-share").forEach(function (btn) {
+                btn.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    var url = btn.getAttribute("data-share-url") || window.location.href;
+                    var title = btn.getAttribute("data-share-title") || document.title;
+                    if (navigator.share) {
+                        navigator.share({ title: title, url: url }).catch(function () {});
+                    } else if (navigator.clipboard) {
+                        navigator.clipboard.writeText(url).then(function () {
+                            var original = btn.textContent;
+                            btn.textContent = "✓ Kopyalandı";
+                            setTimeout(function () { btn.textContent = original; }, 2000);
+                        });
+                    }
+                });
+            });
+        })();
+    </script>
+
 
 </body>
 </html>

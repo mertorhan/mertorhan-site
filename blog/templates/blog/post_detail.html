@@ -14,6 +14,7 @@
         {% endif %}
         <h1 class="article-title">{{ post.title }}</h1>
         <p class="article-byline">Mert Orhan · {{ post.published_at|date:"d.m.Y" }} · {{ post.reading_time }} dk okuma</p>
+        <a href="#" class="share-link js-share">↗ Paylaş</a>
 
         {# Kapak gorseli: varsa goster, yoksa cizgili yer tutucu #}
         <div class="article-cover"{% if post.cover_image %} style="background-image:url('{{ post.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>

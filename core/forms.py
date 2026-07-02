@@ -21,3 +21,13 @@ class ContactForm(forms.ModelForm):
                 "placeholder": "Mesajınız...",
             }),
         }
+
+        # Kutuların altında gösterilecek Türkçe uyarılar
+        error_messages = {
+            "name": {"required": "Lütfen adınızı girin."},
+            "email": {
+                "required": "Lütfen e-posta adresinizi girin.",
+                "invalid": "Lütfen geçerli bir e-posta adresi girin.",
+            },
+            "message": {"required": "Lütfen bir mesaj yazın."},
+        }

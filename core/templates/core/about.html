@@ -12,9 +12,14 @@
         <aside class="profile-card">
             <div class="profile-photo"{% if profile.photo %} style="background-image:url('{{ profile.photo.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
             <h2 class="profile-name">{{ profile.full_name }}</h2>
-            {% if profile.role %}<p class="profile-role">{{ profile.role }}</p>{% endif %}
+            {% if profile.role %}
+                <ul class="profile-role-list">
+                    {% for chip in profile.role|split_chips %}<li>{{ chip }}</li>{% endfor %}
+                </ul>
+                {% endif %}
             <div class="profile-actions">
                 {% if profile.linkedin_url %}<a href="{{ profile.linkedin_url }}" class="btn btn-primary">in · LinkedIn</a>{% endif %}
+                {% if profile.instagram_url %}<a href="{{ profile.instagram_url }}" class="btn btn-outline" target="_blank" rel="noopener">Instagram</a>{% endif %}
                 {% if profile.email %}<a href="mailto:{{ profile.email }}" class="btn btn-outline">E-posta</a>{% endif %}
                 {% if profile.cv %}<a href="{{ profile.cv.url }}" class="btn btn-outline">CV (PDF)</a>{% endif %}
             </div>
@@ -53,7 +58,7 @@
             </section>
 
             {# Iletisim: ledger baslik + form #}
-            <section class="section">
+            <section class="section" id="iletisim">
                 <div class="ledger-head">
                     <span class="ledger-tick"></span>
                     <h2 class="ledger-title">İletişim</h2>
@@ -67,18 +72,21 @@
                       data-sent="{% if sent %}true{% else %}false{% endif %}">
                     {% csrf_token %}
                     <div class="form-row">
-                        <div class="form-field">
+                        <div class="form-field {% if form.name.errors %}has-error{% endif %}">
                             <label class="form-label">Ad Soyad</label>
                             {{ form.name }}
+                            {% if form.name.errors %}<p class="form-error">* {{ form.name.errors.0 }}</p>{% endif %}
                         </div>
-                        <div class="form-field">
+                        <div class="form-field {% if form.email.errors %}has-error{% endif %}">
                             <label class="form-label">E-posta</label>
                             {{ form.email }}
+                            {% if form.email.errors %}<p class="form-error">* {{ form.email.errors.0 }}</p>{% endif %}
                         </div>
                     </div>
-                    <div class="form-field">
+                    <div class="form-field {% if form.message.errors %}has-error{% endif %}">
                         <label class="form-label">Mesaj</label>
                         {{ form.message }}
+                        {% if form.message.errors %}<p class="form-error">* {{ form.message.errors.0 }}</p>{% endif %}
                     </div>
                     <p class="form-kvkk">
                         Gönderdiğinizde, mesajınızın size dönüş yapmak amacıyla saklanmasını
@@ -96,49 +104,29 @@
         </div>
     </div>
 
+    
+    
+    
     <script>
         (function () {
             var form = document.getElementById("contact-form");
             if (!form) return;
 
-            // Sunucudan gelen bilgi artik formun data-sent ozelliginde -> temiz JS
-            var sent = form.dataset.sent === "true";
+            var section = document.getElementById("iletisim");
+            var hasError = form.querySelector(".form-error");   // hata var mı?
+            var sent = form.dataset.sent === "true";            // gönderildi mi?
 
-            // 1) Gonder'e basildiginda: bos alanlari kirmizi cerceveyle isaretle
-            form.addEventListener("submit", function (e) {
-                var fields = form.querySelectorAll(".form-input");
-                var hasEmpty = false;
+            // Gönder'den sonra sayfa başına atmasın: doğrudan forma kaydır
+            if ((hasError || sent) && section) {
+                section.scrollIntoView();
+            }
 
-                fields.forEach(function (field) {
-                    if (field.value.trim() === "") {
-                        field.classList.add("input-error");  // kirmizi cerceve
-                        hasEmpty = true;
-                    } else {
-                        field.classList.remove("input-error");
-                    }
-                });
-
-                // Bos alan varsa formu gondermeyi durdur
-                if (hasEmpty) {
-                    e.preventDefault();
-                }
-            });
-
-            // 2) Kullanici bir alana yazmaya baslayinca kirmizi cerceveyi kaldir
-            form.querySelectorAll(".form-input").forEach(function (field) {
-                field.addEventListener("input", function () {
-                    field.classList.remove("input-error");
-                });
-            });
-
-            // 3) Sunucu "gonderildi" dediyse pop-up'i goster, 3.5 sn sonra gizle
+            // Sunucu "gönderildi" dediyse başarı pop-up'ını göster
             if (sent) {
                 var popup = document.getElementById("contact-popup");
                 if (popup) {
                     popup.style.display = "block";
-                    setTimeout(function () {
-                        popup.style.display = "none";
-                    }, 3500);
+                    setTimeout(function () { popup.style.display = "none"; }, 3500);
                 }
             }
         })();
