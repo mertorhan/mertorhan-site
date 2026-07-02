@@ -73,28 +73,25 @@
     </section>
     {% endif %}
 
-    {# Yeme-Icme: yalnizca "yeme-icme" turundeki duraklar (baslik her zaman kalir) #}
+    {# Kategori kutulari: dolu olan her tur icin ayri bolum (bos olanlar view'da elendi) #}
     {% if guide.entry_type == "rota" %}
+    {% for section in category_sections %}
     <section class="detail-section">
         <div class="ledger-head">
             <span class="ledger-tick"></span>
-            <h2 class="ledger-title">Yeme-İçme</h2>
+            <h2 class="ledger-title">{{ section.label }}</h2>
             <span class="ledger-line"></span>
         </div>
         <div class="food-grid">
-            {% for stop in stops %}
-                {% if stop.point_type == "yeme-icme" %}
-                <div class="food-box">
-                    <h3 class="food-name">{{ stop.name }}</h3>
-                    {% if stop.cost %}<p class="food-meta">{{ stop.cost }}</p>{% endif %}
-                </div>
-                {% endif %}
+            {% for stop in section.stops %}
+            <div class="food-box">
+                <h3 class="food-name">{{ stop.name }}</h3>
+                {% if stop.cost %}<p class="food-meta">{{ stop.cost }}</p>{% endif %}
+            </div>
             {% endfor %}
-            {% if not stops %}
-            <p>Henüz durak eklenmedi.</p>
-            {% endif %}
         </div>
     </section>
+    {% endfor %}
     {% endif %}
 
     {# Rota - Adim Adim: yalnizca "rota" tipinde gosterilir #}

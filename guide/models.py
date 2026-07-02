@@ -69,6 +69,7 @@ class GuideStop(models.Model):
         ("yeme-icme", "Yeme-İçme"),
         ("ogrenme", "Öğrenme"),
         ("konaklama", "Konaklama"),
+        ("deneyim", "Deneyim"),
     ]
 
     guide = models.ForeignKey(
