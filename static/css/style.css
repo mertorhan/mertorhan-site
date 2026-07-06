@@ -1639,3 +1639,29 @@ main {
 .share-link:hover {
     text-decoration: underline;
 }
+
+
+/* ============================================
+   BOŞ SONUÇ MESAJI (filtre sonucu bulunamadı)
+   ============================================ */
+.empty-state {
+    grid-column: 1 / -1;              /* grid içinde ilk sütundan son sütuna: tek satır */
+    padding: 32px 0;
+    font-size: 15px;
+    color: var(--secondary);
+}
+
+/* Temizle linki: sitenin filtre çubuğu diliyle aynı (terracotta, büyük harf) */
+.empty-state-link {
+    margin-left: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--terracotta);
+    text-decoration: none;
+    white-space: nowrap;              /* linkin kendisi asla bölünmesin */
+}
+.empty-state-link:hover {
+    text-decoration: underline;
+}

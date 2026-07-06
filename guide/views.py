@@ -15,18 +15,54 @@ def guide_list(request):
     # Yayında olan tüm gezileri çek (en yeni üstte — Meta.ordering'den gelir)
     guides = Guide.objects.filter(is_published=True)
 
-    # Öne çıkan kart: önce "öne çıkan" işaretli; o yoksa en yeni
-    featured = guides.filter(is_featured=True).first() or guides.first()
+    # --- 1) Filtreleri adres çubuğundan oku ---
+    # Örn: /guide/?sehir=İzmir&butce=₺₺  (boşsa filtre yok demektir)
+    sehir = request.GET.get("sehir", "")
+    tur = request.GET.get("tur", "")
+    butce = request.GET.get("butce", "")
+    zaman = request.GET.get("zaman", "")
 
-    # Öne çıkan hariç geri kalanlar (grid için)
-    if featured:
-        others = guides.exclude(pk=featured.pk)
-    else:
-        others = guides
+    # --- 2) Dolu olan her filtreyi sorguya ekle ---
+    # QuerySet "tembel"dir: filter üst üste eklenir, tek SQL sorgusu çalışır.
+    if sehir:
+        guides = guides.filter(city=sehir)
+    if tur:
+        guides = guides.filter(entry_type=tur)
+    if butce:
+        guides = guides.filter(budget=butce)
+    if zaman:
+        guides = guides.filter(best_time=zaman)
+
+    filtre_aktif = any([sehir, tur, butce, zaman])
+
+    # --- 3) Öne çıkan büyük kart: sadece filtre YOKKEN göster ---
+    # Filtre varken kullanıcı net bir sonuç listesi bekler.
+    featured = None
+    others = guides
+    if not filtre_aktif:
+        featured = guides.filter(is_featured=True).first() or guides.first()
+        if featured:
+            others = guides.exclude(pk=featured.pk)
+
+    # --- 4) Şehir menüsü: elle yazmak yerine veritabanından, tekrarsız ---
+    # Yeni şehirli bir gezi eklediğinde menüye kendiliğinden düşer.
+    cities = (
+        Guide.objects.filter(is_published=True)
+        .exclude(city="")
+        .values_list("city", flat=True)
+        .distinct()
+        .order_by("city")
+    )
 
     return render(request, "guide/guide_list.html", {
         "featured": featured,
         "guides": others,
+        "cities": cities,
+        "entry_type_choices": Guide.ENTRY_TYPE_CHOICES,
+        "budget_choices": Guide.BUDGET_CHOICES,
+        "best_time_choices": Guide.BEST_TIME_CHOICES,
+        "selected": {"sehir": sehir, "tur": tur, "butce": butce, "zaman": zaman},
+        "filtre_aktif": filtre_aktif,
     })
 
 

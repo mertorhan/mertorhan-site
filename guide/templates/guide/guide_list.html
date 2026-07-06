@@ -36,34 +36,44 @@
     </a>
     {% endif %}
 
-    {# Filtre cubugu: simdilik gorsel (henuz suzme yapmiyor; ileride ?sehir=... ile baglanacak) #}
-    <div class="filter-bar">
-        <select class="filter-select">
-            <option>Şehir</option>
-            <option>Nevşehir</option>
-            <option>İzmir</option>
-            <option>Artvin</option>
-        </select>
-        <select class="filter-select">
-            <option>Kategori</option>
-            <option>Rota</option>
-            <option>Mekan</option>
-        </select>
-        <select class="filter-select">
-            <option>Bütçe</option>
-            <option>₺</option>
-            <option>₺₺</option>
-            <option>₺₺₺</option>
-        </select>
-        <select class="filter-select">
-            <option>En iyi zaman</option>
-            <option>İlkbahar</option>
-            <option>Yaz</option>
-            <option>Sonbahar</option>
-            <option>Kış</option>
-        </select>
-        <a href="#" class="filter-map">Harita görünümü →</a>
-    </div>
+
+
+{# Filtre cubugu: GET formu. Secim degisince form kendini gonderir (onchange). #}
+{# Bos deger ("") = "filtre yok"; view'daki if sehir: kontrolu boyle calisiyor. #}
+<form method="get" class="filter-bar">
+    <select name="sehir" class="filter-select" onchange="this.form.submit()">
+        <option value="">Şehir</option>
+        {% for c in cities %}
+        <option value="{{ c }}" {% if selected.sehir == c %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+    </select>
+    <select name="tur" class="filter-select" onchange="this.form.submit()">
+        <option value="">Kategori</option>
+        {% for key, label in entry_type_choices %}
+        <option value="{{ key }}" {% if selected.tur == key %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+    <select name="butce" class="filter-select" onchange="this.form.submit()">
+        <option value="">Bütçe</option>
+        {% for key, label in budget_choices %}
+        <option value="{{ key }}" {% if selected.butce == key %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+    <select name="zaman" class="filter-select" onchange="this.form.submit()">
+        <option value="">En iyi zaman</option>
+        {% for key, label in best_time_choices %}
+        <option value="{{ key }}" {% if selected.zaman == key %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+    {% if filtre_aktif %}
+    <a href="{% url 'guide_list' %}" class="filter-map">✕ Temizle</a>
+    {% endif %}
+    <a href="#" class="filter-map">Harita görünümü →</a>
+</form>
+
+
+
+
 
     {# Gezi kartlari: 3'lu grid. Artik veritabanindan ("guides") geliyor #}
     <div class="card-grid">
@@ -84,10 +94,17 @@
                 <h3 class="card-title">{{ guide.title }}</h3>
             </div>
         </a>
-        {% empty %}
-        <p>Henüz gezi eklenmedi.</p>
-        {% endfor %}
-    </div>
+    {% empty %}
+        {% if filtre_aktif %}
+        <p class="empty-state">
+            Bu filtrelere uyan gezi bulunamadı.
+            <a href="{% url 'guide_list' %}" class="empty-state-link">✕ Filtreleri temizle</a>
+        </p>
+        {% else %}
+        <p class="empty-state">Henüz gezi eklenmedi.</p>
+        {% endif %}
+    {% endfor %}
+</div>
 
     {# Daha fazla yukle butonu (simdilik gorsel) #}
     <div class="load-more-wrap">
