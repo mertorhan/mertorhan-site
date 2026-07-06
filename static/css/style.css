@@ -683,17 +683,18 @@ main {
     border: 1px solid var(--line);
 }
 
-/* Numarali pin: rota adimlarindaki numaralarla ayni dil */
+/* Numarali pin: rota adimlarindaki numaralarla ayni dil.
+   Not: display:flex kullanmiyoruz — leaflet.css bizden sonra yuklenip
+   display:block ile eziyor. text-align + line-height block'ta da calisir. */
 .map-pin {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    box-sizing: border-box;            /* 2px cerceve, 28px'in icine dahil olsun */
     width: 28px;
     height: 28px;
     border-radius: 50%;
     background: var(--terracotta);
     color: #fff;
-    font: 700 13px/1 var(--font-sans);
+    font: 700 13px/24px var(--font-sans);   /* 24px = 28 - (2x2 cerceve) → dikey ortalar */
+    text-align: center;                       /* yatay ortalar */
     border: 2px solid #fff;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
