@@ -6,7 +6,7 @@ from .models import Guide, GuideStop
 class GuideStopInline(admin.TabularInline):
     model = GuideStop
     extra = 1  # Boş 1 satır gösterir (yeni durak eklemek kolay olsun)
-    fields = ("order", "name", "point_type", "description", "hours", "cost")
+    fields = ("order", "name", "point_type", "description", "hours", "cost", "latitude", "longitude")
     ordering = ("order",)
 
 

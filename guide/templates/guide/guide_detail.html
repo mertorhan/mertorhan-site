@@ -115,6 +115,11 @@
                         </p>
                         <h3 class="route-name">{{ stop.name }}</h3>
                         {% if stop.description %}<p class="route-desc">{{ stop.description }}</p>{% endif %}
+                        {% if stop.latitude and stop.longitude %}
+                        <a class="route-directions"
+                           href="https://www.google.com/maps/dir/?api=1&destination={{ stop.latitude }},{{ stop.longitude }}"
+                           target="_blank" rel="noopener">📍 Yol tarifi al</a>
+                        {% endif %}
                     </div>
                 </div>
                 {% empty %}
@@ -122,11 +127,43 @@
                 {% endfor %}
             </div>
 
-            {# SAG: sticky harita yer tutucu (Faz 1'de bos) #}
-            <div class="route-map"></div>
+            {# SAG: harita + rota butonu birlikte "sticky" kayan sutun #}
+            <div class="route-side">
+                <div class="route-map">
+                    {% if map_points %}
+                    <div id="guide-map"></div>
+                    {% endif %}
+                </div>
+                {% if gmaps_route_url %}
+                <div class="route-open-wrap">
+                    <a href="{{ gmaps_route_url }}" target="_blank" rel="noopener" class="route-open">
+                        🧭 Rotayı Google Maps'te aç
+                    </a>
+                </div>
+                {% endif %}
+            </div>
         </div>
     </section>
     {% endif %}
+
+    {# Tek mekan: konum haritasi (koordinat girildiyse) #}
+    {% if guide.entry_type == "mekan" and map_points %}
+    <section class="detail-section">
+        <div class="ledger-head">
+            <span class="ledger-tick"></span>
+            <h2 class="ledger-title">Konum</h2>
+            <span class="ledger-line"></span>
+        </div>
+        <div class="map-single">
+            <div id="guide-map"></div>
+        </div>
+        <div class="route-open-wrap">
+            <a href="https://www.google.com/maps/dir/?api=1&destination={{ map_points.0.lat }},{{ map_points.0.lng }}"
+               target="_blank" rel="noopener" class="route-open">📍 Yol tarifi al</a>
+        </div>
+    </section>
+    {% endif %}
+        
 
     {# Durust Degerlendirme: terracotta kutu (varsa) #}
     {% if guide.verdict %}
@@ -159,5 +196,54 @@
             <a href="{% url 'guide_list' %}" class="ledger-all">Tümü →</a>
         </div>
     </section>
+
+
+    {# --- Harita motoru: Leaflet (yalnizca koordinatli nokta varsa yuklenir) --- #}
+    {% if map_points %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    {# View'daki listeyi guvenli JSON olarak sayfaya gomer #}
+    {{ map_points|json_script:"map-points" }}
+
+    <script>
+        // 1) Noktaları sayfadaki JSON'dan oku
+        const points = JSON.parse(document.getElementById("map-points").textContent);
+
+        // 2) Haritayı kur (scrollWheelZoom kapalı: sayfa kaydırırken zoom'a girmesin)
+        const map = L.map("guide-map", { scrollWheelZoom: false });
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        // 3) Her nokta için numaralı pin + tıklayınca isim balonu
+        const latlngs = [];
+        points.forEach(function (p) {
+            const icon = L.divIcon({
+                className: "map-pin",
+                html: String(p.order),
+                iconSize: [28, 28],
+                iconAnchor: [14, 14],
+                popupAnchor: [0, -16]
+            });
+            L.marker([p.lat, p.lng], { icon: icon })
+                .addTo(map)
+                .bindPopup("<b>" + p.order + ". " + p.name + "</b>");
+            latlngs.push([p.lat, p.lng]);
+        });
+
+        // 4) 2+ nokta: kesikli rota çizgisi + hepsini kadraja al. Tek nokta: odaklan.
+        if (latlngs.length > 1) {
+            L.polyline(latlngs, { color: "#b4533a", weight: 3, dashArray: "6 8" }).addTo(map);
+            map.fitBounds(latlngs, { padding: [36, 36] });
+        } else {
+            map.setView(latlngs[0], 15);
+        }
+    </script>
+    {% endif %}
+
+
+
 
 {% endblock %}

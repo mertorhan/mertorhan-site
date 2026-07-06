@@ -48,6 +48,9 @@ class Guide(models.Model):
     # --- Detay sayfası ek bölümleri (opsiyonel) ---
     verdict = models.TextField("Dürüst değerlendirme", blank=True, default="")
     practical_info = models.TextField("Pratik bilgi", blank=True, default="")
+    # --- Harita (tek mekan girişleri için; rotalarda duraklar kullanılır) ---
+    latitude = models.DecimalField("Enlem", max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField("Boylam", max_digits=9, decimal_places=6, null=True, blank=True)
 
     # --- Yayın durumu ---
     is_featured = models.BooleanField("Öne çıkan", default=False)
@@ -84,6 +87,9 @@ class GuideStop(models.Model):
     description = models.TextField("Açıklama", blank=True, default="")
     hours = models.CharField("Önerilen saat", max_length=80, blank=True, default="")
     cost = models.CharField("Yaklaşık ücret", max_length=80, blank=True, default="")
+    # --- Harita ---
+    latitude = models.DecimalField("Enlem", max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField("Boylam", max_digits=9, decimal_places=6, null=True, blank=True)
 
     class Meta:
         ordering = ["order"]

@@ -71,19 +71,53 @@ def guide_detail(request, slug):
     guide = get_object_or_404(Guide, slug=slug, is_published=True)
 
     # Bu geziye bağlı duraklar (sıraya göre — Meta.ordering'den gelir)
-    # list(...) → tek sorguda çek, kategorileri Python'da süz (4 ayrı sorgu olmasın)
     stops = list(guide.stops.all())
 
-    # Dolu kategorileri hazırla — boş olanlar listeye hiç girmez,
-    # yani sayfada da hiç görünmez (senin istisna kuralın burada 🎯)
+    # Dolu kategorileri hazırla — boş olanlar listeye hiç girmez
     category_sections = []
     for key, label in CATEGORY_SECTIONS:
         section_stops = [s for s in stops if s.point_type == key]
         if section_stops:
             category_sections.append({"label": label, "stops": section_stops})
 
+    # --- Harita noktaları ---
+    # Yalnızca koordinatı OLAN duraklar haritaya girer; hiç yoksa harita çizilmez.
+    # float(...) → Decimal doğrudan JSON'a çevrilemez; sayıya çeviriyoruz.
+    map_points = [
+        {"order": s.order, "name": s.name, "lat": float(s.latitude), "lng": float(s.longitude)}
+        for s in stops
+        if s.latitude is not None and s.longitude is not None
+    ]
+
+    # Tek mekan girişi: koordinat durakta değil, gezinin kendi üstünde
+    if not map_points and guide.latitude is not None and guide.longitude is not None:
+        map_points = [{
+            "order": 1,
+            "name": guide.title,
+            "lat": float(guide.latitude),
+            "lng": float(guide.longitude),
+        }]
+
+    # --- Google Maps "tüm rotayı aç" derin bağlantısı (2+ nokta varsa) ---
+    # origin=ilk durak, destination=son durak, aradakiler waypoints.
+    # Duraklar arası "|" ayracı URL'de %7C olarak yazılır (kodlanmış hali).
+    gmaps_route_url = ""
+    if len(map_points) >= 2:
+        origin = f"{map_points[0]['lat']},{map_points[0]['lng']}"
+        destination = f"{map_points[-1]['lat']},{map_points[-1]['lng']}"
+        gmaps_route_url = (
+            "https://www.google.com/maps/dir/?api=1"
+            f"&origin={origin}&destination={destination}&travelmode=walking"
+        )
+        middle = map_points[1:-1]
+        if middle:
+            waypoints = "%7C".join(f"{p['lat']},{p['lng']}" for p in middle)
+            gmaps_route_url += f"&waypoints={waypoints}"
+
     return render(request, "guide/guide_detail.html", {
         "guide": guide,
         "stops": stops,
         "category_sections": category_sections,
+        "map_points": map_points,
+        "gmaps_route_url": gmaps_route_url,
     })
