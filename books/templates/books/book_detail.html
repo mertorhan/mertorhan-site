@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book.title }} · Mert Orhan{% endblock %}
+
+{% block content %}
+
+    <article class="article">
+
+        <a href="{% url 'book_list' %}" class="article-back">← Kitap</a>
+
+        <p class="article-cat">{{ book.author }}</p>
+        <h1 class="article-title">{{ book.title }}</h1>
+        <p class="article-byline">
+            Mert Orhan · {{ book.published_at|date:"d.m.Y" }}{% if book.rating %} · ★ {{ book.rating }}/10{% endif %}
+        </p>
+        <a href="#" class="share-link js-share">↗ Paylaş</a>
+
+        {# Kapak #}
+        <div class="article-cover"{% if book.cover_image %} style="background-image:url('{{ book.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
+
+        {# Künye: film detayındaki .credits kutusunun aynısı #}
+        <div class="credits">
+            <div class="credits-item"><p class="credits-label">Yazar</p><p class="credits-value">{{ book.author }}</p></div>
+            {% if book.translator %}
+            <div class="credits-item"><p class="credits-label">Çevirmen</p><p class="credits-value">{{ book.translator }}</p></div>
+            {% endif %}
+        </div>
+
+        {# Özet / eleştiri #}
+        <div class="article-body">
+            {{ book.body|linebreaks }}
+        </div>
+
+        {# Altını çizdiklerim: alıntılar (varsa) — blog'daki pullquote stiliyle #}
+        {% if book.quotes.all %}
+        <div class="detail-section">
+            <div class="ledger-head">
+                <span class="ledger-tick"></span>
+                <h2 class="ledger-title">Altını Çizdiklerim</h2>
+                <span class="ledger-line"></span>
+            </div>
+            {% for quote in book.quotes.all %}
+            <blockquote class="pullquote">
+                {{ quote.text }}
+                {% if quote.page %}<span class="quote-page">— s. {{ quote.page }}</span>{% endif %}
+            </blockquote>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+    </article>
+
+{% endblock %}

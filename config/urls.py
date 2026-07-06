@@ -9,6 +9,7 @@ urlpatterns = [
     path('gallery/', include('gallery.urls')),
     path('guide/', include('guide.urls')),
     path('filmler/', include('movies.urls')),
+    path('kitaplar/', include('books.urls')),
     path('', include('core.urls')),
 ]
 

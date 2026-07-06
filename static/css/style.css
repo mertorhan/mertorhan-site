@@ -1782,3 +1782,13 @@ main {
     font-size: 15px;
     color: var(--body);
 }
+
+/* Alinti sonundaki sayfa numarasi */
+.quote-page {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--faint);
+}

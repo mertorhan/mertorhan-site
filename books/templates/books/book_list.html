@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Kitap · Mert Orhan{% endblock %}
+
+{% block content %}
+
+    <div class="page-head">
+        <p class="eyebrow"><span class="eyebrow-tick"></span> Kitap</p>
+        <h1 class="page-title">Okuduklarım — özetler, eleştiriler, altını çizdiklerim.</h1>
+    </div>
+
+    {# ===== Öne çıkan kitap ===== #}
+    {% if featured %}
+    <a href="{% url 'book_detail' featured.slug %}" class="feature-card">
+        <div class="feature-image"{% if featured.cover_image %} style="background-image:url('{{ featured.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
+        <div class="feature-body">
+            <p class="card-meta">
+                <span class="meta-tick"></span>
+                Öne çıkan · {{ featured.author }}
+            </p>
+            <h2 class="feature-title">{{ featured.title }}</h2>
+            {% if featured.summary %}
+            <p class="feature-excerpt">{{ featured.summary }}</p>
+            {% endif %}
+            {% if featured.rating %}
+            <p class="card-meta" style="margin-top:14px;">★ {{ featured.rating }}/10</p>
+            {% endif %}
+        </div>
+    </a>
+    {% endif %}
+
+    {# ===== Diğer kitaplar: grid ===== #}
+    <div class="card-grid" style="margin-top:40px;">
+        {% for book in books %}
+        <a href="{% url 'book_detail' book.slug %}" class="card">
+            <div class="card-image"{% if book.cover_image %} style="background-image:url('{{ book.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
+            <div class="card-body">
+                <p class="card-meta">
+                    <span class="meta-tick"></span>
+                    {{ book.author }}{% if book.rating %} · ★ {{ book.rating }}/10{% endif %}
+                </p>
+                <h3 class="card-title">{{ book.title }}</h3>
+            </div>
+        </a>
+        {% empty %}
+        <p class="empty-state">Henüz kitap eklenmedi.</p>
+        {% endfor %}
+    </div>
+
+{% endblock %}

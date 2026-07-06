@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'gallery',
     'guide',
     'movies',
+    'books',
 ]
 
 MIDDLEWARE = [
