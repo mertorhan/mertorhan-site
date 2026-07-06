@@ -1750,3 +1750,35 @@ main {
 .empty-state-link:hover {
     text-decoration: underline;
 }
+
+
+/* ============================================
+   19. FİLM & DİZİ — KÜNYE KUTUSU
+   --- Detay sayfasinda kapak ile yazi arasi ---
+   ============================================ */
+.credits {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--line);              /* 1px gap + zemin = ince ayirici cizgiler */
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 32px 0 40px;
+}
+.credits-item {
+    background: var(--card);
+    padding: 16px 20px;
+}
+.credits-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--faint);
+    margin-bottom: 4px;
+}
+.credits-value {
+    font-size: 15px;
+    color: var(--body);
+}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Film & Dizi · Mert Orhan{% endblock %}
+
+{% block content %}
+
+    <div class="page-head">
+        <p class="eyebrow"><span class="eyebrow-tick"></span> Film & Dizi</p>
+        <h1 class="page-title">İzlediklerim — beğendiklerim, beğenmediklerim.</h1>
+    </div>
+
+    {# ===== Tür filtresi: Tümü / Film / Dizi ===== #}
+    <div class="filter-pills">
+        <a href="{% url 'review_list' %}" class="pill-filter{% if not selected %} is-active{% endif %}">Tümü</a>
+        {% for key, label in type_choices %}
+        <a href="?tur={{ key }}" class="pill-filter{% if selected == key %} is-active{% endif %}">{{ label }}</a>
+        {% endfor %}
+    </div>
+
+    {# ===== Öne çıkan inceleme ===== #}
+    {% if featured %}
+    <a href="{% url 'review_detail' featured.slug %}" class="feature-card">
+        <div class="feature-image"{% if featured.cover_image %} style="background-image:url('{{ featured.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
+        <div class="feature-body">
+            <p class="card-meta">
+                <span class="meta-tick"></span>
+                Öne çıkan · {{ featured.get_content_type_display }}{% if featured.release_year %} · {{ featured.release_year }}{% endif %}
+            </p>
+            <h2 class="feature-title">{{ featured.title }}</h2>
+            {% if featured.summary %}
+            <p class="feature-excerpt">{{ featured.summary }}</p>
+            {% endif %}
+            {% if featured.rating %}
+            <p class="card-meta" style="margin-top:14px;">★ {{ featured.rating }}/10</p>
+            {% endif %}
+        </div>
+    </a>
+    {% endif %}
+
+    {# ===== Diğer incelemeler: grid ===== #}
+    <div class="card-grid" style="margin-top:40px;">
+        {% for review in reviews %}
+        <a href="{% url 'review_detail' review.slug %}" class="card">
+            <div class="card-image"{% if review.cover_image %} style="background-image:url('{{ review.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}>
+                <span class="badge badge-rota">{{ review.get_content_type_display }}</span>
+            </div>
+            <div class="card-body">
+                <p class="card-meta">
+                    <span class="meta-tick"></span>
+                    {% if review.release_year %}{{ review.release_year }}{% endif %}{% if review.rating %} · ★ {{ review.rating }}/10{% endif %}
+                </p>
+                <h3 class="card-title">{{ review.title }}</h3>
+            </div>
+        </a>
+        {% empty %}
+        <p class="empty-state">Bu türde henüz inceleme yok.</p>
+        {% endfor %}
+    </div>
+
+{% endblock %}

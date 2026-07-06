@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}{{ review.title }} · Mert Orhan{% endblock %}
+
+{% block content %}
+
+    <article class="article">
+
+        <a href="{% url 'review_list' %}" class="article-back">← Film & Dizi</a>
+
+        <p class="article-cat">{{ review.get_content_type_display }}{% if review.genre %} · {{ review.genre }}{% endif %}</p>
+        <h1 class="article-title">{{ review.title }}</h1>
+        <p class="article-byline">
+            Mert Orhan · {{ review.published_at|date:"d.m.Y" }}{% if review.rating %} · ★ {{ review.rating }}/10{% endif %}
+        </p>
+        <a href="#" class="share-link js-share">↗ Paylaş</a>
+
+        {# Kapak / afiş #}
+        <div class="article-cover"{% if review.cover_image %} style="background-image:url('{{ review.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
+
+        {# Künye: dolu alanlar gösterilir, boşlar hiç görünmez #}
+        <div class="credits">
+            {% if review.director %}
+            <div class="credits-item"><p class="credits-label">Yönetmen</p><p class="credits-value">{{ review.director }}</p></div>
+            {% endif %}
+            {% if review.screenwriter %}
+            <div class="credits-item"><p class="credits-label">Senarist</p><p class="credits-value">{{ review.screenwriter }}</p></div>
+            {% endif %}
+            {% if review.lead_actors %}
+            <div class="credits-item"><p class="credits-label">Başrol</p><p class="credits-value">{{ review.lead_actors }}</p></div>
+            {% endif %}
+            {% if review.release_year %}
+            <div class="credits-item"><p class="credits-label">Yapım yılı</p><p class="credits-value">{{ review.release_year }}</p></div>
+            {% endif %}
+        </div>
+
+        {# İnceleme gövdesi #}
+        <div class="article-body">
+            {{ review.body|linebreaks }}
+        </div>
+
+    </article>
+
+{% endblock %}
