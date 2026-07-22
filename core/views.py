@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from blog.models import BlogPost
 from guide.models import Guide
 from gallery.models import Photo
+from movies.models import Review
+from books.models import Book
 from .models import Profile
 from .forms import ContactForm
 
@@ -20,7 +22,17 @@ def home(request):
     # Hero için tek bir öne çıkan gezi
     hero_guide = guides[0] if guides else None
 
-    # Ana sayfa galeri şeridi için son fotoğraflar (Blok 3'te kullanılacak)
+    # Öne çıkan film/dizi incelemeleri (yoksa en yeni)
+    reviews = Review.objects.filter(is_published=True, is_featured=True)[:3]
+    if not reviews:
+        reviews = Review.objects.filter(is_published=True)[:3]
+
+    # Öne çıkan kitaplar (yoksa en yeni)
+    books = Book.objects.filter(is_published=True, is_featured=True)[:3]
+    if not books:
+        books = Book.objects.filter(is_published=True)[:3]
+
+    # Ana sayfa galeri şeridi için son fotoğraflar
     gallery_photos = Photo.objects.filter(is_published=True)[:4]
 
     # Profil (tek kayıt) — fotoğraf vb. için
@@ -30,6 +42,8 @@ def home(request):
         "posts": posts,
         "guides": guides,
         "hero_guide": hero_guide,
+        "reviews": reviews,
+        "books": books,
         "gallery_photos": gallery_photos,
         "profile": profile,
     })

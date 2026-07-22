@@ -19,7 +19,7 @@
 
     {# ===== Öne çıkan inceleme ===== #}
     {% if featured %}
-    <a href="{% url 'review_detail' featured.slug %}" class="feature-card">
+    <a href="{% url 'review_detail' featured.slug %}" class="feature-card feature-card--poster">
         <div class="feature-image"{% if featured.cover_image %} style="background-image:url('{{ featured.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
         <div class="feature-body">
             <p class="card-meta">
@@ -41,7 +41,7 @@
     <div class="card-grid" style="margin-top:40px;">
         {% for review in reviews %}
         <a href="{% url 'review_detail' review.slug %}" class="card">
-            <div class="card-image"{% if review.cover_image %} style="background-image:url('{{ review.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}>
+            <div class="card-image card-image--poster"{% if review.cover_image %} style="background-image:url('{{ review.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}>
                 <span class="badge badge-rota">{{ review.get_content_type_display }}</span>
             </div>
             <div class="card-body">

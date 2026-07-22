@@ -1793,3 +1793,62 @@ main {
     letter-spacing: 0.08em;
     color: var(--faint);
 }
+
+/* ============================================
+   35. KİTAP & FİLM — AFİŞ (dikey kapak) DÜZENİ
+   Not: Bu bolum dosyanin EN SONUNDA durmali.
+   Yukaridaki yatay bant kurallarini kaskad ile eziyor.
+   Blog ve gezi sayfalari bu sinifları KULLANMAZ,
+   onlar eskisi gibi yatay bant olarak kalir.
+   ============================================ */
+
+/* --- 1) Liste + ana sayfa kucuk kartlari --- */
+/* height:auto -> eski 180px'i iptal eder, aspect-ratio devreye girer.
+   max-width -> kolon genisledikce afisin buyumesini durdurur.
+   BU SAYIYI DEGISTIREREK afis boyutunu ayarlayabilirsin. */
+.card-image--poster {
+    height: auto;
+    aspect-ratio: 2 / 3;
+    max-width: 180px;
+}
+
+/* --- 2) One cikan buyuk kart: afis solda, metin saginda --- */
+.feature-card--poster {
+    grid-template-columns: 220px 1fr;
+    align-items: start;
+}
+.feature-card--poster .feature-image {
+    height: auto;
+    aspect-ratio: 2 / 3;
+}
+
+/* --- 3) Detay sayfasi: afis solda, kunye saginda --- */
+.poster-head {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 32px;
+    align-items: start;
+    margin-bottom: 40px;
+}
+.poster-head .article-cover {
+    height: auto;
+    aspect-ratio: 2 / 3;
+    margin-bottom: 0;
+}
+/* Kunye kutusunun kendi ust/alt bosluklari burada gereksiz */
+.poster-head .credits {
+    margin: 0;
+}
+
+/* --- Dar ekran (telefon/tablet): yan yana yerine alt alta --- */
+@media (max-width: 700px) {
+    .feature-card--poster,
+    .poster-head {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    .feature-card--poster .feature-image,
+    .poster-head .article-cover {
+        max-width: 220px;
+    }
+}

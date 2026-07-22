@@ -15,15 +15,16 @@
         </p>
         <a href="#" class="share-link js-share">↗ Paylaş</a>
 
-        {# Kapak #}
-        <div class="article-cover"{% if book.cover_image %} style="background-image:url('{{ book.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
+        {# Afis + kunye yan yana (dar ekranda alt alta duser) #}
+        <div class="poster-head">
+            <div class="article-cover"{% if book.cover_image %} style="background-image:url('{{ book.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
 
-        {# Künye: film detayındaki .credits kutusunun aynısı #}
-        <div class="credits">
-            <div class="credits-item"><p class="credits-label">Yazar</p><p class="credits-value">{{ book.author }}</p></div>
-            {% if book.translator %}
-            <div class="credits-item"><p class="credits-label">Çevirmen</p><p class="credits-value">{{ book.translator }}</p></div>
-            {% endif %}
+            <div class="credits">
+                <div class="credits-item"><p class="credits-label">Yazar</p><p class="credits-value">{{ book.author }}</p></div>
+                {% if book.translator %}
+                <div class="credits-item"><p class="credits-label">Çevirmen</p><p class="credits-value">{{ book.translator }}</p></div>
+                {% endif %}
+            </div>
         </div>
 
         {# Özet / eleştiri #}
@@ -31,7 +32,7 @@
             {{ book.body|linebreaks }}
         </div>
 
-        {# Altını çizdiklerim: alıntılar (varsa) — blog'daki pullquote stiliyle #}
+        {# Altını çizdiklerim: alıntılar (varsa) #}
         {% if book.quotes.all %}
         <div class="detail-section">
             <div class="ledger-head">
@@ -41,7 +42,7 @@
             </div>
             {% for quote in book.quotes.all %}
             <blockquote class="pullquote">
-                {{ quote.text }}
+                {{ quote.text|linebreaksbr }}
                 {% if quote.page %}<span class="quote-page">— s. {{ quote.page }}</span>{% endif %}
             </blockquote>
             {% endfor %}

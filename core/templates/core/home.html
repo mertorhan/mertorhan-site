@@ -94,6 +94,61 @@
     </section>
 
 
+    <section class="section">
+        <div class="ledger-head">
+            <span class="ledger-tick"></span>
+            <h2 class="ledger-title">Film &amp; Dizi</h2>
+            <span class="ledger-line"></span>
+            <a href="{% url 'review_list' %}" class="ledger-all">Tümü →</a>
+        </div>
+
+        {# Film/dizi kartlari: afis oraninda (card-image--poster) #}
+        <div class="card-grid">
+            {% for review in reviews %}
+            <a href="{% url 'review_detail' review.slug %}" class="card">
+                <div class="card-image card-image--poster"{% if review.cover_image %} style="background-image:url('{{ review.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
+                <div class="card-body">
+                    <p class="card-meta">
+                        <span class="meta-tick"></span>
+                        {{ review.get_content_type_display }}{% if review.release_year %} · {{ review.release_year }}{% endif %}{% if review.rating %} · ★ {{ review.rating }}/10{% endif %}
+                    </p>
+                    <h3 class="card-title">{{ review.title }}</h3>
+                </div>
+            </a>
+            {% empty %}
+            <p>Henüz inceleme eklenmedi.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+
+    <section class="section">
+        <div class="ledger-head">
+            <span class="ledger-tick"></span>
+            <h2 class="ledger-title">Kitap</h2>
+            <span class="ledger-line"></span>
+            <a href="{% url 'book_list' %}" class="ledger-all">Tümü →</a>
+        </div>
+
+        {# Kitap kartlari: afis oraninda (card-image--poster) #}
+        <div class="card-grid">
+            {% for book in books %}
+            <a href="{% url 'book_detail' book.slug %}" class="card">
+                <div class="card-image card-image--poster"{% if book.cover_image %} style="background-image:url('{{ book.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
+                <div class="card-body">
+                    <p class="card-meta">
+                        <span class="meta-tick"></span>
+                        {{ book.author }}{% if book.rating %} · ★ {{ book.rating }}/10{% endif %}
+                    </p>
+                    <h3 class="card-title">{{ book.title }}</h3>
+                </div>
+            </a>
+            {% empty %}
+            <p>Henüz kitap eklenmedi.</p>
+            {% endfor %}
+        </div>
+    </section>
+
 
     <section class="section">
         <div class="ledger-head">
@@ -115,7 +170,6 @@
             {% endfor %}
         </div>
     </section>
-
 
 
 {% endblock %}

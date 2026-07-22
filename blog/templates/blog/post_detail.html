@@ -24,7 +24,7 @@
             {{ first_part|linebreaks }}
 
             {% if post.pullquote %}
-            <blockquote class="pullquote">{{ post.pullquote }}</blockquote>
+            <blockquote class="pullquote">{{ post.pullquote|linebreaksbr }}</blockquote>
             {% endif %}
 
             {{ rest_part|linebreaks }}

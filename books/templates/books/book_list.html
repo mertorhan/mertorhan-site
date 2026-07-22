@@ -11,7 +11,7 @@
 
     {# ===== Öne çıkan kitap ===== #}
     {% if featured %}
-    <a href="{% url 'book_detail' featured.slug %}" class="feature-card">
+    <a href="{% url 'book_detail' featured.slug %}" class="feature-card feature-card--poster">
         <div class="feature-image"{% if featured.cover_image %} style="background-image:url('{{ featured.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
         <div class="feature-body">
             <p class="card-meta">
@@ -33,7 +33,7 @@
     <div class="card-grid" style="margin-top:40px;">
         {% for book in books %}
         <a href="{% url 'book_detail' book.slug %}" class="card">
-            <div class="card-image"{% if book.cover_image %} style="background-image:url('{{ book.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
+            <div class="card-image card-image--poster"{% if book.cover_image %} style="background-image:url('{{ book.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
             <div class="card-body">
                 <p class="card-meta">
                     <span class="meta-tick"></span>
