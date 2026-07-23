@@ -18,7 +18,13 @@
         <a href="?kategori=Portre" class="pill-filter{% if selected == 'Portre' %} is-active{% endif %}">Portre</a>
     </div>
 
-    {# Masonry grid: fotograflar veritabanindan; her kart kendi bilgisini data-... ile tasir #}
+    {% comment %}
+    Masonry grid.
+    data-image -> BUYUK gorsel; lightbox burayi kullanir.
+    img src    -> KUCUK kopya; izgarada bu gosterilir.
+    Kucuk kopya yoksa buyugune duser, boylece eski kayitlar bozulmaz.
+    NOT: cok satirli yorum icin {# #} DEGIL, comment etiketi kullanilir.
+    {% endcomment %}
     <div class="masonry">
         {% for photo in photos %}
         <div class="masonry-item"
@@ -33,7 +39,9 @@
              data-shutter="{{ photo.shutter_speed }}"
              data-aperture="{{ photo.aperture }}"
              data-focal="{{ photo.focal_length }}">
-            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" loading="lazy" style="width:100%; display:block; border-radius:4px;">
+            <img src="{% if photo.thumbnail %}{{ photo.thumbnail.url }}{% else %}{{ photo.image.url }}{% endif %}"
+                 alt="{{ photo.title }}" loading="lazy"
+                 style="width:100%; display:block; border-radius:4px;">
         </div>
         {% empty %}
         <p>Henüz fotoğraf eklenmedi.</p>
@@ -45,7 +53,6 @@
     <div class="lightbox" id="lightbox">
         <button class="lightbox-close" id="lightboxClose">✕</button>
         <div class="lightbox-content">
-            {# Gercek <img>: object-fit:contain ile fotograf tam gorunur #}
             <img class="lightbox-image" id="lbImage" src="" alt="">
             <div class="lightbox-panel">
                 <p class="lightbox-eyebrow" id="lbEyebrow">Fotoğraf</p>
