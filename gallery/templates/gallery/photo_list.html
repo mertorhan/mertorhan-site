@@ -33,7 +33,7 @@
              data-shutter="{{ photo.shutter_speed }}"
              data-aperture="{{ photo.aperture }}"
              data-focal="{{ photo.focal_length }}">
-            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" style="width:100%; display:block; border-radius:4px;">
+            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" loading="lazy" style="width:100%; display:block; border-radius:4px;">
         </div>
         {% empty %}
         <p>Henüz fotoğraf eklenmedi.</p>
@@ -45,7 +45,8 @@
     <div class="lightbox" id="lightbox">
         <button class="lightbox-close" id="lightboxClose">✕</button>
         <div class="lightbox-content">
-            <div class="lightbox-image" id="lbImage"></div>
+            {# Artik gercek bir <img>: object-fit:contain ile fotograf tam gorunur #}
+            <img class="lightbox-image" id="lbImage" src="" alt="">
             <div class="lightbox-panel">
                 <p class="lightbox-eyebrow" id="lbEyebrow">Fotoğraf</p>
                 <h3 class="lightbox-title" id="lbTitle"></h3>
@@ -101,14 +102,26 @@
             }
         }
 
+        // Lightbox acilirken arka plandaki sayfa kaymasin
+        function openLightbox() {
+            lightbox.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Kapanirken sayfayi eski haline dondur
+        function closeLightbox() {
+            lightbox.classList.remove('is-open');
+            document.body.style.overflow = '';
+        }
+
         // i numarali fotografi lightbox'ta goster
         function showPhoto(i) {
             const d = items[i].dataset;
 
+            // Artik arka plan degil, dogrudan <img> kaynagi
             const img = document.getElementById('lbImage');
-            img.style.backgroundImage = "url('" + d.image + "')";
-            img.style.backgroundSize = "cover";
-            img.style.backgroundPosition = "center";
+            img.src = d.image;
+            img.alt = d.title || '';
 
             document.getElementById('lbEyebrow').textContent = d.category || 'Fotoğraf';
             document.getElementById('lbTitle').textContent = d.title;
@@ -127,7 +140,7 @@
             setExif('exifFocal', 'lbFocal', d.focal);
 
             current = i;
-            lightbox.classList.add('is-open');
+            openLightbox();
         }
 
         // Her fotografa tiklayinca o fotografi ac
@@ -136,14 +149,12 @@
         });
 
         // Kapat butonu
-        closeBtn.addEventListener('click', function() {
-            lightbox.classList.remove('is-open');
-        });
+        closeBtn.addEventListener('click', closeLightbox);
 
         // Koyu zemine tiklayinca kapat
         lightbox.addEventListener('click', function(event) {
             if (event.target === lightbox) {
-                lightbox.classList.remove('is-open');
+                closeLightbox();
             }
         });
 
@@ -151,7 +162,7 @@
         document.addEventListener('keydown', function(event) {
             if (!lightbox.classList.contains('is-open')) return;
             if (event.key === 'Escape') {
-                lightbox.classList.remove('is-open');
+                closeLightbox();
             } else if (event.key === 'ArrowRight') {
                 showPhoto((current + 1) % items.length);
             } else if (event.key === 'ArrowLeft') {
