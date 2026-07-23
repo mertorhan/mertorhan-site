@@ -17,15 +17,24 @@
 
 
 
-
 <body>
 
     <nav class="site-nav">
         <a href="{% url 'home' %}" class="nav-logo">Mert Orhan</a>
-        <div class="nav-links">
-            <a href="{% url 'guide_list' %}">Gezi & Öneri</a>
+
+        {# Hamburger butonu: sadece dar ekranda gorunur (CSS 36. bolum) #}
+        <button class="nav-toggle" id="navToggle" aria-label="Menüyü aç" aria-expanded="false" aria-controls="navLinks">
+            <span class="nav-toggle-bar"></span>
+            <span class="nav-toggle-bar"></span>
+            <span class="nav-toggle-bar"></span>
+        </button>
+
+        {# Ayni liste: masaustunde yatay menu, telefonda tam ekran panel #}
+        <div class="nav-links" id="navLinks">
+            <button class="nav-close" id="navClose" aria-label="Menüyü kapat">✕</button>
+            <a href="{% url 'guide_list' %}">Gezi &amp; Öneri</a>
             <a href="{% url 'post_list' %}">Blog</a>
-            <a href="{% url 'review_list' %}">Film & Dizi</a>
+            <a href="{% url 'review_list' %}">Film &amp; Dizi</a>
             <a href="{% url 'book_list' %}">Kitap</a>
             <a href="{% url 'photo_list' %}">Galeri</a>
             <a href="{% url 'about' %}">Hakkında</a>
@@ -50,6 +59,47 @@
             <p class="footer-copy">© 2026 Mert Orhan · Tüm hakları saklıdır.</p>
         </div>
     </footer>
+
+
+    <script>
+        // Mobil menu: ac / kapat
+        (function () {
+            var toggle = document.getElementById("navToggle");
+            var closeBtn = document.getElementById("navClose");
+            var panel = document.getElementById("navLinks");
+            if (!toggle || !panel) return;
+
+            function openNav() {
+                panel.classList.add("is-open");
+                toggle.setAttribute("aria-expanded", "true");
+                document.body.style.overflow = "hidden";   // arka plan kaymasin
+            }
+
+            function closeNav() {
+                panel.classList.remove("is-open");
+                toggle.setAttribute("aria-expanded", "false");
+                document.body.style.overflow = "";
+            }
+
+            toggle.addEventListener("click", openNav);
+            if (closeBtn) closeBtn.addEventListener("click", closeNav);
+
+            // Bir linke basinca panel kapansin
+            panel.querySelectorAll("a").forEach(function (link) {
+                link.addEventListener("click", closeNav);
+            });
+
+            // ESC ile kapat
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "Escape") closeNav();
+            });
+
+            // Panel acikken pencere genisletilirse kilidi birak
+            window.addEventListener("resize", function () {
+                if (window.innerWidth > 700) closeNav();
+            });
+        })();
+    </script>
 
 
     <script>
