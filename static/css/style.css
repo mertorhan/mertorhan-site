@@ -2197,3 +2197,127 @@ main {
         padding-bottom: 24px;
     }
 }
+
+/* ============================================
+   39. MOBİL UYUM — ADIM 4
+   Gezi detay sayfasi
+   Not: 38. bolumun ALTINDA durmali.
+   ============================================ */
+@media (max-width: 700px) {
+
+    /* --- 1) HERO: yukseklik + tipografi --- */
+    .detail-hero {
+        height: 300px;
+    }
+    .detail-hero-overlay {
+        padding: 20px;
+    }
+    .detail-title {
+        font-size: 26px;
+        margin-top: 8px;
+    }
+    .detail-sub {
+        font-size: 11px;
+    }
+    .detail-highlight {
+        font-size: 16px;
+        margin: 6px 0 10px;
+    }
+    /* Kaydet / Paylas butonlari koseye yaklassin */
+    .detail-hero-actions {
+        top: 12px;
+        right: 12px;
+        gap: 8px;
+    }
+    .hero-btn {
+        font-size: 11px;
+        padding: 7px 12px;
+    }
+
+    /* --- 2) "BIR BAKISTA": 5 sutun -> tek sutun, defter satirlari --- */
+    .glance {
+        grid-template-columns: 1fr;
+        margin: -20px 0 36px;      /* mobilde tam genislik */
+    }
+    .glance-item {
+        display: flex;
+        justify-content: space-between;   /* etiket solda, deger sagda */
+        align-items: baseline;
+        gap: 14px;
+        text-align: left;
+        padding: 13px 18px;
+        border-right: none;               /* dikey ayirici kalksin */
+        border-bottom: 1px solid var(--line);   /* yerine yatay ayirici */
+    }
+    .glance-item:last-child {
+        border-bottom: none;              /* son satirda cift cizgi olmasin */
+    }
+    .glance-label {
+        margin-bottom: 0;
+    }
+    .glance-value {
+        font-size: 18px;
+        text-align: right;
+    }
+
+    /* --- 3) Yeme-icme kutulari: 2 -> 1 kolon --- */
+    .food-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* --- 4) Rota + harita: yan yana degil alt alta --- */
+    .route-layout {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+    /* DIKKAT: sticky .route-map'te degil .route-side'da.
+       Tek kolonda yapiskan harita ekranda takili kalir. */
+    .route-side {
+        position: static;
+        top: auto;
+    }
+    .route-map {
+        height: 280px;
+    }
+    .route-open-wrap {
+        text-align: left;
+    }
+
+    /* Tek mekan sayfasindaki bagimsiz harita kutusu */
+    .map-single {
+        height: 260px;
+    }
+
+    /* --- 5) Durust degerlendirme kutusu --- */
+    .verdict {
+        padding: 20px;
+    }
+    .verdict-text {
+        font-size: 17px;
+    }
+
+    /* --- 6) Bolum araliklari --- */
+    .detail-section {
+        margin-bottom: 32px;
+    }
+}
+
+
+/* ============================================
+   40. LIGHTBOX — TELEFON İPUCU + SAYAÇ
+   Not: 39. bolumun ALTINDA durmali.
+   ============================================ */
+
+/* Masaustunde gizli: orada klavye ipucu gosteriliyor */
+.lightbox-hint-touch {
+    display: none;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.45);
+    margin-top: 24px;
+}
+
+@media (max-width: 700px) {
+    .lightbox-hint-touch {
+        display: block;
+    }
+}

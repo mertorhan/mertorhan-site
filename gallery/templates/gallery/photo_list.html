@@ -45,7 +45,7 @@
     <div class="lightbox" id="lightbox">
         <button class="lightbox-close" id="lightboxClose">✕</button>
         <div class="lightbox-content">
-            {# Artik gercek bir <img>: object-fit:contain ile fotograf tam gorunur #}
+            {# Gercek <img>: object-fit:contain ile fotograf tam gorunur #}
             <img class="lightbox-image" id="lbImage" src="" alt="">
             <div class="lightbox-panel">
                 <p class="lightbox-eyebrow" id="lbEyebrow">Fotoğraf</p>
@@ -77,18 +77,22 @@
                         <p class="exif-value" id="lbFocal"></p>
                     </div>
                 </div>
+                {# Masaustu ipucu #}
                 <p class="lightbox-hint">← → ile gez · ESC ile kapat</p>
+                {# Telefon ipucu: sadece dar ekranda gorunur #}
+                <p class="lightbox-hint-touch">Kaydırarak gez · <span id="lbCounter"></span></p>
             </div>
         </div>
     </div>
 
 
-    {# JavaScript: tiklanan fotonun bilgisini lightbox'a doldur, ac/kapat, ok tuslariyla gez #}
+    {# JavaScript: lightbox'i doldur, ac/kapat, ok tuslari ve kaydirma ile gez #}
     <script>
         const items = Array.from(document.querySelectorAll('.masonry-item'));
         const lightbox = document.getElementById('lightbox');
         const closeBtn = document.getElementById('lightboxClose');
         let current = 0;
+        let swiped = false;   // kaydirmadan hemen sonraki tiklamayi bastirmak icin
 
         // Bir EXIF hucresini doldur; deger bossa hucreyi gizle
         function setExif(boxId, valueId, value) {
@@ -118,7 +122,6 @@
         function showPhoto(i) {
             const d = items[i].dataset;
 
-            // Artik arka plan degil, dogrudan <img> kaynagi
             const img = document.getElementById('lbImage');
             img.src = d.image;
             img.alt = d.title || '';
@@ -139,8 +142,22 @@
             setExif('exifAperture', 'lbAperture', d.aperture);
             setExif('exifFocal', 'lbFocal', d.focal);
 
+            // Sayac: kacinci fotograftayiz
+            document.getElementById('lbCounter').textContent = (i + 1) + ' / ' + items.length;
+
             current = i;
             openLightbox();
+
+            // Telefonda asagi kaydirilmissa yeni fotografta basa don
+            lightbox.scrollTop = 0;
+        }
+
+        // Sonraki / onceki (bastan basa donguler)
+        function nextPhoto() {
+            showPhoto((current + 1) % items.length);
+        }
+        function prevPhoto() {
+            showPhoto((current - 1 + items.length) % items.length);
         }
 
         // Her fotografa tiklayinca o fotografi ac
@@ -153,6 +170,8 @@
 
         // Koyu zemine tiklayinca kapat
         lightbox.addEventListener('click', function(event) {
+            // Kaydirma sonrasi gelen sahte tiklamayi yut
+            if (swiped) { swiped = false; return; }
             if (event.target === lightbox) {
                 closeLightbox();
             }
@@ -164,11 +183,46 @@
             if (event.key === 'Escape') {
                 closeLightbox();
             } else if (event.key === 'ArrowRight') {
-                showPhoto((current + 1) % items.length);
+                nextPhoto();
             } else if (event.key === 'ArrowLeft') {
-                showPhoto((current - 1 + items.length) % items.length);
+                prevPhoto();
             }
         });
+
+        // --- DOKUNMATIK: saga/sola kaydirarak fotograf degistir ---
+        let touchX = 0;
+        let touchY = 0;
+        let touchTime = 0;
+
+        // passive:true -> tarayiciya "kaydirmayi engellemeyecegim" sozu; sayfa akici kalir
+        lightbox.addEventListener('touchstart', function(event) {
+            if (event.touches.length !== 1) return;   // iki parmak = zoom, karisma
+            touchX = event.touches[0].clientX;
+            touchY = event.touches[0].clientY;
+            touchTime = Date.now();
+            swiped = false;
+        }, { passive: true });
+
+        lightbox.addEventListener('touchend', function(event) {
+            if (!lightbox.classList.contains('is-open')) return;
+            if (items.length < 2) return;            // tek fotograf varsa gezinme yok
+
+            const t = event.changedTouches[0];
+            const dx = t.clientX - touchX;
+            const dy = t.clientY - touchY;
+            const elapsed = Date.now() - touchTime;
+
+            if (Math.abs(dx) < 50) return;                    // cok kisa: dokunus sayilir
+            if (Math.abs(dx) < Math.abs(dy) * 1.5) return;    // dikey baskin: sayfa kaydirma
+            if (elapsed > 800) return;                        // cok yavas: kasitsiz surukleme
+
+            swiped = true;
+            if (dx < 0) {
+                nextPhoto();   // parmak sola gitti -> sonraki
+            } else {
+                prevPhoto();   // parmak saga gitti -> onceki
+            }
+        }, { passive: true });
     </script>
 
 {% endblock %}
