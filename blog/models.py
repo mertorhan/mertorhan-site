@@ -1,4 +1,16 @@
+import os
+from datetime import date
+
+from django.conf import settings
 from django.db import models
+
+from gallery.imaging import kucult
+
+# Blog gorselleri icin uzun kenar.
+# Galeri 2000px kullaniyor cunku oradaki foto lightbox'ta tam ekran aciliyor.
+# Blog gorseli 680px okuma kolonunu hicbir zaman asmiyor; 1400 Retina icin
+# fazlasiyla yeterli ve dosya boyutunu ciddi dusurur.
+BLOG_IMAGE_LONG_EDGE = 1400
 
 
 class Category(models.Model):
@@ -31,12 +43,44 @@ class BlogPost(models.Model):
     reading_time = models.PositiveIntegerField("Okuma süresi (dk)", default=1)
     is_featured = models.BooleanField("Öne çıkan", default=False)
     is_published = models.BooleanField("Yayında", default=True)
-    published_at = models.DateField("Yayın tarihi", auto_now_add=True)
+    # default=date.today PARANTEZSIZ: date.today() yazilsaydi deger sunucu
+    # baslangicinda bir kez hesaplanir ve donardi (her yeni yazi o gune damgalanirdi).
+    # auto_now_add kaldirildi cunku alani editable=False yapiyor, yani admin
+    # formunda hic gorunmuyordu — geriye donuk tarih girilemiyordu.
+    published_at = models.DateField("Yayın tarihi", default=date.today)
 
     class Meta:
         ordering = ["-published_at"]
         verbose_name = "Blog Yazısı"
         verbose_name_plural = "Blog Yazıları"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Kayittan sonra "kapak degisti mi?" diyebilmek icin ilk hali akilda tutulur
+        self._acilistaki_kapak = self.cover_image.name if self.cover_image else ""
+
+    def save(self, *args, **kwargs):
+        yeni_kayit = self.pk is None
+        kapak_degisti = (self.cover_image.name or "") != (self._acilistaki_kapak or "")
+
+        # Once normal kayit: dosya diske yazilsin ki uzerinde calisabilelim
+        super().save(*args, **kwargs)
+
+        if not self.cover_image:
+            return
+
+        # ONEMLI: sadece baslik/govde duzenlendiyse dosyaya DOKUNMUYORUZ.
+        # Yoksa her kayitta JPEG yeniden sikisir ve kalite yavas yavas erir.
+        if not (yeni_kayit or kapak_degisti):
+            return
+
+        yeni_yol = kucult(self.cover_image.path, max_kenar=BLOG_IMAGE_LONG_EDGE)
+        yeni_ad = os.path.relpath(yeni_yol, settings.MEDIA_ROOT).replace("\\", "/")
+
+        self.cover_image.name = yeni_ad
+        self._acilistaki_kapak = yeni_ad
+
+        super().save(update_fields=["cover_image"])
 
     def __str__(self):
         return self.title
@@ -97,6 +141,34 @@ class PostSection(models.Model):
         ordering = ["order", "id"]
         verbose_name = "Bölüm"
         verbose_name_plural = "Bölümler"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Kayittan sonra "gorsel degisti mi?" diyebilmek icin ilk hali akilda tutulur
+        self._acilistaki_gorsel = self.image.name if self.image else ""
+
+    def save(self, *args, **kwargs):
+        yeni_kayit = self.pk is None
+        gorsel_degisti = (self.image.name or "") != (self._acilistaki_gorsel or "")
+
+        # Once normal kayit: dosya diske yazilsin ki uzerinde calisabilelim
+        super().save(*args, **kwargs)
+
+        if not self.image:
+            return
+
+        # ONEMLI: sadece metin duzenlendiyse dosyaya DOKUNMUYORUZ.
+        # Yoksa her kayitta JPEG yeniden sikisir ve kalite yavas yavas erir.
+        if not (yeni_kayit or gorsel_degisti):
+            return
+
+        yeni_yol = kucult(self.image.path, max_kenar=BLOG_IMAGE_LONG_EDGE)
+        yeni_ad = os.path.relpath(yeni_yol, settings.MEDIA_ROOT).replace("\\", "/")
+
+        self.image.name = yeni_ad
+        self._acilistaki_gorsel = yeni_ad
+
+        super().save(update_fields=["image"])
 
     def __str__(self):
         return f"{self.order} · {self.get_kind_display()}"
