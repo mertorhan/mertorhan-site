@@ -1,4 +1,5 @@
 import os
+from datetime import date
 
 from django.conf import settings
 from django.db import models
@@ -42,7 +43,11 @@ class BlogPost(models.Model):
     reading_time = models.PositiveIntegerField("Okuma süresi (dk)", default=1)
     is_featured = models.BooleanField("Öne çıkan", default=False)
     is_published = models.BooleanField("Yayında", default=True)
-    published_at = models.DateField("Yayın tarihi", auto_now_add=True)
+    # default=date.today PARANTEZSIZ: date.today() yazilsaydi deger sunucu
+    # baslangicinda bir kez hesaplanir ve donardi (her yeni yazi o gune damgalanirdi).
+    # auto_now_add kaldirildi cunku alani editable=False yapiyor, yani admin
+    # formunda hic gorunmuyordu — geriye donuk tarih girilemiyordu.
+    published_at = models.DateField("Yayın tarihi", default=date.today)
 
     class Meta:
         ordering = ["-published_at"]
