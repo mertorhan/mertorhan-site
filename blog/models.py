@@ -40,3 +40,63 @@ class BlogPost(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class PostSection(models.Model):
+    """Bir yazinin govdesini olusturan sirali bloklar.
+
+    Yazinin iskeleti bloklardan kurulur; paragraf ve alinti bloklarinin ICI
+    ileride markdown olarak islenecek (ayri kart).
+    """
+
+    KIND_CHOICES = [
+        ("paragraph", "Paragraf"),
+        ("heading", "Başlık"),
+        ("image", "Görsel"),
+        ("quote", "Alıntı"),
+        ("embed", "Gömü"),
+    ]
+    HEADING_LEVEL_CHOICES = [
+        ("h2", "Ana başlık"),
+        ("h3", "Alt başlık"),
+    ]
+
+    post = models.ForeignKey(
+        BlogPost,
+        on_delete=models.CASCADE,
+        related_name="sections",
+        verbose_name="Bağlı yazı",
+    )
+    order = models.PositiveIntegerField("Sıra", default=0)
+    kind = models.CharField("Blok türü", max_length=20, choices=KIND_CHOICES, default="paragraph")
+
+    # --- paragraph / heading / quote ortak govdesi ---
+    text = models.TextField("Metin", blank=True, default="")
+
+    # --- sadece heading ---
+    heading_level = models.CharField(
+        "Başlık düzeyi", max_length=2, choices=HEADING_LEVEL_CHOICES, blank=True, default=""
+    )
+    # Secmeli: bazi basliklar sadece yazi icinde durur, icindekiler listesine girmez.
+    in_toc = models.BooleanField("İçindekiler listesinde göster", default=False)
+
+    # --- sadece image ---
+    image = models.ImageField("Görsel", upload_to="blog/sections/", blank=True, null=True)
+    image_title = models.CharField("Görsel başlığı (üstte)", max_length=200, blank=True, default="")
+    image_caption = models.CharField("Görsel etiketi (altta)", max_length=300, blank=True, default="")
+    image_alt = models.CharField("Alt metin (erişilebilirlik)", max_length=200, blank=True, default="")
+
+    # --- sadece quote ---
+    quote_source = models.CharField("Alıntının kaynağı", max_length=200, blank=True, default="")
+
+    # --- sadece embed ---
+    embed_url = models.URLField("Gömü bağlantısı", blank=True, default="")
+
+    class Meta:
+        # id ikinci anahtar: ayni order'a sahip iki blokta sira rastgele olmasin.
+        ordering = ["order", "id"]
+        verbose_name = "Bölüm"
+        verbose_name_plural = "Bölümler"
+
+    def __str__(self):
+        return f"{self.order} · {self.get_kind_display()}"
