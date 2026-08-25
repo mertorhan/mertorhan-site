@@ -2321,3 +2321,108 @@ main {
         display: block;
     }
 }
+
+
+/* ============================================
+   41. BLOG BLOKLARI (PostSection)
+   Yazi govdesinin altina basilan sirali bloklar.
+   Not: bunlar .article-body ICINDE durur, yani
+   .article-body p kurali (25. bolum) paragraflara
+   da uygulanir — govdeyle ayni gorunsunler diye
+   bilerek boyle. Yan ogelerde girinti sifirlanir.
+   ============================================ */
+
+/* --- Baslik bloklari --- */
+/* .article-title kalibi: ayni serif, kisilmis olcek */
+.section-h2 {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin: 44px 0 16px;
+}
+.section-h3 {
+    font-family: var(--font-serif);
+    font-size: 21px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.3;
+    margin: 32px 0 12px;
+}
+
+/* --- Gorsel bloklari --- */
+.section-figure {
+    margin: 36px 0;
+}
+.section-figure img {
+    width: 100%;          /* okuma kolonunu asmaz */
+    display: block;
+    border-radius: 4px;
+}
+
+/* Gorselin USTUNDEKI kucuk baslik — .article-cat kalibi */
+.section-figure-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--terracotta);
+    margin-bottom: 10px;
+    text-indent: 0;
+}
+
+/* Gorselin ALTINDAKI etiket — .article-byline kalibi */
+.section-figure-caption {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--faint);
+    margin-top: 10px;
+    text-indent: 0;
+}
+
+/* --- Alinti bloklari --- */
+/* .pullquote'un sade akrabasi: daha kucuk, cizgi terracotta yerine soluk.
+   Boylece sayfadaki tek vurgulu alinti .pullquote olarak kalir. */
+.section-quote {
+    border-left: 2px solid var(--line);
+    padding-left: 20px;
+    margin: 32px 0;
+}
+.section-quote p {
+    font-family: var(--font-serif);
+    font-size: 19px;
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--body);
+    margin-bottom: 8px;
+    text-indent: 0;       /* .article-body p girintisini sifirla */
+}
+.section-quote-source {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-style: normal;
+    color: var(--faint);
+    text-indent: 0;
+}
+.section-quote-source::before {
+    content: "— ";
+}
+
+/* --- Gomu bloklari (simdilik duz baglanti) --- */
+.section-embed {
+    text-indent: 0;
+}
+.section-embed a {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--secondary);
+    text-decoration: none;
+    word-break: break-all;   /* uzun URL dar ekranda tasmasin */
+    transition: color 0.2s ease;
+}
+.section-embed a:hover {
+    color: var(--terracotta);
+}

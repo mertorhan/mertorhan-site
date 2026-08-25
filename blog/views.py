@@ -30,7 +30,13 @@ def post_list(request):
 
 
 def post_detail(request, slug):
-    post = get_object_or_404(BlogPost, slug=slug, is_published=True)
+    # prefetch_related: bloklari tek ek sorguda ceker.
+    # Olmasaydi sablondaki dongu her blok icin ayri sorgu atardi (N+1).
+    post = get_object_or_404(
+        BlogPost.objects.prefetch_related("sections"),
+        slug=slug,
+        is_published=True,
+    )
 
     # Once satir sonlarini tek tipe cevir (\r\n -> \n),
     # cunku form metni Windows tarzi \r\n ile gelir; yoksa split bulamaz.

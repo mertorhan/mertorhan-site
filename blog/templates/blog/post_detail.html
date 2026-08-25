@@ -28,6 +28,56 @@
             {% endif %}
 
             {{ rest_part|linebreaks }}
+
+            {% comment %}
+              Bloklar: govdenin ALTINA gelir. Sira model Meta'sindan
+              (ordering = order, id) gelir, burada ayrica siralanmaz.
+              Validasyon yok, o yuzden her dal iceriginin dolu oldugunu
+              dogrular; bos/celiskili blok sessizce atlanir.
+            {% endcomment %}
+            {% for section in post.sections.all %}
+
+              {% if section.kind == "paragraph" and section.text %}
+                {{ section.text|linebreaks }}
+
+              {% elif section.kind == "heading" and section.text %}
+                {% if section.heading_level == "h3" %}
+                  <h3 class="section-h3" id="bolum-{{ section.id }}">{{ section.text }}</h3>
+                {% else %}
+                  {# heading_level bos birakilmis olabilir: h2'ye duser #}
+                  <h2 class="section-h2" id="bolum-{{ section.id }}">{{ section.text }}</h2>
+                {% endif %}
+
+              {% elif section.kind == "image" and section.image %}
+                <figure class="section-figure">
+                  {% if section.image_title %}
+                  <figcaption class="section-figure-title">{{ section.image_title }}</figcaption>
+                  {% endif %}
+                  <img src="{{ section.image.url }}" alt="{{ section.image_alt }}" loading="lazy">
+                  {% if section.image_caption %}
+                  <figcaption class="section-figure-caption">{{ section.image_caption }}</figcaption>
+                  {% endif %}
+                </figure>
+
+              {% elif section.kind == "quote" and section.text %}
+                <blockquote class="section-quote">
+                  {{ section.text|linebreaks }}
+                  {% if section.quote_source %}
+                  <cite class="section-quote-source">{{ section.quote_source }}</cite>
+                  {% endif %}
+                </blockquote>
+
+              {% elif section.kind == "embed" and section.embed_url %}
+                {% comment %}
+                  Sadece baglanti. iframe YOK: dogrulanmamis URL'i gomu
+                  olarak basmak risk, guvenlik dogrulamasi ayri kart.
+                {% endcomment %}
+                <p class="section-embed">
+                  <a href="{{ section.embed_url }}" target="_blank" rel="noopener">↗ {{ section.embed_url }}</a>
+                </p>
+              {% endif %}
+
+            {% endfor %}
         </div>
 
     </article>
