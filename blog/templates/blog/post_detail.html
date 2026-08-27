@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load blog_extras %}
 
 {% block title %}{{ post.title }} · Mert Orhan{% endblock %}
 
@@ -38,7 +39,7 @@
             {% for section in post.sections.all %}
 
               {% if section.kind == "paragraph" and section.text %}
-                {{ section.text|linebreaks }}
+                {{ section.text|markdown }}
 
               {% elif section.kind == "heading" and section.text %}
                 {% if section.heading_level == "h3" %}
@@ -61,7 +62,7 @@
 
               {% elif section.kind == "quote" and section.text %}
                 <blockquote class="section-quote">
-                  {{ section.text|linebreaks }}
+                  {{ section.text|markdown }}
                   {% if section.quote_source %}
                   <cite class="section-quote-source">{{ section.quote_source }}</cite>
                   {% endif %}

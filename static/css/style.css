@@ -2426,3 +2426,40 @@ main {
 .section-embed a:hover {
     color: var(--terracotta);
 }
+
+/* --- Markdown ciktisi (paragraf ve alinti bloklarinin ICI) --- */
+/* Blok metinleri markdown'dan geciyor; liste ve baglanti uretebilir.
+   Tarayici varsayilani govdeyle uyusmuyor, o yuzden .article-body p
+   tipografisi listelere de tasiniyor. */
+.article-body ul,
+.article-body ol {
+    font-size: 17px;
+    line-height: 1.8;
+    color: var(--body);
+    margin-bottom: 24px;
+    padding-left: 1.6em;
+    text-indent: 0;       /* .article-body p girintisini sifirla */
+}
+.article-body li {
+    margin-bottom: 8px;
+}
+/* Gevsek listede (maddeler arasinda bos satir) markdown <li><p> uretir;
+   o <p> yukaridaki .article-body p kuralini yer ve madde iceri kayar. */
+.article-body li p {
+    text-indent: 0;
+    margin-bottom: 0;
+}
+
+/* Metin ici baglanti: sitenin terracotta link rengi, ama alt cizgi kalici.
+   Paragraf icinde link tek basina durmuyor — sadece renk fark edilmez. */
+.article-body p a,
+.article-body li a {
+    color: var(--terracotta);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+}
+.article-body p a:hover,
+.article-body li a:hover {
+    text-decoration-thickness: 2px;
+}
