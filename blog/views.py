@@ -49,8 +49,24 @@ def post_detail(request, slug):
     first_part = parts[0]
     rest_part = parts[1] if len(parts) > 1 else ""
 
+    # Icindekiler listesi. Sablonda hazirlanamaz: Django sablonu boolean
+    # alana gore filtreleyemez.
+    # .all() (.filter() degil): yukaridaki prefetch onbellegini kullanir,
+    # .filter() yazilsaydi prefetch bosa gider ve yeni sorgu atilirdi.
+    toc = [
+        s for s in post.sections.all()
+        if s.kind == "heading" and s.in_toc and s.text
+    ]
+
+    # Esik ISARETLI baslik sayisina bakar, toplam baslik sayisina DEGIL.
+    # Yazida 6 baslik olup 1'i isaretliyse liste cikmaz: tek maddelik
+    # icindekiler gezinmeye yaramaz, sadece gurultu olur.
+    if len(toc) < 2:
+        toc = []
+
     return render(request, "blog/post_detail.html", {
         "post": post,
         "first_part": first_part,
         "rest_part": rest_part,
+        "toc": toc,
     })

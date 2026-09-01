@@ -149,7 +149,10 @@ class PostSection(models.Model):
         "Başlık düzeyi", max_length=2, choices=HEADING_LEVEL_CHOICES, blank=True, default=""
     )
     # Secmeli: bazi basliklar sadece yazi icinde durur, icindekiler listesine girmez.
-    in_toc = models.BooleanField("İçindekiler listesinde göster", default=False)
+    # default=True cunku pratikte basliklarin cogu listede olmali; istisna olan
+    # gizlemek. default=False olsaydi yazar isaretlemeyi unuttugunda liste
+    # SESSIZCE bos kalirdi — yanlis taraf gorunur olmali, gizli degil.
+    in_toc = models.BooleanField("İçindekiler listesinde göster", default=True)
 
     # --- sadece image ---
     image = models.ImageField("Görsel", upload_to="blog/sections/", blank=True, null=True)

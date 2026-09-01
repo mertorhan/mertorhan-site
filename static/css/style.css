@@ -2463,3 +2463,51 @@ main {
 .article-body li a:hover {
     text-decoration-thickness: 2px;
 }
+
+/* --- Icindekiler --- */
+/* .section-quote'un akrabasi: ayni sol cizgi dili, ama daha ince (2px/20px
+   yerine 1px/18px) ve italik serif gorunum yok — gezinme ogesi, alinti degil.
+   .article-body'nin DISINDA duruyor; yine de text-indent acikca sifirlaniyor. */
+.article-toc {
+    border-left: 1px solid var(--line);
+    padding-left: 18px;
+    margin: 0 0 32px;
+    text-indent: 0;
+}
+
+/* .section-quote-source kalibi: kucuk, sans, soluk. */
+.article-toc-title {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+    margin-bottom: 10px;
+    text-indent: 0;
+}
+
+/* 15px: govde 17px — icindekiler yaziyi ezmesin, once govde okunsun. */
+.article-toc ul {
+    list-style: disc;
+    font-size: 15px;
+    line-height: 1.7;
+    padding-left: 1.2em;
+    margin: 0;
+    text-indent: 0;
+}
+
+/* Alt baslik: girintili ve ici bos halka. Ic ice <ul> yerine sinif. */
+.article-toc li.toc-h3 {
+    margin-left: 18px;
+    list-style: circle;
+}
+
+/* Sitedeki UI link kalibi (.identity-link, .share-link): alt cizgi hover'da.
+   Metin ici baglanti kalibi (kalici alt cizgi) BILEREK kullanilmadi —
+   icindekiler akan metin degil, tek basina duran gezinme ogesi. */
+.article-toc a {
+    color: var(--terracotta);
+    text-decoration: none;
+}
+.article-toc a:hover {
+    text-decoration: underline;
+}

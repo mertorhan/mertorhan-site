@@ -20,6 +20,25 @@
         {# Kapak gorseli: varsa goster, yoksa cizgili yer tutucu #}
         <div class="article-cover"{% if post.cover_image %} style="background-image:url('{{ post.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
 
+        {% comment %}
+          Icindekiler: liste view'da hazirlanir (toc), esigi de orada gecer.
+          Bos liste hic basilmaz. Tek <ul>, ic ice liste yok: h3 ayrimi
+          <li> sinifiyla yapilir, ic ice <ul> dongude durum takibi isterdi.
+          Hedef id'ler asagidaki heading dalinda zaten basiliyor.
+        {% endcomment %}
+        {% if toc %}
+        <nav class="article-toc" aria-labelledby="toc-basligi">
+          <p class="article-toc-title" id="toc-basligi">İçindekiler</p>
+          <ul>
+            {% for section in toc %}
+            <li{% if section.heading_level == "h3" %} class="toc-h3"{% endif %}>
+              <a href="#bolum-{{ section.id }}">{{ section.text }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+        </nav>
+        {% endif %}
+
         {# Yazi govdesi: once ilk paragraf, sonra (varsa) alinti, sonra geri kalani #}
         <div class="article-body">
             {{ first_part|linebreaks }}
