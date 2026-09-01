@@ -46,6 +46,9 @@ class BlogPost(models.Model):
     pullquote = models.TextField("Vurgulu alıntı", blank=True, default="")
     cover_image = models.ImageField("Kapak görseli", upload_to="blog/", blank=True, null=True)
     is_featured = models.BooleanField("Öne çıkan", default=False)
+    # is_featured bolum ici one cikaniligi, is_hero ana sayfa vitrinini
+    # belirler; ikisi ayri islere bakar.
+    is_hero = models.BooleanField("Ana sayfa vitrininde göster", default=False)
     is_published = models.BooleanField("Yayında", default=True)
     # default=date.today PARANTEZSIZ: date.today() yazilsaydi deger sunucu
     # baslangicinda bir kez hesaplanir ve donardi (her yeni yazi o gune damgalanirdi).
