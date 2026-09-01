@@ -3,7 +3,9 @@ from .models import BlogPost, Category
 
 
 def post_list(request):
-    published = BlogPost.objects.filter(is_published=True)
+    # prefetch_related: reading_time property'si bloklari okur. Olmasaydi
+    # sablondaki {{ featured.reading_time }} her cagride ayri sorgu atardi.
+    published = BlogPost.objects.filter(is_published=True).prefetch_related("sections")
 
     # Filtre hapları için tüm kategoriler
     categories = Category.objects.all()

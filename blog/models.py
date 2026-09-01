@@ -1,3 +1,4 @@
+import math
 import os
 from datetime import date
 
@@ -11,6 +12,10 @@ from gallery.imaging import kucult
 # Blog gorseli 680px okuma kolonunu hicbir zaman asmiyor; 1400 Retina icin
 # fazlasiyla yeterli ve dosya boyutunu ciddi dusurur.
 BLOG_IMAGE_LONG_EDGE = 1400
+
+# Turkce icin yaygin kabul edilen okuma hizi (kelime/dakika).
+# Sabit olarak disari alindi ki tek yerden ayarlanabilsin.
+WORDS_PER_MINUTE = 200
 
 
 class Category(models.Model):
@@ -40,7 +45,6 @@ class BlogPost(models.Model):
     # CharField -> TextField: admin'de artik cok satirli kutu cikar (siir, dize vb.)
     pullquote = models.TextField("Vurgulu alıntı", blank=True, default="")
     cover_image = models.ImageField("Kapak görseli", upload_to="blog/", blank=True, null=True)
-    reading_time = models.PositiveIntegerField("Okuma süresi (dk)", default=1)
     is_featured = models.BooleanField("Öne çıkan", default=False)
     is_published = models.BooleanField("Yayında", default=True)
     # default=date.today PARANTEZSIZ: date.today() yazilsaydi deger sunucu
@@ -81,6 +85,29 @@ class BlogPost(models.Model):
         self._acilistaki_kapak = yeni_ad
 
         super().save(update_fields=["cover_image"])
+
+    # Metin tasiyan blok turleri. Gorsel etiketi, alinti kaynagi ve gomu
+    # baglantisi sayilmaz — onlar okunan metin degil, kunye bilgisi.
+    READING_KINDS = ("paragraph", "heading", "quote")
+
+    @property
+    def reading_time(self):
+        """Bloklardaki kelime sayisindan okuma suresini (dk) hesaplar."""
+        # save() DEGIL property: admin once ana kaydi, SONRA inline bloklari
+        # kaydeder. save() icinde hesaplasaydik sure bir kayit geriden gelirdi.
+        #
+        # body BILEREK sayilmiyor, sadece bloklar sayiliyor. body KB-28'de
+        # silinecek; o zaman bu ayrim kendiliginden dogal hale gelir.
+        #
+        # .all() (.filter() degil): boylece view'daki prefetch_related onbellegi
+        # kullanilir, liste sayfasinda her yazi icin ayri sorgu atilmaz.
+        words = 0
+        for section in self.sections.all():
+            if section.kind in self.READING_KINDS:
+                words += len(section.text.split())
+
+        # En az 1: bos yazi "0 dk okuma" demesin.
+        return max(1, math.ceil(words / WORDS_PER_MINUTE))
 
     def __str__(self):
         return self.title
