@@ -5,12 +5,15 @@
 
 {% block content %}
 
-    {# Hero: en one cikan gezi (hero_guide). Gezi yoksa hero gizlenir. #}
-    {% if hero_guide %}
-    <a href="{% url 'guide_detail' hero_guide.slug %}" class="hero"{% if hero_guide.cover_image %} style="background-image:url('{{ hero_guide.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}>
+    {% comment %}
+      Hero: dort turden (blog, gezi, film, kitap) vitrine isaretlenmis
+      en guncel icerik. Hicbiri isaretli degilse hero hic basilmaz.
+    {% endcomment %}
+    {% if hero %}
+    <a href="{% url hero_url_adi hero.slug %}" class="hero"{% if hero.cover_image %} style="background-image:url('{{ hero.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}>
         <div class="hero-overlay">
-            <span class="pill">Öne çıkan · {{ hero_guide.get_entry_type_display }}</span>
-            <h2 class="hero-title">{{ hero_guide.title }}</h2>
+            <span class="pill">Öne çıkan · {{ hero_etiket }}</span>
+            <h2 class="hero-title">{{ hero.title }}</h2>
         </div>
     </a>
     {% endif %}

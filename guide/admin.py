@@ -12,10 +12,10 @@ class GuideStopInline(admin.TabularInline):
 
 @admin.register(Guide)
 class GuideAdmin(admin.ModelAdmin):
-    list_display = ("title", "entry_type", "city", "is_published", "is_featured", "published_at")
-    list_filter = ("entry_type", "city", "is_published", "is_featured")
+    list_display = ("title", "entry_type", "city", "is_published", "is_featured", "is_hero", "published_at")
+    list_filter = ("entry_type", "city", "is_published", "is_featured", "is_hero")
     search_fields = ("title", "summary", "overview")
-    list_editable = ("is_published", "is_featured")
+    list_editable = ("is_published", "is_featured", "is_hero")
     prepopulated_fields = {"slug": ("title",)}
     inlines = [GuideStopInline]  # Durak tablosunu Guide sayfasına gömer
 

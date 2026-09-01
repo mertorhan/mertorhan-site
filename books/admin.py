@@ -12,9 +12,9 @@ class BookQuoteInline(admin.TabularInline):
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ("title", "author", "rating", "is_published", "is_featured", "published_at")
-    list_filter = ("is_published", "is_featured")
+    list_display = ("title", "author", "rating", "is_published", "is_featured", "is_hero", "published_at")
+    list_filter = ("is_published", "is_featured", "is_hero")
     search_fields = ("title", "author", "summary")
-    list_editable = ("is_published", "is_featured")
+    list_editable = ("is_published", "is_featured", "is_hero")
     prepopulated_fields = {"slug": ("title",)}
     inlines = [BookQuoteInline]

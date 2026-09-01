@@ -54,6 +54,9 @@ class Guide(models.Model):
 
     # --- Yayın durumu ---
     is_featured = models.BooleanField("Öne çıkan", default=False)
+    # is_featured bolum ici one cikaniligi, is_hero ana sayfa vitrinini
+    # belirler; ikisi ayri islere bakar.
+    is_hero = models.BooleanField("Ana sayfa vitrininde göster", default=False)
     is_published = models.BooleanField("Yayında", default=True)
     published_at = models.DateField("Yayın tarihi", auto_now_add=True)
 

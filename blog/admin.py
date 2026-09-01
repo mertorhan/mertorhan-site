@@ -41,9 +41,9 @@ class PostSectionInline(admin.StackedInline):
 
 @admin.register(BlogPost)
 class BlogPostAdmin(admin.ModelAdmin):
-    list_display = ("title", "category", "is_published", "is_featured", "published_at")
-    list_filter = ("category", "is_published", "is_featured")
+    list_display = ("title", "category", "is_published", "is_featured", "is_hero", "published_at")
+    list_filter = ("category", "is_published", "is_featured", "is_hero")
     search_fields = ("title", "summary", "body")
-    list_editable = ("is_published", "is_featured")
+    list_editable = ("is_published", "is_featured", "is_hero")
     prepopulated_fields = {"slug": ("title",)}
     inlines = [PostSectionInline]  # Bloklari BlogPost sayfasina gomer
