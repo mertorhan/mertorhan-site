@@ -113,7 +113,7 @@
                 <div class="card-body">
                     <p class="card-meta">
                         <span class="meta-tick"></span>
-                        {{ review.get_content_type_display }}{% if review.release_year %} · {{ review.release_year }}{% endif %}{% if review.rating %} · ★ {{ review.rating }}/10{% endif %}
+                        {{ review.get_content_type_display }}{% if review.release_year %} · {{ review.release_year }}{% endif %}{% if review.rating %} · {% include "core/star_row.html" with score=review.rating ondalik=True %}{% endif %}
                     </p>
                     <h3 class="card-title">{{ review.title }}</h3>
                 </div>

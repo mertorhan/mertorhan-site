@@ -23,5 +23,11 @@ def review_list(request):
 
 
 def review_detail(request, slug):
-    review = get_object_or_404(Review, slug=slug, is_published=True)
+    # prefetch: alt kriterler sayfada listeleniyor. Onsuz her kriter icin
+    # bir sorgu daha acilirdi (9 kriter = 9 ekstra sorgu).
+    review = get_object_or_404(
+        Review.objects.prefetch_related("scores__criterion"),
+        slug=slug,
+        is_published=True,
+    )
     return render(request, "movies/review_detail.html", {"review": review})
