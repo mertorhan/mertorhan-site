@@ -31,7 +31,7 @@
             <p class="feature-excerpt">{{ featured.summary }}</p>
             {% endif %}
             {% if featured.rating %}
-            <p class="card-meta" style="margin-top:14px;">★ {{ featured.rating }}/10</p>
+            <p class="card-meta" style="margin-top:14px;">{% include "core/star_row.html" with score=featured.rating ondalik=True %}</p>
             {% endif %}
         </div>
     </a>
@@ -47,7 +47,7 @@
             <div class="card-body">
                 <p class="card-meta">
                     <span class="meta-tick"></span>
-                    {% if review.release_year %}{{ review.release_year }}{% endif %}{% if review.rating %} · ★ {{ review.rating }}/10{% endif %}
+                    {% if review.release_year %}{{ review.release_year }}{% endif %}{% if review.rating %} · {% include "core/star_row.html" with score=review.rating ondalik=True %}{% endif %}
                 </p>
                 <h3 class="card-title">{{ review.title }}</h3>
             </div>

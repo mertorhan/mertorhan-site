@@ -19,6 +19,31 @@
 
 <body>
 
+    {% comment %}
+    Puan yildizinin sekli: sayfa basina BIR kez tanimlanir, her yildiz
+    buna <use> ile referans verir. Yildiz font karakteri (*) degil SVG,
+    cunku karakterin genisligi platformdan platforma degisiyor ve yarim
+    yildizin hizasi kayiyor.
+
+    path'e fill YAZILMAZ: kendi fill'i olursa <use> uzerinden gelen renk
+    kalitimini ezer, dolu/yarim/bos uc durum da ayni renk cikar.
+
+    Bu SVG display:none ile gizlenmiyor (CSS 42. bolum): yarim yildiz
+    buradaki gradyana disaridan referans veriyor, display:none olan bir
+    SVG icindeki boya sunucusu bazi tarayicilarda cozulmuyor.
+    {% endcomment %}
+    <svg class="star-sprite" aria-hidden="true" focusable="false">
+        <defs>
+            <linearGradient id="star-half">
+                <stop offset="50%"></stop>
+                <stop offset="50%"></stop>
+            </linearGradient>
+        </defs>
+        <symbol id="star" viewBox="0 0 24 24">
+            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+        </symbol>
+    </svg>
+
     <nav class="site-nav">
         <a href="{% url 'home' %}" class="nav-logo">Mert Orhan</a>
 

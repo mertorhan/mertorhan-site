@@ -1,0 +1,12 @@
+{% load rating_extras %}{% comment %}
+Yildiz satiri + sayi. Iki parametre alir:
+  score    puan (Decimal ya da tam sayi)
+  ondalik  True ise "7,4" gibi tek ondalikli yazar (ORTALAMA icin).
+           Verilmezse sayi oldugu gibi basilir (alt kriter puanlari
+           tam sayi, "8,0/10" degil "8/10" yazmali).
+
+Yildizlar aria-hidden: hemen yanindaki sayi zaten gercek metin, ekran
+okuyucu onu okuyor. Ayrica gizli metin koysaydik puan iki kez okunurdu.
+
+Yildizin sekli base.html'deki <symbol id="star">; burada sadece <use>.
+{% endcomment %}{% if score %}<span class="star-row" aria-hidden="true">{% for durum in score|yildiz_satiri %}<svg class="star star--{{ durum }}" viewBox="0 0 24 24"><use href="#star"></use></svg>{% endfor %}</span><span class="star-score">{% if ondalik %}{{ score|puan }}{% else %}{{ score }}{% endif %}/10</span>{% endif %}

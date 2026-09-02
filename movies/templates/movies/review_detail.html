@@ -11,8 +11,35 @@
         <p class="article-cat">{{ review.get_content_type_display }}{% if review.genre %} · {{ review.genre }}{% endif %}</p>
         <h1 class="article-title">{{ review.title }}</h1>
         <p class="article-byline">
-            Mert Orhan · {{ review.published_at|date:"d.m.Y" }}{% if review.rating %} · ★ {{ review.rating }}/10{% endif %}
+            Mert Orhan · {{ review.published_at|date:"d.m.Y" }}{% if review.rating %} · {% include "core/star_row.html" with score=review.rating ondalik=True %}{% endif %}
         </p>
+
+        {% comment %}
+        Puanin arkasindaki alt kriterler. Kapali baslar, acilmasi icin
+        JavaScript gerekmiyor: <details> tarayicinin kendi isi.
+        Puani girilmemis kriter listede hic gorunmez.
+        Dongu review.scores.all uzerinden: view'daki prefetch onbellegi
+        ancak boyle kullanilir, filtrelenmis queryset yeni sorgu acar.
+        {% endcomment %}
+        {% if review.rating %}
+        <details class="criteria">
+            <summary>Kriterler</summary>
+            <ul class="criteria-list">
+                {% for item in review.scores.all %}
+                {% if item.value %}
+                <li class="criteria-item">
+                    <span class="criteria-name">{{ item.criterion.name }}</span>
+                    {% include "core/star_row.html" with score=item.value %}
+                    {% if item.criterion.description %}
+                    <p class="criteria-desc">{{ item.criterion.description }}</p>
+                    {% endif %}
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </details>
+        {% endif %}
+
         <a href="#" class="share-link js-share">↗ Paylaş</a>
 
         {# Afis + kunye yan yana (dar ekranda alt alta duser) #}

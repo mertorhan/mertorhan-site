@@ -16,6 +16,10 @@
     --terracotta: #b4533a;  /* link, tik, hover */
     --green: #5e8b5a;       /* durum noktası */
 
+    /* Puan yıldızları (42. bölüm) */
+    --star: #d9a441;              /* dolu yıldız */
+    --star-empty: var(--faint);   /* boş yıldız */
+
     /* Çizgi/kenar */
     --line: rgba(35, 32, 25, 0.15);
 
@@ -2510,4 +2514,108 @@ main {
 }
 .article-toc a:hover {
     text-decoration: underline;
+}
+
+/* ============================================
+   42. PUAN YILDIZLARI
+   ============================================ */
+
+/* Yildiz seklinin tanimi (base.html'deki <symbol>) ekranda gorunmemeli.
+   display:none KULLANILMAZ: yarim yildiz asagidaki gradyana disaridan
+   referans veriyor, display:none olan bir SVG icindeki boya sunucusu
+   bazi tarayicilarda cozulmuyor ve hata SADECE yarim yildizda cikiyor. */
+.star-sprite {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.star-row {
+    display: inline-flex;
+    gap: 1px;
+    vertical-align: -2px;
+}
+
+.star {
+    width: 13px;
+    height: 13px;
+    display: block;
+}
+
+/* Renk <use> uzerinden veriliyor; fill kalitsaldir, symbol icindeki
+   path'e gecer. path'in kendi fill'i olsaydi bu kalitim ezilirdi. */
+.star--full {
+    fill: var(--star);
+}
+.star--half {
+    fill: url(#star-half);
+}
+.star--empty {
+    fill: var(--star-empty);
+}
+
+/* Yarim yildiz: sekli ikiye bolen, sicramasiz gecisli gradyan. */
+#star-half stop:first-child {
+    stop-color: var(--star);
+}
+#star-half stop:last-child {
+    stop-color: var(--star-empty);
+}
+
+/* Yildizlarin yanindaki sayi ("7,4/10"): olcek degismedi, sayi duruyor. */
+.star-score {
+    margin-left: 5px;
+}
+
+
+/* --- Alt kriter listesi (film detay, <details>) --- */
+.criteria {
+    margin: 14px 0 0;
+    font-family: var(--font-sans);
+}
+
+.criteria summary {
+    cursor: pointer;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--secondary);
+}
+
+.criteria summary:hover {
+    color: var(--terracotta);
+}
+
+.criteria-list {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 14px 0 0;
+    border-top: 1px solid var(--line);
+}
+
+/* Flex, grid degil: yildiz satiri ile sayi iki ayri eleman, grid'de
+   ayri hucrelere dusup alt alta kayarlardi. */
+.criteria-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    padding: 7px 0;
+}
+
+/* Ad solda kalsin, yildizlar saga yaslansin. */
+.criteria-name {
+    flex: 1;
+    font-size: 15px;
+    color: var(--body);
+    padding-right: 16px;
+}
+
+/* Aciklama tam genislik alir, yani kendi satirina duser. */
+.criteria-desc {
+    flex-basis: 100%;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--faint);
+    margin: 2px 0 0;
 }
