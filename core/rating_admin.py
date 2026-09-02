@@ -51,10 +51,16 @@ class BaseScoreInline(admin.TabularInline):
     """
     Puan satirlari icin ortak inline.
 
-    Alt sinif iki seyi soylemek zorunda:
+    Alt sinif uc seyi soylemek zorunda:
       model           ReviewScore / BookScore
       criterion_flag  hangi kriterler bu turde kullanilir
       score_lookup    puan satirindan ana kayda giden ters iliski
+
+    Ayrica ANA MODEL, puan satirlarini related_name="scores" ile tutmak
+    zorunda: get_formset icindeki mevcut satir sayimi (obj.scores.count())
+    bu ada bagli. Ucuncu bir icerik turu eklenip baska bir related_name
+    verilirse hata ScoreAverageMixin'e gelmeden burada AttributeError
+    olarak patlar — o yuzden sart iki sinifin belgesinde de yaziyor.
     """
 
     form = BaseScoreForm
