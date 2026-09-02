@@ -2617,5 +2617,8 @@ main {
     font-size: 13px;
     font-style: italic;
     color: var(--faint);
-    margin: 2px 0 0;
+    margin: 0;
+    /* Govdeden gelen 1.6, 13px'te satir kutusunu gereksiz sisiriyor ve
+       aciklama kendi kriterinden kopuk duruyordu. */
+    line-height: 1.35;
 }
