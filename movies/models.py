@@ -1,3 +1,4 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
@@ -21,7 +22,12 @@ class Review(models.Model):
     genre = models.CharField("Tarz (örn: Bilim Kurgu)", max_length=100, blank=True, default="")
 
     # --- Senin değerlendirmen ---
-    rating = models.PositiveIntegerField("Puanım (1-10)", null=True, blank=True)
+    # rating artik elle girilmiyor: alt kriter puanlarinin ortalamasi.
+    # Hesap ReviewAdmin.save_related() icinde yapiliyor (KB-37).
+    # Alan adi bilerek degismedi, sablonlar buna bagli.
+    rating = models.DecimalField(
+        "Ortalama puan (otomatik)", max_digits=3, decimal_places=1, null=True, blank=True
+    )
     summary = models.TextField("Kart özeti", blank=True, default="")
     body = models.TextField("Yorum / İnceleme")
 
@@ -40,3 +46,44 @@ class Review(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class ReviewScore(models.Model):
+    """
+    Bir incelemenin TEK bir kriterden aldigi puan.
+    Review.rating bu satirlarin ortalamasi.
+    """
+    review = models.ForeignKey(
+        Review,
+        on_delete=models.CASCADE,
+        related_name="scores",
+        verbose_name="İnceleme",
+    )
+    # PROTECT: kullanimda olan bir kriter silinirse puanlar sessizce
+    # yok olur ve ortalamalar aciklanamaz sekilde degisirdi.
+    criterion = models.ForeignKey(
+        "core.RatingCriterion",
+        on_delete=models.PROTECT,
+        verbose_name="Kriter",
+    )
+    # Olcek 1-10; sinirlar burada tanimli (KB-35). Eskiden puanin tek
+    # kurali "negatif olamaz"di, admin'e 47 girilebiliyordu.
+    value = models.PositiveSmallIntegerField(
+        "Puan (1-10)",
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(1), MaxValueValidator(10)],
+    )
+
+    class Meta:
+        ordering = ["criterion__order"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["review", "criterion"], name="unique_review_criterion"
+            )
+        ]
+        verbose_name = "Kriter Puanı"
+        verbose_name_plural = "Kriter Puanları"
+
+    def __str__(self):
+        return f"{self.criterion} — {self.value if self.value is not None else '—'}"
