@@ -108,8 +108,13 @@ class ReviewAdmin(admin.ModelAdmin):
         values = [v for v in review.scores.values_list("value", flat=True) if v is not None]
 
         if values:
-            # round() kullanmiyoruz: bankaci yuvarlamasi yapiyor
-            # (round(7.45, 1) -> 7.4). Burada yarim yukari yuvarlanmali.
+            # round() kullanmiyoruz: bankaci yuvarlamasi yapiyor, yani
+            # yarimi en yakin CIFT sayiya cekiyor — round(2.5) -> 2,
+            # round(0.5) -> 0. Ondalikta ise sonuc float'in ikili
+            # gosterimine kaliyor: round(7.45, 1) yukari gidip 7.5
+            # veriyor cunku 7.45 ikilide tam yarim degil. Sorun "yanlis
+            # yone yuvarlamasi" degil, hangi yone gidecegini kodun
+            # soylememesi. Burada kural acik olmali: yarim yukari.
             review.rating = (Decimal(sum(values)) / len(values)).quantize(
                 Decimal("0.1"), rounding=ROUND_HALF_UP
             )
