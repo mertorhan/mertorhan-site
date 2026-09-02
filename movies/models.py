@@ -2,6 +2,63 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
+# --------------------------------------------------------------------
+# Kunye listeleri
+#
+# Bu dort model core'da DEGIL movies'te yasiyor: kitabin yazari ve turu
+# ayri bir kartin isi ve kitap turleri (Roman, Deneme) film turleriyle
+# AYNI LISTE OLMAMALI. RatingCriterion core'a girdi cunku iki bolum
+# gercekten ayni kriter listesini paylasiyordu; burada paylasmiyorlar.
+# --------------------------------------------------------------------
+
+class Director(models.Model):
+    name = models.CharField("Ad", max_length=200, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = "Yönetmen"
+        verbose_name_plural = "Yönetmenler"
+
+    def __str__(self):
+        return self.name
+
+
+class Screenwriter(models.Model):
+    name = models.CharField("Ad", max_length=200, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = "Senarist"
+        verbose_name_plural = "Senaristler"
+
+    def __str__(self):
+        return self.name
+
+
+class Actor(models.Model):
+    name = models.CharField("Ad", max_length=200, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = "Oyuncu"
+        verbose_name_plural = "Oyuncular"
+
+    def __str__(self):
+        return self.name
+
+
+class Genre(models.Model):
+    name = models.CharField("Ad", max_length=200, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = "Tür"
+        verbose_name_plural = "Türler"
+
+    def __str__(self):
+        return self.name
+
+
 class Review(models.Model):
     CONTENT_TYPE_CHOICES = [
         ("film", "Film"),
@@ -20,6 +77,23 @@ class Review(models.Model):
     lead_actors = models.CharField("Başrol oyuncuları", max_length=300, blank=True, default="")
     release_year = models.PositiveIntegerField("Yapım yılı", null=True, blank=True)
     genre = models.CharField("Tarz (örn: Bilim Kurgu)", max_length=100, blank=True, default="")
+
+    # --- Künye: çoklu ilişkiler (KB-32) ---
+    # Yukaridaki dort metin alani (director, screenwriter, lead_actors,
+    # genre) BILEREK duruyor. Once bu iliskiler kuruluyor, sonra veri
+    # admin'den elle giriliyor, eski alanlar EN SON ayri bir kartta
+    # siliniyor. Sira ters cevrilemez.
+    #
+    # related_name verilmedi: varsayilan review_set yeterli, filtre
+    # sorgulari Review uzerinden ileri yonde calisacak.
+    directors = models.ManyToManyField(Director, blank=True, verbose_name="Yönetmenler")
+    screenwriters = models.ManyToManyField(Screenwriter, blank=True, verbose_name="Senaristler")
+    actors = models.ManyToManyField(Actor, blank=True, verbose_name="Oyuncular")
+    genres = models.ManyToManyField(Genre, blank=True, verbose_name="Türler")
+
+    # KB-31: yayin tarihi (published_at) ile karistirilmasin — bu, filmin
+    # izlendigi tarih.
+    watched_at = models.DateField("İzleme tarihi", null=True, blank=True)
 
     # --- Senin değerlendirmen ---
     # rating artik elle girilmiyor: alt kriter puanlarinin ortalamasi.
