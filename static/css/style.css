@@ -2638,3 +2638,68 @@ main {
        aciklama kendi kriterinden kopuk duruyordu. */
     line-height: 1.35;
 }
+
+/* ============================================
+   43. FİLM KÜNYESİ
+   --- Detay sayfasinda afisin sagindaki kutu ---
+   Not: 19. bolumdeki .credits kurallari KITABIN.
+   Film kendi sinif adlarini kullanir, ikisi
+   birbirine karismaz.
+   ============================================ */
+
+/* Kutu: satirlar alt alta, aralarinda 1px yatay ayirici.
+   Ayirici cizgiler gap + zemin rengi hilesiyle ciziliyor. */
+.kunye {
+    display: grid;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* Satirlar FLEX, grid degil: bir hucre hic basilmadiginda (ornegin
+   yonetmen girilmemisse) kalan hucreler bosluğu doldurur. Grid olsaydi
+   bos kolon, ayirici renginde bir blok olarak gorunurdu. */
+.kunye-row {
+    display: flex;
+    gap: 1px;
+    background: var(--line);
+}
+
+/* Zemin --paper: hucreler sayfayla ayni zeminde, geriye sadece izgara
+   cizgileri kaliyor. */
+.kunye-cell {
+    flex: 1 1 0;
+    background: var(--paper);
+    padding: 16px 20px;
+    min-width: 0;   /* uzun isim listesi hucreyi tasirmasin */
+}
+
+/* Tur hucresi digerlerinden genis: 1.5 / 1 / 1 */
+.kunye-cell--genis {
+    flex: 1.5 1 0;
+}
+
+.kunye-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--faint);
+    margin-bottom: 4px;
+}
+
+.kunye-value {
+    font-size: 14px;
+    color: var(--body);
+}
+
+/* --- Dar ekran: uclu satir alt alta dussun ---
+   Esik 700px, 35. bolumdeki .poster-head ile ayni: afis zaten orada
+   kunyenin ustune cikiyor. */
+@media (max-width: 700px) {
+    .kunye-row {
+        flex-direction: column;
+    }
+}
