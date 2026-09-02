@@ -23,7 +23,18 @@ class ReviewScoreForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["criterion"].disabled = True
+        field = self.fields["criterion"]
+        field.disabled = True
+
+        # Acilir listede sadece bu satirin kendi kriteri dursun. Alan
+        # zaten pasif; butun kriterleri her satirda bastan basmak hem
+        # gereksiz HTML hem de pasif/kitap kriterlerini ortaligi
+        # karistiracak sekilde gosteriyordu.
+        secili = self.initial.get("criterion") or self.instance.criterion_id
+        # Kriteri olmayan tek form, admin'in JS icin bastigi bos sablon
+        # satiri (empty_form). Onun listesi de bos kalsin, yoksa pasif ve
+        # kitaba ait kriterler oradan sizip goruntuye giriyor.
+        field.queryset = field.queryset.filter(pk=secili) if secili else field.queryset.none()
 
 
 class ReviewScoreInline(admin.TabularInline):
@@ -54,8 +65,15 @@ class ReviewScoreInline(admin.TabularInline):
             criteria = criteria.exclude(reviewscore__review=obj)
         initial = [{"criterion": criterion.pk} for criterion in criteria]
 
+        mevcut = obj.scores.count() if obj is not None else 0
+
         class PrefilledFormSet(formset_class):
             extra = len(initial)
+            # Satirlari kriter listesi belirliyor; elle satir eklemenin
+            # karsiligi yok (kriter secilemiyor). max_num'i dolu satir
+            # sayisina esitleyince admin "Baska bir tane ekle" bagini
+            # gizliyor.
+            max_num = mevcut + len(initial)
 
             def __init__(self, *args, **inner_kwargs):
                 inner_kwargs["initial"] = initial
