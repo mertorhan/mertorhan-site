@@ -11,19 +11,25 @@
         <p class="article-cat">{{ review.get_content_type_display }}{% if review.genre %} · {{ review.genre }}{% endif %}</p>
         <h1 class="article-title">{{ review.title }}</h1>
         <p class="article-byline">
-            Mert Orhan · {{ review.published_at|date:"d.m.Y" }}{% if review.rating %} · {% include "core/star_row.html" with score=review.rating ondalik=True %}{% endif %}
+            Mert Orhan · Yayın tarihi · {{ review.published_at|date:"d.m.Y" }}
         </p>
 
         {% comment %}
-        Puanin arkasindaki alt kriterler. Kapali baslar, acilmasi icin
-        JavaScript gerekmiyor: <details> tarayicinin kendi isi.
+        Puan satiri, kriterlerin ozeti. Ayri bir "Kriterler" etiketi yok:
+        ozet zaten puanin kendisi, tiklayinca arkasindaki kriterler aciliyor.
+
+        Kapali baslar, acilmasi icin JavaScript gerekmiyor: <details>
+        tarayicinin kendi isi. summary'ye display VERILMEZ — varsayilani
+        list-item, ucgen isaret oradan (::marker) geliyor; display: block
+        ya da flex yazmak isareti siler.
+
         Puani girilmemis kriter listede hic gorunmez.
         Dongu review.scores.all uzerinden: view'daki prefetch onbellegi
         ancak boyle kullanilir, filtrelenmis queryset yeni sorgu acar.
         {% endcomment %}
         {% if review.rating %}
         <details class="criteria">
-            <summary>Kriterler</summary>
+            <summary>{% include "core/star_row.html" with score=review.rating ondalik=True %}</summary>
             <ul class="criteria-list">
                 {% for item in review.scores.all %}
                 {% if item.value %}

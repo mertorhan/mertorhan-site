@@ -2575,16 +2575,32 @@ main {
     font-family: var(--font-sans);
 }
 
+/* summary artik puanin kendisini tasiyor, bir etiket degil: buyuk harf
+   ve harf araligi kaldirildi, ikisi de "KRITERLER" metni icindi ve
+   "9,0/10" sayisini gereksiz araliyorlardi.
+   display YAZILMAZ: varsayilan list-item, ucgen isaret oradan geliyor. */
 .criteria summary {
     cursor: pointer;
     font-size: 13px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
     color: var(--secondary);
 }
 
 .criteria summary:hover {
     color: var(--terracotta);
+}
+
+/* Odak halkasi klavyeyle gezende ciksin, fareyle tiklayanda cikmasin.
+   :focus'u sifirlarken :not(:focus-visible) sarti onemli — :focus-visible
+   desteklemeyen bir tarayicida secicinin tamami gecersiz sayilir ve
+   tarayicinin kendi halkasi yerinde kalir. */
+.criteria summary:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.criteria summary:focus-visible {
+    outline: 2px solid var(--terracotta);
+    outline-offset: 3px;
+    border-radius: 3px;
 }
 
 .criteria-list {
