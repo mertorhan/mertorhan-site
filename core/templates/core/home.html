@@ -141,7 +141,7 @@
                 <div class="card-body">
                     <p class="card-meta">
                         <span class="meta-tick"></span>
-                        {{ book.author }}{% if book.rating %} · ★ {{ book.rating }}/10{% endif %}
+                        {{ book.author }}{% if book.rating %} · {% include "core/star_row.html" with score=book.rating ondalik=True %}{% endif %}
                     </p>
                     <h3 class="card-title">{{ book.title }}</h3>
                 </div>
