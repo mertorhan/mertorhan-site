@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block title %}{{ review.title }} · Mert Orhan{% endblock %}
 
@@ -8,7 +9,8 @@
 
         <a href="{% url 'review_list' %}" class="article-back">← Film & Dizi</a>
 
-        <p class="article-cat">{{ review.get_content_type_display }}{% if review.genre %} · {{ review.genre }}{% endif %}</p>
+        {# Tur artik iliski: eski genre metin alani ekrana hicbir yerden basilmiyor #}
+        <p class="article-cat">{{ review.get_content_type_display }}{% if review.genres.all %} · {{ review.genres.all|join:" · " }}{% endif %}</p>
         <h1 class="article-title">{{ review.title }}</h1>
         <p class="article-byline">
             Mert Orhan · Yayın tarihi · {{ review.published_at|date:"d.m.Y" }}
@@ -52,20 +54,74 @@
         <div class="poster-head">
             <div class="article-cover"{% if review.cover_image %} style="background-image:url('{{ review.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
 
-            <div class="credits">
-                {% if review.director %}
-                <div class="credits-item"><p class="credits-label">Yönetmen</p><p class="credits-value">{{ review.director }}</p></div>
+            {% comment %}
+            Kunye: uc satir. Sinif adlari filme ozel (.kunye*) — .credits
+            KITABIN, ona dokunulmuyor.
+
+            Her hucre kendi {% if %}'i icinde, her satir da "icindekilerden
+            biri varsa" kosuluyla sarili. Bos hucre HIC BASILMIYOR; satirlar
+            flex oldugu icin kalan hucreler bosluğu dolduruyor (grid olsaydi
+            bos kolon ayirici renginde bir blok olarak gorunurdu).
+
+            Basilan alanlar YENI iliskiler. Eski metin alanlari (director,
+            screenwriter, lead_actors, genre) modelde duruyor ama artik
+            ekrana cikmiyor.
+            {% endcomment %}
+            {% if review.directors.all or review.screenwriters.all or review.actors.all or review.genres.all or review.release_year or review.watched_at %}
+            <div class="kunye">
+
+                {% if review.directors.all or review.screenwriters.all %}
+                <div class="kunye-row">
+                    {% if review.directors.all %}
+                    <div class="kunye-cell">
+                        <p class="kunye-label">Yönetmen</p>
+                        <p class="kunye-value">{{ review.directors.all|join:" · " }}</p>
+                    </div>
+                    {% endif %}
+                    {% if review.screenwriters.all %}
+                    <div class="kunye-cell">
+                        <p class="kunye-label">Senarist</p>
+                        <p class="kunye-value">{{ review.screenwriters.all|join:" · " }}</p>
+                    </div>
+                    {% endif %}
+                </div>
                 {% endif %}
-                {% if review.screenwriter %}
-                <div class="credits-item"><p class="credits-label">Senarist</p><p class="credits-value">{{ review.screenwriter }}</p></div>
+
+                {% if review.actors.all %}
+                <div class="kunye-row">
+                    <div class="kunye-cell">
+                        <p class="kunye-label">Başrol</p>
+                        <p class="kunye-value">{{ review.actors.all|join:" · " }}</p>
+                    </div>
+                </div>
                 {% endif %}
-                {% if review.lead_actors %}
-                <div class="credits-item"><p class="credits-label">Başrol</p><p class="credits-value">{{ review.lead_actors }}</p></div>
+
+                {% if review.genres.all or review.release_year or review.watched_at %}
+                <div class="kunye-row">
+                    {% if review.genres.all %}
+                    <div class="kunye-cell kunye-cell--genis">
+                        <p class="kunye-label">Tür</p>
+                        <p class="kunye-value">{{ review.genres.all|join:" · " }}</p>
+                    </div>
+                    {% endif %}
+                    {% if review.release_year %}
+                    <div class="kunye-cell">
+                        <p class="kunye-label">Yapım yılı</p>
+                        <p class="kunye-value">{{ review.release_year }}</p>
+                    </div>
+                    {% endif %}
+                    {% if review.watched_at %}
+                    <div class="kunye-cell">
+                        <p class="kunye-label">İzlediğim</p>
+                        {# Ay adi Turkce olsun diye: sitenin LANGUAGE_CODE'u en-us #}
+                        <p class="kunye-value">{% language "tr" %}{{ review.watched_at|date:"F Y" }}{% endlanguage %}</p>
+                    </div>
+                    {% endif %}
+                </div>
                 {% endif %}
-                {% if review.release_year %}
-                <div class="credits-item"><p class="credits-label">Yapım yılı</p><p class="credits-value">{{ review.release_year }}</p></div>
-                {% endif %}
+
             </div>
+            {% endif %}
         </div>
 
         {# İnceleme gövdesi #}

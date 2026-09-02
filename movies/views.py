@@ -26,7 +26,9 @@ def review_detail(request, slug):
     # prefetch: alt kriterler sayfada listeleniyor. Onsuz her kriter icin
     # bir sorgu daha acilirdi (9 kriter = 9 ekstra sorgu).
     review = get_object_or_404(
-        Review.objects.prefetch_related("scores__criterion"),
+        Review.objects.prefetch_related(
+            "scores__criterion", "directors", "screenwriters", "actors", "genres"
+        ),
         slug=slug,
         is_published=True,
     )
