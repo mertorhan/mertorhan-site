@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile, Experience, ContactMessage
+from .models import Profile, Experience, ContactMessage, RatingCriterion
 
 
 # Deneyimleri Profil sayfasında alt alta düzenlemek için inline
@@ -14,6 +14,15 @@ class ExperienceInline(admin.TabularInline):
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ("full_name", "role", "email")
     inlines = [ExperienceInline]
+
+
+@admin.register(RatingCriterion)
+class RatingCriterionAdmin(admin.ModelAdmin):
+    list_display = ("name", "order", "for_movies", "for_books", "is_active")
+    # name satir linki oldugu icin list_editable'a giremez; geri kalani
+    # liste ekranindan toplu duzenlenebilir.
+    list_editable = ("order", "for_movies", "for_books", "is_active")
+    search_fields = ("name", "description")
 
 
 @admin.register(ContactMessage)

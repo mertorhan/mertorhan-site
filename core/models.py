@@ -47,6 +47,32 @@ class Experience(models.Model):
         return self.role
     
 
+class RatingCriterion(models.Model):
+    """
+    Puanlamanin alt basliklari (ornek: Senaryo, Oyunculuk, Goruntu).
+    Liste admin'den yonetilir; yeni kriter eklemek migration gerektirmez.
+    Kriterin kendisi core'da yasar cunku birden fazla app kullanacak:
+    su an Film & Dizi, ileride Kitap (KB-42).
+    """
+    name = models.CharField("Kriter", max_length=100, unique=True)
+    description = models.CharField("Açıklama", max_length=200, blank=True, default="")
+    order = models.PositiveIntegerField("Sıra", default=10)
+    for_movies = models.BooleanField("Film & Dizi'de kullanılsın", default=True)
+    for_books = models.BooleanField("Kitaplarda kullanılsın", default=False)
+    is_active = models.BooleanField("Aktif", default=True)
+
+    class Meta:
+        ordering = ["order", "name"]
+        verbose_name = "Puan Kriteri"
+        verbose_name_plural = "Puan Kriterleri"
+
+    def __str__(self):
+        # Puan satirlarinda kriter bir acilir liste olarak gorunuyor;
+        # etiketi buradan geliyor. Bu metot olmazsa "RatingCriterion
+        # object (1)" yazar.
+        return self.name
+
+
 class ContactMessage(models.Model):
     name = models.CharField("Ad Soyad", max_length=120)
     email = models.EmailField("E-posta")
