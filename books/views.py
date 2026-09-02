@@ -16,5 +16,11 @@ def book_list(request):
 
 
 def book_detail(request, slug):
-    book = get_object_or_404(Book, slug=slug, is_published=True)
+    # prefetch: alt kriterler sayfada listeleniyor. Onsuz her kriter icin
+    # bir sorgu daha acilirdi.
+    book = get_object_or_404(
+        Book.objects.prefetch_related("scores__criterion"),
+        slug=slug,
+        is_published=True,
+    )
     return render(request, "books/book_detail.html", {"book": book})

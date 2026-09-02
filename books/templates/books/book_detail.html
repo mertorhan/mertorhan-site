@@ -11,8 +11,41 @@
         <p class="article-cat">{{ book.author }}</p>
         <h1 class="article-title">{{ book.title }}</h1>
         <p class="article-byline">
-            Mert Orhan · {{ book.published_at|date:"d.m.Y" }}{% if book.rating %} · ★ {{ book.rating }}/10{% endif %}
+            Mert Orhan · Yayın tarihi · {{ book.published_at|date:"d.m.Y" }}
         </p>
+
+        {% comment %}
+        Puan satiri, kriterlerin ozeti. Ayri bir "Kriterler" etiketi yok:
+        ozet zaten puanin kendisi, tiklayinca arkasindaki kriterler aciliyor.
+
+        Kapali baslar, acilmasi icin JavaScript gerekmiyor: <details>
+        tarayicinin kendi isi. summary'ye display VERILMEZ — varsayilani
+        list-item, ucgen isaret oradan (::marker) geliyor; display: block
+        ya da flex yazmak isareti siler.
+
+        Puani girilmemis kriter listede hic gorunmez.
+        Dongu book.scores.all uzerinden: view'daki prefetch onbellegi
+        ancak boyle kullanilir, filtrelenmis queryset yeni sorgu acar.
+        {% endcomment %}
+        {% if book.rating %}
+        <details class="criteria">
+            <summary>{% include "core/star_row.html" with score=book.rating ondalik=True %}</summary>
+            <ul class="criteria-list">
+                {% for item in book.scores.all %}
+                {% if item.value %}
+                <li class="criteria-item">
+                    <span class="criteria-name">{{ item.criterion.name }}</span>
+                    {% include "core/star_row.html" with score=item.value %}
+                    {% if item.criterion.description %}
+                    <p class="criteria-desc">{{ item.criterion.description }}</p>
+                    {% endif %}
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </details>
+        {% endif %}
+
         <a href="#" class="share-link js-share">↗ Paylaş</a>
 
         {# Afis + kunye yan yana (dar ekranda alt alta duser) #}

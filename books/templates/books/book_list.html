@@ -23,7 +23,7 @@
             <p class="feature-excerpt">{{ featured.summary }}</p>
             {% endif %}
             {% if featured.rating %}
-            <p class="card-meta" style="margin-top:14px;">★ {{ featured.rating }}/10</p>
+            <p class="card-meta" style="margin-top:14px;">{% include "core/star_row.html" with score=featured.rating ondalik=True %}</p>
             {% endif %}
         </div>
     </a>
@@ -37,7 +37,7 @@
             <div class="card-body">
                 <p class="card-meta">
                     <span class="meta-tick"></span>
-                    {{ book.author }}{% if book.rating %} · ★ {{ book.rating }}/10{% endif %}
+                    {{ book.author }}{% if book.rating %} · {% include "core/star_row.html" with score=book.rating ondalik=True %}{% endif %}
                 </p>
                 <h3 class="card-title">{{ book.title }}</h3>
             </div>

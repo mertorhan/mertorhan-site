@@ -1,3 +1,4 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
@@ -12,7 +13,12 @@ class Book(models.Model):
     translator = models.CharField("Çevirmen", max_length=200, blank=True, default="")
 
     # --- Senin değerlendirmen ---
-    rating = models.PositiveIntegerField("Puanım (1-10)", null=True, blank=True)
+    # rating artik elle girilmiyor: alt kriter puanlarinin ortalamasi.
+    # Hesap ScoreAverageMixin.save_related() icinde yapiliyor (KB-42).
+    # Alan adi bilerek degismedi, sablonlar buna bagli.
+    rating = models.DecimalField(
+        "Ortalama puan (otomatik)", max_digits=3, decimal_places=1, null=True, blank=True
+    )
     summary = models.TextField("Kart özeti", blank=True, default="")
     body = models.TextField("Özet / Eleştiri")
 
@@ -31,6 +37,49 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class BookScore(models.Model):
+    """
+    Bir kitabin TEK bir kriterden aldigi puan.
+    Book.rating bu satirlarin ortalamasi. (movies.ReviewScore'un esi.)
+    """
+    book = models.ForeignKey(
+        Book,
+        on_delete=models.CASCADE,
+        # related_name "scores" olmak ZORUNDA: ScoreAverageMixin
+        # ortalamayi bu ad uzerinden hesapliyor.
+        related_name="scores",
+        verbose_name="Kitap",
+    )
+    # PROTECT: kullanimda olan bir kriter silinirse puanlar sessizce
+    # yok olur ve ortalamalar aciklanamaz sekilde degisirdi.
+    criterion = models.ForeignKey(
+        "core.RatingCriterion",
+        on_delete=models.PROTECT,
+        verbose_name="Kriter",
+    )
+    # Olcek 1-10; sinirlar burada tanimli. Eskiden puanin tek kurali
+    # "negatif olamaz"di, admin'e 47 girilebiliyordu.
+    value = models.PositiveSmallIntegerField(
+        "Puan (1-10)",
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(1), MaxValueValidator(10)],
+    )
+
+    class Meta:
+        ordering = ["criterion__order"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["book", "criterion"], name="unique_book_criterion"
+            )
+        ]
+        verbose_name = "Kriter Puanı"
+        verbose_name_plural = "Kriter Puanları"
+
+    def __str__(self):
+        return f"{self.criterion} — {self.value if self.value is not None else '—'}"
 
 
 class BookQuote(models.Model):
