@@ -32,6 +32,9 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost', cast=Csv(
 # HTTPS uzerinden form/admin icin guvenilen adresler (canlida .env'de doldurulacak)
 CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='', cast=Csv())
 
+# Google Analytics olcum kimligi .env'den; bos ise izleme kodu hic basilmaz
+GA_MEASUREMENT_ID = config('GA_MEASUREMENT_ID', default='')
+
 
 # Application definition
 
@@ -72,6 +75,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.analytics',
             ],
         },
     },
