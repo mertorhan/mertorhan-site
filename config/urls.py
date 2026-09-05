@@ -16,6 +16,7 @@ urlpatterns = [
     path('guide/', include('guide.urls')),
     path('filmler/', include('movies.urls')),
     path('kitaplar/', include('books.urls')),
+    path('api/v1/', include('api.urls')),
     path('', include('core.urls')),
 ]
 
