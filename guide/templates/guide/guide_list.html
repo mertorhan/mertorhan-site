@@ -16,7 +16,8 @@
     {# One cikan gezi: buyuk yatay kart. Artik veritabanindan ("featured") geliyor #}
     {% if featured %}
     <a href="{% url 'guide_detail' featured.slug %}" class="feature-card">
-        <div class="feature-image"{% if featured.cover_image %} style="background-image:url('{{ featured.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
+        {# Kirpma yok: boyut ve konum CSS'te (.feature-image, contain). Satir ici kalsaydi CSS'i ezerdi. #}
+        <div class="feature-image"{% if featured.cover_image %} style="background-image:url('{{ featured.cover_image.url }}');"{% endif %}></div>
         <div class="feature-body">
             <p class="card-meta">
                 <span class="meta-tick"></span>
