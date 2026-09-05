@@ -35,7 +35,8 @@
         <div class="masonry-item"
              data-image="{{ photo.image.url }}"
              data-title="{{ photo.title }}"
-             data-category="{{ photo.category }}"
+             {# category artik null olabilen bir FK: {% if %} olmadan Django bos degeri "None" METNI olarak basar ve lightbox'taki "|| 'Fotograf'" korumasi calismaz, cunku "None" truthy #}
+             data-category="{% if photo.category %}{{ photo.category }}{% endif %}"
              data-location="{{ photo.location }}"
              data-date="{% if photo.taken_at %}{{ photo.taken_at|date:'d.m.Y' }}{% endif %}"
              data-camera="{{ photo.camera }}"
