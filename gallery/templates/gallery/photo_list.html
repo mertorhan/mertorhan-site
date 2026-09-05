@@ -39,8 +39,19 @@
              data-shutter="{{ photo.shutter_speed }}"
              data-aperture="{{ photo.aperture }}"
              data-focal="{{ photo.focal_length }}">
+            {% comment %}
+            width/height oznitelikleri tarayiciya ORANI bildirir; gorsel
+            inmeden once dogru yuksekligi ayirir ve izgara yuklenirken
+            ziplamaz. Gercek boyutu asagidaki style veriyor, ikisi
+            birlikte calisiyor.
+
+            Boyut bosken oznitelik HIC basilmaz: width="" tarayiciyi
+            sasirtir. Eski kayitlarin boyutu "foto_boyutlari" komutuyla
+            dolduruluyor.
+            {% endcomment %}
             <img src="{% if photo.thumbnail %}{{ photo.thumbnail.url }}{% else %}{{ photo.image.url }}{% endif %}"
                  alt="{{ photo.title }}" loading="lazy"
+                 {% if photo.image_width and photo.image_height %}width="{{ photo.image_width }}" height="{{ photo.image_height }}"{% endif %}
                  style="width:100%; display:block; border-radius:4px;">
         </div>
         {% empty %}
