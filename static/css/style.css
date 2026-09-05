@@ -590,14 +590,23 @@ main {
     border-bottom: 1px solid var(--line);
 }
 
+/* Kapak gorseli KIRPILMAZ, kutuya SIGAR — .card-image ile ayni karar.
+   Gerekce ve tuzaklar orada (11. bolum) anlatildi: background-color
+   (kisayol degil), no-repeat zorunlu, duz zemin cizgili desen yerine. */
 .feature-image {
     height: 320px;
     border-radius: 4px;
-    background: repeating-linear-gradient(
-        135deg,
-        #e7e0d1, #e7e0d1 12px,
-        #eee8dc 12px, #eee8dc 24px
-    );
+    background-color: var(--paper);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Guvenlik agi: film ve kitabin one cikan kartlari afis oraninda
+   (35. bolum, aspect-ratio 2/3). Orada kirpma olmuyor, doldurmaya
+   devam etsinler. Ozgullugu 0-2-0, yukaridaki 0-1-0 kurali eziyor. */
+.feature-card--poster .feature-image {
+    background-size: cover;
 }
 
 .feature-title {
