@@ -331,15 +331,37 @@ main {
     padding-right: 0;
 }
 
+/* Kapak gorseli KIRPILMAZ, kutuya SIGAR (contain).
+   Gorsel oranlari serbest — internetten inen, telefonla cekilen — bu
+   yuzden "cover" ile hangi gorselin nereden kesilecegi onceden
+   bilinemiyordu. Kutu sabit yukseklikte kaliyor ki izgara hizasi
+   bozulmasin; artan alani sayfa zemini dolduruyor.
+
+   background-color (kisayol "background" DEGIL): kisayol
+   background-image'i de sifirlar, oysa sablon gorseli satir ici
+   background-image olarak veriyor.
+
+   Eskiden burada cizgili bir desen vardi (yer tutucu). contain'e
+   gecince dikey bir gorselin YANLARINDA o cizgiler gorunurdu; duz
+   zeminle bosluk fark edilmiyor.
+
+   no-repeat ZORUNLU: background-repeat varsayilani "repeat" ve contain
+   kutuyu doldurmadigi icin artan alan gorselin kopyalariyla DOSENIR. */
 .card-image {
     height: 180px;
     border-radius: 4px;
     margin-bottom: 16px;
-    background: repeating-linear-gradient(
-        135deg,
-        #e7e0d1, #e7e0d1 12px,
-        #eee8dc 12px, #eee8dc 24px
-    );
+    background-color: var(--paper);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Guvenlik agi: afis kartlari (film / kitap) kutuyu DOLDURUR.
+   Bugun sablonlar satir ici cover veriyor; o satir ici ileride
+   kaldirilirsa afisler sessizce contain'e duserdi. */
+.card-image--poster {
+    background-size: cover;
 }
 
 /* tik'li meta satırı */

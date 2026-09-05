@@ -79,7 +79,8 @@
     <div class="card-grid">
         {% for guide in guides %}
         <a href="{% url 'guide_detail' guide.slug %}" class="card">
-            <div class="card-image"{% if guide.cover_image %} style="background-image:url('{{ guide.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}>
+            {# Kirpma yok: boyut ve konum CSS'te (.card-image, contain). Satir ici kalsaydi CSS'i ezerdi. #}
+            <div class="card-image"{% if guide.cover_image %} style="background-image:url('{{ guide.cover_image.url }}');"{% endif %}>
                 {% if guide.entry_type == "rota" %}
                     <span class="badge badge-rota">Rota</span>
                 {% else %}
