@@ -22,13 +22,25 @@ def gorsel_olcusu(yol):
         return img.size
 
 
-class Photo(models.Model):
-    CATEGORY_CHOICES = [
-        ("Manzara", "Manzara"),
-        ("Sokak", "Sokak"),
-        ("Portre", "Portre"),
-    ]
+class PhotoCategory(models.Model):
+    """
+    Galeri kategorisi. Once Photo uzerinde sabit secenekli bir metin
+    alaniydi; yeni kategori eklemek kod degisikligi ve migration
+    gerektiriyordu. Artik admin'den yonetiliyor.
+    """
+    name = models.CharField("Ad", max_length=60, unique=True)
+    order = models.PositiveIntegerField("Sıra", default=10)
 
+    class Meta:
+        ordering = ["order", "name"]
+        verbose_name = "Fotoğraf Kategorisi"
+        verbose_name_plural = "Fotoğraf Kategorileri"
+
+    def __str__(self):
+        return self.name
+
+
+class Photo(models.Model):
     image = models.ImageField("Fotoğraf", upload_to="gallery/")
 
     # Izgarada gosterilen kucuk kopya. Otomatik uretilir,
@@ -48,7 +60,14 @@ class Photo(models.Model):
     image_height = models.PositiveIntegerField(null=True, blank=True, editable=False)
 
     title = models.CharField("Başlık", max_length=200)
-    category = models.CharField("Kategori", max_length=20, choices=CATEGORY_CHOICES, blank=True, default="")
+    # SET_NULL: kategori silinirse fotograf silinmesin, kategorisiz kalsin.
+    category = models.ForeignKey(
+        PhotoCategory,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Kategori",
+    )
     location = models.CharField("Konum", max_length=120, blank=True, default="")
     taken_at = models.DateField("Çekim tarihi", null=True, blank=True)
 

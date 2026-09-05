@@ -10,12 +10,17 @@
         <h1 class="page-title">Çerçevelediğim anlar.</h1>
     </div>
 
-    {# Kategori filtresi: tiklayinca ?kategori=... ile filtreler #}
+    {% comment %}
+    Kategori filtresi: tiklayinca ?kategori=<id> ile filtreler.
+    Haplar artik sabit yazili degil, veritabanindan geliyor — yeni bir
+    kategori eklemek icin bu sablona dokunmak gerekmiyor.
+    Sayaclar view'da hesaplandi; adedi 0 olan kategori listeye girmiyor.
+    {% endcomment %}
     <div class="filter-pills">
         <a href="{% url 'photo_list' %}" class="pill-filter{% if not selected %} is-active{% endif %}">Tümü</a>
-        <a href="?kategori=Manzara" class="pill-filter{% if selected == 'Manzara' %} is-active{% endif %}">Manzara</a>
-        <a href="?kategori=Sokak" class="pill-filter{% if selected == 'Sokak' %} is-active{% endif %}">Sokak</a>
-        <a href="?kategori=Portre" class="pill-filter{% if selected == 'Portre' %} is-active{% endif %}">Portre</a>
+        {% for kategori in kategoriler %}
+        <a href="?kategori={{ kategori.deger }}" class="pill-filter{% if kategori.secili %} is-active{% endif %}">{{ kategori.etiket }} ({{ kategori.adet }})</a>
+        {% endfor %}
     </div>
 
     {% comment %}

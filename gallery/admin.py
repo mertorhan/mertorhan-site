@@ -1,5 +1,12 @@
 from django.contrib import admin
-from .models import Photo
+from .models import Photo, PhotoCategory
+
+
+@admin.register(PhotoCategory)
+class PhotoCategoryAdmin(admin.ModelAdmin):
+    list_display = ("name", "order")
+    list_editable = ("order",)
+    search_fields = ("name",)
 
 
 @admin.register(Photo)
