@@ -60,11 +60,16 @@ class Photo(models.Model):
     aperture = models.CharField("Diyafram", max_length=20, blank=True, default="")
     focal_length = models.CharField("Odak", max_length=20, blank=True, default="")
 
+    # Elle siralama. Araliklı numara ver (10, 20, 30) ki araya yeni bir
+    # fotograf sokmak icin butun listeyi yeniden numaralamak gerekmesin.
+    # Hepsi 0 kaldigi surece siralama bugunku gibi yeniden eskiye kalir.
+    order = models.PositiveIntegerField("Sıra", default=0)
+
     is_published = models.BooleanField("Yayında", default=True)
     created_at = models.DateField("Eklenme tarihi", auto_now_add=True)
 
     class Meta:
-        ordering = ["-created_at"]
+        ordering = ["order", "-created_at"]
         verbose_name = "Fotoğraf"
         verbose_name_plural = "Fotoğraflar"
 
