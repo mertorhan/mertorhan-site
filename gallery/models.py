@@ -3,7 +3,23 @@ import os
 from django.conf import settings
 from django.db import models
 
-from .imaging import kucult, kucuk_kopya_uret
+from .imaging import _gorseli_ac, kucult, kucuk_kopya_uret
+
+
+def gorsel_olcusu(yol):
+    """
+    Bir gorselin EKRANDA gorunecek olcusunu dondurur: (genislik, yukseklik).
+
+    Dosyadaki ham olcuyu DEGIL, EXIF donme bilgisi uygulanmis hâli
+    veriyoruz. Kameralar dikey cekilen fotografi cogu zaman yatay
+    kaydedip "bunu 90 derece dondur" notunu EXIF'e yaziyor; ham olcu
+    boyle bir dosyada 6000x4000, ekranda gorunen ise 4000x6000 oluyor.
+
+    Olcum imaging.py'deki _gorseli_ac() ile ayni yoldan gecsin ki yeni
+    kayitlar ile eski kayitlari dolduran komut ayni sonucu uretsin.
+    """
+    with _gorseli_ac(yol) as img:
+        return img.size
 
 
 class Photo(models.Model):
@@ -24,6 +40,12 @@ class Photo(models.Model):
         null=True,
         editable=False,
     )
+
+    # Buyuk gorselin olcusu. Sablon bunu <img width/height> olarak basiyor;
+    # tarayici oran icin yer ayirinca izgara yuklenirken ziplamiyor.
+    # editable=False: elle girilmez, save() icinde olculur.
+    image_width = models.PositiveIntegerField(null=True, blank=True, editable=False)
+    image_height = models.PositiveIntegerField(null=True, blank=True, editable=False)
 
     title = models.CharField("Başlık", max_length=200)
     category = models.CharField("Kategori", max_length=20, choices=CATEGORY_CHOICES, blank=True, default="")
@@ -75,12 +97,21 @@ class Photo(models.Model):
         kucuk_ad = "gallery/thumbs/" + os.path.basename(yeni_yol)
         kucuk_kopya_uret(yeni_yol, os.path.join(settings.MEDIA_ROOT, kucuk_ad))
 
-        # 3) Alanlari guncelle ve SADECE bu iki alani kaydet
+        # 3) Olcuyu KUCULTMEDEN SONRAKI dosyadan al.
+        #    Once olcseydik 6000px'lik ham olcuyu yazardik; ImageField'in
+        #    width_field/height_field otomatigi de tam bunu yapiyor
+        #    (dosyayi yuklenen ham hâliyle, kucultmeden ONCE ve EXIF
+        #    donmesini uygulamadan okuyor). O yuzden burada elle olcuyoruz.
+        self.image_width, self.image_height = gorsel_olcusu(yeni_yol)
+
+        # 4) Alanlari guncelle ve SADECE bunlari kaydet.
+        #    DIKKAT: update_fields'a girmeyen alan HIC kaydedilmez —
+        #    boyut alanlari bu listede olmazsa sessizce NULL kalir.
         self.image.name = yeni_ad
         self.thumbnail.name = kucuk_ad
         self._acilistaki_gorsel = yeni_ad
 
-        super().save(update_fields=["image", "thumbnail"])
+        super().save(update_fields=["image", "thumbnail", "image_width", "image_height"])
 
     def __str__(self):
         return self.title
