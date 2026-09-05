@@ -1356,6 +1356,21 @@ main {
     opacity: 0.85;
 }
 
+/* <img> uzerindeki width/height OZNITELIKLERI tarayicida birer CSS
+   boyutu gibi islenir. Genisligi inline style="width:100%" eziyor ama
+   yuksekligi ezen bir kural yoktu: gorsel height="1054" degerine
+   zorlanip dikey geriliyordu.
+
+   height:auto ile oznitelikler yalnizca ORAN hesabinda kullanilir,
+   gercek yukseklik genislikten turetilir. Layout shift onlemesi
+   calismaya devam eder — tarayici orani zaten ozniteliklerden biliyor.
+
+   Oznitelikler "sunum ipucu" sayildigi icin yazar CSS'i onlari ezer;
+   !important gerekmiyor. */
+.masonry-item img {
+    height: auto;
+}
+
 
 
 /* ============================================
