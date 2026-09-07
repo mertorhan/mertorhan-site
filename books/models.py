@@ -2,6 +2,53 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
+# --------------------------------------------------------------------
+# Kunye listeleri
+#
+# Bu uc model core'da DEGIL books'ta yasiyor. Ayni gerekce movies icin de
+# gecerli (movies/models.py'nin ilk yorum blogu): kitap turleri (Roman,
+# Deneme) film turleriyle AYNI LISTE OLMAMALI. Bu yuzden asagidaki Genre
+# books'a ait, movies.Genre ile paylasilmiyor — movies'ten import yok.
+# RatingCriterion core'a girdi cunku iki bolum gercekten ayni kriter
+# listesini paylasiyordu; burada paylasmiyorlar.
+# --------------------------------------------------------------------
+
+class Author(models.Model):
+    name = models.CharField("Ad", max_length=200, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = "Yazar"
+        verbose_name_plural = "Yazarlar"
+
+    def __str__(self):
+        return self.name
+
+
+class Publisher(models.Model):
+    name = models.CharField("Ad", max_length=200, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = "Yayınevi"
+        verbose_name_plural = "Yayınevleri"
+
+    def __str__(self):
+        return self.name
+
+
+class Genre(models.Model):
+    name = models.CharField("Ad", max_length=200, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = "Kitap türü"
+        verbose_name_plural = "Kitap türleri"
+
+    def __str__(self):
+        return self.name
+
+
 class Book(models.Model):
     # --- Kimlik ---
     title = models.CharField("Kitap adı", max_length=200)
@@ -11,6 +58,33 @@ class Book(models.Model):
     # --- Künye ---
     author = models.CharField("Yazar", max_length=200)
     translator = models.CharField("Çevirmen", max_length=200, blank=True, default="")
+    # published_at ile KARISTIRILMASIN: o auto_now_add, kaydin siteye
+    # eklendigi tarih. release_year kitabin basim yili.
+    release_year = models.PositiveIntegerField("Basım yılı", null=True, blank=True)
+
+    # --- Künye: çoklu ilişkiler (KB-107) ---
+    # Yukaridaki author metin alani BILEREK duruyor (movies'teki KB-32
+    # sirasinin aynisi): once bu iliskiler kuruluyor, sonra veri admin'den
+    # elle giriliyor, eski alan EN SON ayri bir kartta siliniyor. Sira ters
+    # cevrilemez — API ve mobil uygulama su an author'a bagli.
+    #
+    # related_name verilmedi: varsayilan book_set yeterli, filtre sorgulari
+    # Book uzerinden ileri yonde calisacak.
+    authors = models.ManyToManyField(Author, blank=True, verbose_name="Yazarlar")
+    genres = models.ManyToManyField(Genre, blank=True, verbose_name="Türler")
+    # PROTECT: kullanimda olan bir yayinevi silinirse kitaplar sessizce
+    # yayinevsiz kalirdi. (BookScore.criterion ile ayni gerekce.)
+    publisher = models.ForeignKey(
+        Publisher,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        verbose_name="Yayınevi",
+    )
+
+    # movies.Review.watched_at'in kitap karsiligi; yayin tarihi
+    # (published_at) ile karistirilmasin — bu, kitabin okundugu tarih.
+    read_at = models.DateField("Okuma tarihi", null=True, blank=True)
 
     # --- Senin değerlendirmen ---
     # rating artik elle girilmiyor: alt kriter puanlarinin ortalamasi.
