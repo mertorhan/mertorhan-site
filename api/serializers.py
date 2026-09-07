@@ -124,19 +124,47 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         # author ve translator modelde duz CharField, iliski degil.
+        #
+        # release_year ve read_at listede donuyor: ikisi de duz alan, ekstra
+        # sorgu maliyeti yok. Review'da da release_year ve watched_at listede
+        # — iki bolum ayni ayrimi kullaniyor: sayilar listede, kunye
+        # iliskileri detayda.
         fields = [
             'id', 'slug', 'title', 'author', 'translator', 'cover_image',
             'rating', 'summary', 'published_at', 'is_featured',
+            'release_year', 'read_at',
         ]
 
 
 class BookDetailSerializer(BookSerializer):
-    """Detay ucu: liste alanlari + govde ve alintilar."""
+    """Detay ucu: liste alanlari + govde, alintilar ve kunye iliskileri.
+
+    Iliskiler AD LISTESI donuyor (ReviewDetailSerializer'daki desenin
+    aynisi). Modeldeki eski metin alanlari author ve translator BURADA DA
+    donuyor — Review'dan farkli olarak: mobil uygulama su an onlara bagli,
+    sozlesmeden alan CIKARILMIYOR. Silinmeleri ayri bir kartin isi.
+
+    publisher tekil: kitabin tek yayinevi olur (FK), digerleri many=True.
+    Yayinevi girilmemisse null doner.
+    """
 
     quotes = BookQuoteSerializer(many=True, read_only=True)
 
+    authors = serializers.SlugRelatedField(
+        many=True, read_only=True, slug_field='name'
+    )
+    translators = serializers.SlugRelatedField(
+        many=True, read_only=True, slug_field='name'
+    )
+    genres = serializers.SlugRelatedField(
+        many=True, read_only=True, slug_field='name'
+    )
+    publisher = serializers.SlugRelatedField(read_only=True, slug_field='name')
+
     class Meta(BookSerializer.Meta):
-        fields = BookSerializer.Meta.fields + ['body', 'quotes']
+        fields = BookSerializer.Meta.fields + [
+            'body', 'quotes', 'authors', 'translators', 'genres', 'publisher',
+        ]
 
 
 class PhotoSerializer(serializers.ModelSerializer):
