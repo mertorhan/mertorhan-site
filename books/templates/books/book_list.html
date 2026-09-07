@@ -29,6 +29,46 @@
     </a>
     {% endif %}
 
+    {% comment %}
+    ===== Filtre çubuğu =====
+    Bu yedi filtre SADECE asagidaki grid'i suzer, one cikan karta dokunmaz.
+
+    JavaScript YOK: acilir paneller <details>, uygulama form gonderimi.
+    Secenekler ve adetler view'da hazirlandi; burada sadece basiliyor.
+
+    Filmdeki cubugun aynisi, iki sadelestirmeyle: kitapta Film/Dizi gibi bir
+    ust ayrim olmadigi icin gizli input yok ve Temizle duz book_list'e gidiyor.
+    {% endcomment %}
+    {% if filtreler %}
+    <form method="get" class="filtre-cubugu">
+        <div class="filtre-liste">
+            {% for filtre in filtreler %}
+            <details class="filtre-oge{% if filtre.secili_adet %} is-secili{% endif %}">
+                <summary class="filtre-baslik">
+                    {{ filtre.baslik }}{% if filtre.secili_adet %} ({{ filtre.secili_adet }}){% endif %}
+                </summary>
+                <div class="filtre-panel">
+                    {% for secenek in filtre.secenekler %}
+                    <label class="filtre-secenek">
+                        <input type="checkbox" name="{{ filtre.ad }}" value="{{ secenek.deger }}"{% if secenek.secili %} checked{% endif %}>
+                        <span class="filtre-secenek-ad">{{ secenek.etiket }}</span>
+                        <span class="filtre-secenek-adet">({{ secenek.adet }})</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </details>
+            {% endfor %}
+        </div>
+
+        <div class="filtre-eylem">
+            {% if filtre_var %}
+            <a href="{% url 'book_list' %}" class="filtre-temizle">Temizle</a>
+            {% endif %}
+            <button type="submit" class="filtre-uygula">Uygula</button>
+        </div>
+    </form>
+    {% endif %}
+
     {# ===== Diğer kitaplar: grid ===== #}
     <div class="card-grid" style="margin-top:40px;">
         {% for book in books %}
@@ -43,7 +83,14 @@
             </div>
         </a>
         {% empty %}
+        {% if filtre_var %}
+        <p class="empty-state">
+            Bu filtreye uyan başka kitap yok.
+            <a href="{% url 'book_list' %}" class="empty-state-link">✕ Filtreleri temizle</a>
+        </p>
+        {% else %}
         <p class="empty-state">Henüz kitap eklenmedi.</p>
+        {% endif %}
         {% endfor %}
     </div>
 
