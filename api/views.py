@@ -1,6 +1,9 @@
-from django.db.models import Q
+from django.db.models import Count, Q
+from django.db.models.functions import ExtractYear
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from blog.models import BlogPost
 from books.models import Book
@@ -40,6 +43,17 @@ PUAN_KOVALARI = {
     '7to8': Q(rating__gte=7, rating__lt=8),
     'alt7': Q(rating__lt=7),
 }
+
+# Kova etiketleri AYRI bir yapida: PUAN_KOVALARI'nin sekli bilerek
+# degistirilmedi, _puan_filtresi ona bagli.
+# Liste cunku SIRA onemli — yuksekten dusuge, sitedeki sirayla ayni.
+# Metinler de site ile ayni olmali (books/views.py, movies/views.py).
+PUAN_ETIKETLERI = [
+    ('9plus', '9 ve üzeri'),
+    ('8to9', '8 — 9'),
+    ('7to8', '7 — 8'),
+    ('alt7', '7 altı'),
+]
 
 
 def _sayilar(deger_listesi):
@@ -131,8 +145,37 @@ def published_posts():
     )
 
 
+def _kategori_filtresi(queryset, params):
+    """?category=3 -> category__id__in. Blog ve galeri icin ortak.
+
+    distinct() YOK ve bu bilincli: BlogPost.category ile Photo.category
+    ForeignKey, yani coka-bir. Bir yazinin tek kategorisi olur, JOIN mukerrer
+    satir uretmez. KB-110'da FK olan publisher fazladan distinct() aliyordu
+    ama o M2M'lerle AYNI DONGUDEYDI; burada tek filtre var, dongu yok.
+
+    ID tabanli — sitedeki blog ile FARKLI. Site blog'u ada gore suzuyor
+    (?kategori=Yazilim, blog/views.py), galeriyi id'ye gore. API'de TUM
+    iliski filtreleri id aliyor ki mobil tarafta tek desen kalsin: "filtre
+    ucundan value al, liste ucuna aynen gonder".
+    """
+    idler = _sayilar(params.getlist('category'))
+    if idler:
+        queryset = queryset.filter(category__id__in=idler)
+    return queryset
+
+
 class BlogPostListView(generics.ListAPIView):
     """GET /api/v1/blog/ - yayindaki yazilarin listesi.
+
+    Filtre (istege bagli, verilmezse tum liste doner):
+
+      ?category=3   kategori id   category
+
+    Ayni parametre birden cok kez verilirse VEYA (?category=1&category=2
+    ikisinin de yazilari). Sayiya cevrilemeyen deger sessizce atilir, 400
+    DONMEZ — KB-110'daki davranisin aynisi.
+
+    Secenek listesi /api/v1/filters/blog/ ucunda.
 
     ListAPIView yalnizca GET tanimlar; POST 405 doner.
     """
@@ -141,7 +184,7 @@ class BlogPostListView(generics.ListAPIView):
     pagination_class = BlogPostPagination
 
     def get_queryset(self):
-        return published_posts()
+        return _kategori_filtresi(published_posts(), self.request.query_params)
 
 
 class BlogPostDetailView(generics.RetrieveAPIView):
@@ -347,6 +390,13 @@ class BookDetailView(generics.RetrieveAPIView):
 class PhotoListView(generics.ListAPIView):
     """GET /api/v1/photos/ - yayindaki fotograflar.
 
+    Filtre (istege bagli, verilmezse tum liste doner):
+
+      ?category=3   kategori id   category
+
+    Ayni parametre birden cok kez verilirse VEYA. Sayiya cevrilemeyen deger
+    sessizce atilir, 400 DONMEZ. Secenek listesi /api/v1/filters/photos/'da.
+
     Detay ucu yok: Photo'da slug alani bulunmuyor ve tum kunye bilgisi
     zaten liste kaydinda donuyor.
     """
@@ -355,4 +405,208 @@ class PhotoListView(generics.ListAPIView):
     pagination_class = BlogPostPagination
 
     def get_queryset(self):
-        return published_photos()
+        return _kategori_filtresi(published_photos(), self.request.query_params)
+
+
+# --------------------------------------------------------------------
+# Filtre secenekleri uclari
+#
+# Secenek + sayac hesaplama artik books, movies, gallery ve api'de —
+# DORDUNCU kopya. Yukaridaki filtre altyapisi ucuncuydu; bu kart ikisini
+# birden buyuttu. Bilincli, ama borc da buyudu: ortak yere tasima AYRI BIR
+# KARTTA yapilacak.
+#
+# NEDEN sitedeki teknik AYNEN kopyalanamadi:
+# Site sayaci TERS yonden aliyor —
+#     Author.objects.annotate(adet=Count("book", filter=Q(book__is_published=True)))
+# Bu teknik published_books()/published_posts()'un slug elemesini GOREMEZ,
+# cunku eleme queryset'te duruyor, iliskide degil. Sayac ile liste ayni
+# tabandan gelmezse listede olmayan bir kayit sayaca girer.
+#
+# Bu yuzden burada ILERI yonden sayiyoruz: taban queryset'ten baslayip
+# .values(...).annotate(...) ile grupluyoruz. Sonuc olarak slug'i bos
+# yayinlanmis bir kayit SITEDE sayilir, API'de sayilmaz — istenen bu,
+# zaten listede de donmuyor.
+# --------------------------------------------------------------------
+
+
+def _secenek(deger, etiket, adet):
+    """Sablon degil, JSON: her secenek TAM UC alan tasir.
+
+    Mobil tarafta tek bir filtre bileseni dort ucun hepsine hizmet edecek;
+    bunun sarti bicimin her yerde ayni olmasi.
+    """
+    return {'value': deger, 'label': str(etiket), 'count': adet}
+
+
+def _iliski_secenekleri(taban, alan):
+    """Bir iliski alani icin secenek listesi, taban queryset'ten sayarak.
+
+    alan: "authors" gibi M2M ya da "publisher"/"category" gibi FK.
+
+    order_by ACIKCA veriliyor. Verilmezse modelin Meta.ordering'i
+    (-published_at) GROUP BY'a girer ve ayni yazar birden fazla satira
+    bolunur — sessiz ve fark edilmesi zor bir hata.
+
+    Count(distinct=True): tek JOIN'de gerekmiyor ama ucuz sigorta.
+    isnull=False: iliskisi olmayan kayit NULL grubu uretmesin.
+    """
+    satirlar = (
+        taban
+        .filter(**{f'{alan}__isnull': False})
+        .values(f'{alan}__id', f'{alan}__name')
+        .annotate(adet=Count('id', distinct=True))
+        .order_by(f'{alan}__name')
+    )
+    return [
+        _secenek(s[f'{alan}__id'], s[f'{alan}__name'], s['adet'])
+        for s in satirlar if s['adet']
+    ]
+
+
+def _yil_secenekleri(taban, alan, tarih_alani=False):
+    """Yil secenekleri, yeniden eskiye.
+
+    value SAYI donuyor (metin degil): mobil taraf filtre ucundan aldigi
+    degeri liste ucuna aynen gonderecek, tip donusumuyle ugrasmasin.
+    """
+    if tarih_alani:
+        satirlar = (
+            taban.exclude(**{alan: None})
+            .annotate(yil=ExtractYear(alan))
+            .values('yil')
+            .annotate(adet=Count('id'))
+            .order_by('-yil')
+        )
+        ciftler = [(s['yil'], s['adet']) for s in satirlar]
+    else:
+        satirlar = (
+            taban.exclude(**{alan: None})
+            .values(alan)
+            .annotate(adet=Count('id'))
+            .order_by(f'-{alan}')
+        )
+        ciftler = [(s[alan], s['adet']) for s in satirlar]
+
+    return [_secenek(yil, yil, adet) for yil, adet in ciftler if adet]
+
+
+def _puan_secenekleri(taban):
+    """Dort kovanin adedi tek sorguda, yuksekten dusuge."""
+    sayimlar = taban.aggregate(
+        **{anahtar: Count('id', filter=PUAN_KOVALARI[anahtar])
+           for anahtar, _etiket in PUAN_ETIKETLERI}
+    )
+    return [
+        _secenek(anahtar, etiket, sayimlar[anahtar])
+        for anahtar, etiket in PUAN_ETIKETLERI
+        if sayimlar[anahtar]
+    ]
+
+
+def _content_type_secenekleri(taban):
+    """Film/dizi secenekleri.
+
+    Etiketler Review.CONTENT_TYPE_CHOICES'tan okunuyor, elle YAZILMIYOR:
+    modele yeni bir tur eklenirse burasi kendiliginden ogrenir.
+    Sira da CHOICES'taki sira.
+    """
+    sayimlar = dict(
+        taban.values_list('content_type')
+        .annotate(adet=Count('id'))
+        .order_by()
+        .values_list('content_type', 'adet')
+    )
+    return [
+        _secenek(anahtar, etiket, sayimlar[anahtar])
+        for anahtar, etiket in Review.CONTENT_TYPE_CHOICES
+        if sayimlar.get(anahtar)
+    ]
+
+
+def _dolu_olanlar(secenekler):
+    """Secenegi kalmayan anahtari yanittan TAMAMEN cikarir.
+
+    Bos dizi donmuyoruz: mobil taraf "anahtar var ama bos" ile "anahtar
+    yok" arasinda ayrim yapmak zorunda kalmasin, tek kural olsun —
+    yanitta ne varsa gosterilir.
+    """
+    return {ad: liste for ad, liste in secenekler.items() if liste}
+
+
+class FiltreSecenekleriView(APIView):
+    """Filtre seceneklerini donduren uclarin ortak tabani.
+
+    Bu uclar PARAMETRE ALMAZ: sayaclar her zaman veritabanindaki toplam
+    yayinlanmis kayit sayisini gosterir, diger secimlere gore DEGISMEZ.
+    Sitedeki kural da bu.
+
+    SAYFALAMA YOK. Listeler kisa (kategori, yazar, yil) ve mobil tarafin
+    filtre panelini acabilmek icin hepsini birden gormesi gerekiyor;
+    sayfalama burada sadece gereksiz karmasa olurdu.
+
+    Yalnizca GET tanimli, POST 405 doner.
+    """
+
+    def get(self, request):
+        return Response(_dolu_olanlar(self.secenekler()))
+
+    def secenekler(self):
+        raise NotImplementedError
+
+
+class BookFiltersView(FiltreSecenekleriView):
+    """GET /api/v1/filters/books/ - kitap filtrelerinin secenekleri.
+
+    Anahtarlar /api/v1/books/ ucunun SORGU PARAMETRE ADLARIYLA birebir ayni:
+    buradan alinan value, oraya aynen gonderilebilir.
+    """
+
+    def secenekler(self):
+        taban = published_books()
+        return {
+            'year': _yil_secenekleri(taban, 'release_year'),
+            'read_year': _yil_secenekleri(taban, 'read_at', tarih_alani=True),
+            'author': _iliski_secenekleri(taban, 'authors'),
+            'translator': _iliski_secenekleri(taban, 'translators'),
+            'publisher': _iliski_secenekleri(taban, 'publisher'),
+            'genre': _iliski_secenekleri(taban, 'genres'),
+            'rating': _puan_secenekleri(taban),
+        }
+
+
+class MovieFiltersView(FiltreSecenekleriView):
+    """GET /api/v1/filters/movies/ - film/dizi filtrelerinin secenekleri."""
+
+    def secenekler(self):
+        taban = published_reviews()
+        return {
+            'year': _yil_secenekleri(taban, 'release_year'),
+            'watched_year': _yil_secenekleri(taban, 'watched_at', tarih_alani=True),
+            'director': _iliski_secenekleri(taban, 'directors'),
+            'screenwriter': _iliski_secenekleri(taban, 'screenwriters'),
+            'actor': _iliski_secenekleri(taban, 'actors'),
+            'genre': _iliski_secenekleri(taban, 'genres'),
+            'rating': _puan_secenekleri(taban),
+            'content_type': _content_type_secenekleri(taban),
+        }
+
+
+class BlogFiltersView(FiltreSecenekleriView):
+    """GET /api/v1/filters/blog/ - blog filtrelerinin secenekleri.
+
+    prefetch_related(None): published_posts() sections'i prefetch'liyor ama
+    burada .values() ile gruplama yapiyoruz, nesne kurulmuyor — prefetch
+    bosa calisirdi. None lookup'lari temizliyor.
+    """
+
+    def secenekler(self):
+        taban = published_posts().prefetch_related(None)
+        return {'category': _iliski_secenekleri(taban, 'category')}
+
+
+class PhotoFiltersView(FiltreSecenekleriView):
+    """GET /api/v1/filters/photos/ - galeri filtrelerinin secenekleri."""
+
+    def secenekler(self):
+        return {'category': _iliski_secenekleri(published_photos(), 'category')}

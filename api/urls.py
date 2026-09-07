@@ -15,4 +15,13 @@ urlpatterns = [
     path("books/", views.BookListView.as_view(), name="book_list"),
     path("books/<slug:slug>/", views.BookDetailView.as_view(), name="book_detail"),
     path("photos/", views.PhotoListView.as_view(), name="photo_list"),
+
+    # Filtre secenekleri. Onek AYRI ("filters/books/"), bilerek:
+    # "books/filters/" yazsaydik yukaridaki "books/<slug:slug>/" desenine
+    # girerdi ve slug'i "filters" olan bir kitap sonsuza dek erisilemez
+    # olurdu. Onek ayri oldugu icin boyle bir cakisma imkansiz.
+    path("filters/books/", views.BookFiltersView.as_view(), name="book_filters"),
+    path("filters/movies/", views.MovieFiltersView.as_view(), name="movie_filters"),
+    path("filters/blog/", views.BlogFiltersView.as_view(), name="blog_filters"),
+    path("filters/photos/", views.PhotoFiltersView.as_view(), name="photo_filters"),
 ]
