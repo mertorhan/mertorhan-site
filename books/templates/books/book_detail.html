@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block title %}{{ book.title }} · Mert Orhan{% endblock %}
 
@@ -52,12 +53,82 @@
         <div class="poster-head">
             <div class="article-cover"{% if book.cover_image %} style="background-image:url('{{ book.cover_image.url }}'); background-size:cover; background-position:center;"{% endif %}></div>
 
-            <div class="credits">
-                <div class="credits-item"><p class="credits-label">Yazar</p><p class="credits-value">{{ book.author }}</p></div>
-                {% if book.translator %}
-                <div class="credits-item"><p class="credits-label">Çevirmen</p><p class="credits-value">{{ book.translator }}</p></div>
+            {% comment %}
+            Kunye: uc satir. Sinif ailesi .credits'ten .kunye'ye TASINDI.
+
+            Sebep: .credits sabit iki sutunlu bir grid. Simdi alti alan var
+            ve cogu bos kalabiliyor; bos bir grid hucresi ayirici renginde
+            bir delik olarak gorunuyordu. .kunye-row ise flex — basilmayan
+            hucrenin yerini kalan hucreler dolduruyor.
+
+            Her hucre kendi {% if %}'i icinde, her satir "icindekilerden
+            biri varsa" kosuluyla, kutunun tamami da "herhangi bir alan
+            varsa" kosuluyla sarili. Bos <div> hic basilmiyor.
+
+            Basilan alanlar YENI iliskiler. Eski author ve translator METIN
+            alanlari modelde duruyor (API ve mobil uygulama onlara bagli)
+            ama buraya HIC girmiyor — yedek olarak da kullanilmiyor.
+            Silinmeleri ayri bir kartin isi.
+
+            .credits ailesi bu degisiklikten sonra hicbir yerden
+            kullanilmiyor; style.css'ten silinmesi ayri bir temizlik karti.
+            Bu kartta CSS'e dokunulmadi.
+            {% endcomment %}
+            {% if book.authors.all or book.translators.all or book.publisher or book.release_year or book.read_at or book.genres.all %}
+            <div class="kunye">
+
+                {% if book.authors.all or book.translators.all %}
+                <div class="kunye-row">
+                    {% if book.authors.all %}
+                    <div class="kunye-cell">
+                        <p class="kunye-label">Yazar</p>
+                        <p class="kunye-value">{{ book.authors.all|join:" · " }}</p>
+                    </div>
+                    {% endif %}
+                    {% if book.translators.all %}
+                    <div class="kunye-cell">
+                        <p class="kunye-label">Çevirmen</p>
+                        <p class="kunye-value">{{ book.translators.all|join:" · " }}</p>
+                    </div>
+                    {% endif %}
+                </div>
                 {% endif %}
+
+                {% if book.publisher or book.release_year or book.read_at %}
+                <div class="kunye-row">
+                    {% if book.publisher %}
+                    <div class="kunye-cell">
+                        <p class="kunye-label">Yayınevi</p>
+                        <p class="kunye-value">{{ book.publisher }}</p>
+                    </div>
+                    {% endif %}
+                    {% if book.release_year %}
+                    <div class="kunye-cell">
+                        <p class="kunye-label">Basım yılı</p>
+                        <p class="kunye-value">{{ book.release_year }}</p>
+                    </div>
+                    {% endif %}
+                    {% if book.read_at %}
+                    <div class="kunye-cell">
+                        <p class="kunye-label">Okuduğum</p>
+                        {# Ay adi Turkce olsun diye: sitenin LANGUAGE_CODE'u en-us #}
+                        <p class="kunye-value">{% language "tr" %}{{ book.read_at|date:"F Y" }}{% endlanguage %}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                {% if book.genres.all %}
+                <div class="kunye-row">
+                    <div class="kunye-cell kunye-cell--genis">
+                        <p class="kunye-label">Tür</p>
+                        <p class="kunye-value">{{ book.genres.all|join:" · " }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
             </div>
+            {% endif %}
         </div>
 
         {# Özet / eleştiri #}
