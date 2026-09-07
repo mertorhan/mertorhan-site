@@ -5,7 +5,7 @@ from django.db import models
 # --------------------------------------------------------------------
 # Kunye listeleri
 #
-# Bu uc model core'da DEGIL books'ta yasiyor. Ayni gerekce movies icin de
+# Bu dort model core'da DEGIL books'ta yasiyor. Ayni gerekce movies icin de
 # gecerli (movies/models.py'nin ilk yorum blogu): kitap turleri (Roman,
 # Deneme) film turleriyle AYNI LISTE OLMAMALI. Bu yuzden asagidaki Genre
 # books'a ait, movies.Genre ile paylasilmiyor — movies'ten import yok.
@@ -20,6 +20,18 @@ class Author(models.Model):
         ordering = ["name"]
         verbose_name = "Yazar"
         verbose_name_plural = "Yazarlar"
+
+    def __str__(self):
+        return self.name
+
+
+class Translator(models.Model):
+    name = models.CharField("Ad", max_length=200, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = "Çevirmen"
+        verbose_name_plural = "Çevirmenler"
 
     def __str__(self):
         return self.name
@@ -63,14 +75,16 @@ class Book(models.Model):
     release_year = models.PositiveIntegerField("Basım yılı", null=True, blank=True)
 
     # --- Künye: çoklu ilişkiler (KB-107) ---
-    # Yukaridaki author metin alani BILEREK duruyor (movies'teki KB-32
-    # sirasinin aynisi): once bu iliskiler kuruluyor, sonra veri admin'den
-    # elle giriliyor, eski alan EN SON ayri bir kartta siliniyor. Sira ters
-    # cevrilemez — API ve mobil uygulama su an author'a bagli.
+    # Yukaridaki author ve translator metin alanlari BILEREK duruyor
+    # (movies'teki KB-32 sirasinin aynisi): once bu iliskiler kuruluyor,
+    # sonra veri admin'den elle giriliyor, eski alanlar EN SON ayri bir
+    # kartta siliniyor. Sira ters cevrilemez — API ve mobil uygulama su an
+    # bu metin alanlarina bagli.
     #
     # related_name verilmedi: varsayilan book_set yeterli, filtre sorgulari
     # Book uzerinden ileri yonde calisacak.
     authors = models.ManyToManyField(Author, blank=True, verbose_name="Yazarlar")
+    translators = models.ManyToManyField(Translator, blank=True, verbose_name="Çevirmenler")
     genres = models.ManyToManyField(Genre, blank=True, verbose_name="Türler")
     # PROTECT: kullanimda olan bir yayinevi silinirse kitaplar sessizce
     # yayinevsiz kalirdi. (BookScore.criterion ile ayni gerekce.)
