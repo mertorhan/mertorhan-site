@@ -131,8 +131,37 @@ def published_posts():
     )
 
 
+def _kategori_filtresi(queryset, params):
+    """?category=3 -> category__id__in. Blog ve galeri icin ortak.
+
+    distinct() YOK ve bu bilincli: BlogPost.category ile Photo.category
+    ForeignKey, yani coka-bir. Bir yazinin tek kategorisi olur, JOIN mukerrer
+    satir uretmez. KB-110'da FK olan publisher fazladan distinct() aliyordu
+    ama o M2M'lerle AYNI DONGUDEYDI; burada tek filtre var, dongu yok.
+
+    ID tabanli — sitedeki blog ile FARKLI. Site blog'u ada gore suzuyor
+    (?kategori=Yazilim, blog/views.py), galeriyi id'ye gore. API'de TUM
+    iliski filtreleri id aliyor ki mobil tarafta tek desen kalsin: "filtre
+    ucundan value al, liste ucuna aynen gonder".
+    """
+    idler = _sayilar(params.getlist('category'))
+    if idler:
+        queryset = queryset.filter(category__id__in=idler)
+    return queryset
+
+
 class BlogPostListView(generics.ListAPIView):
     """GET /api/v1/blog/ - yayindaki yazilarin listesi.
+
+    Filtre (istege bagli, verilmezse tum liste doner):
+
+      ?category=3   kategori id   category
+
+    Ayni parametre birden cok kez verilirse VEYA (?category=1&category=2
+    ikisinin de yazilari). Sayiya cevrilemeyen deger sessizce atilir, 400
+    DONMEZ — KB-110'daki davranisin aynisi.
+
+    Secenek listesi /api/v1/filters/blog/ ucunda.
 
     ListAPIView yalnizca GET tanimlar; POST 405 doner.
     """
@@ -141,7 +170,7 @@ class BlogPostListView(generics.ListAPIView):
     pagination_class = BlogPostPagination
 
     def get_queryset(self):
-        return published_posts()
+        return _kategori_filtresi(published_posts(), self.request.query_params)
 
 
 class BlogPostDetailView(generics.RetrieveAPIView):
@@ -347,6 +376,13 @@ class BookDetailView(generics.RetrieveAPIView):
 class PhotoListView(generics.ListAPIView):
     """GET /api/v1/photos/ - yayindaki fotograflar.
 
+    Filtre (istege bagli, verilmezse tum liste doner):
+
+      ?category=3   kategori id   category
+
+    Ayni parametre birden cok kez verilirse VEYA. Sayiya cevrilemeyen deger
+    sessizce atilir, 400 DONMEZ. Secenek listesi /api/v1/filters/photos/'da.
+
     Detay ucu yok: Photo'da slug alani bulunmuyor ve tum kunye bilgisi
     zaten liste kaydinda donuyor.
     """
@@ -355,4 +391,4 @@ class PhotoListView(generics.ListAPIView):
     pagination_class = BlogPostPagination
 
     def get_queryset(self):
-        return published_photos()
+        return _kategori_filtresi(published_photos(), self.request.query_params)
