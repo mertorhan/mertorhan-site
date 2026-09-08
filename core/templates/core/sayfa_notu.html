@@ -1,0 +1,38 @@
+{% comment %}
+Sayfa notu + ozet satiri. Liste sayfalarinin en ustunde, sayfa
+basliginin USTUNDE durur. Bes parametre alir:
+  baslik         kalin ilk satir
+  madde1         ilk madde
+  madde2         ikinci madde; verilmezse basilmaz
+  madde3         ucuncu madde; verilmezse basilmaz
+  istatistikler  view'dan gelen liste, her oge {"sayi": .., "etiket": ..}.
+                 Bos ya da verilmemisse ozet satiri HIC basilmaz.
+
+Maddeler neden liste degil de madde1/madde2/madde3: Django sablonunda
+liste olusturulamaz, listeyi view'a tasimak da METNI Python'a tasimak
+olurdu. Metin, yazarin bakmayi bekledigi yerde — sayfa sablonunda —
+kalsin.
+
+<aside> secildi: bu icerik sayfanin ana icerigi degil, yan not.
+
+Her istatistik .ozet-oge sarmalayicisi icinde: 34px bosluk OGELER
+arasina girsin, sayi ile kendi etiketinin arasina degil.
+{% endcomment %}
+<aside class="sayfa-notu">
+    <p class="sayfa-notu-baslik">{{ baslik }}</p>
+    <ul class="sayfa-notu-liste">
+        <li>{{ madde1 }}</li>
+        {% if madde2 %}<li>{{ madde2 }}</li>{% endif %}
+        {% if madde3 %}<li>{{ madde3 }}</li>{% endif %}
+    </ul>
+    {% if istatistikler %}
+    <div class="sayfa-notu-ozet">
+        {% for i in istatistikler %}
+        <div class="ozet-oge">
+            <span class="ozet-sayi">{{ i.sayi }}</span>
+            <span class="ozet-etiket">{{ i.etiket }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</aside>
