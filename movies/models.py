@@ -76,6 +76,13 @@ class Review(models.Model):
     screenwriter = models.CharField("Senarist", max_length=200, blank=True, default="")
     lead_actors = models.CharField("Başrol oyuncuları", max_length=300, blank=True, default="")
     release_year = models.PositiveIntegerField("Yapım yılı", null=True, blank=True)
+    # Deger DAKIKA cinsinden girilir; ekranda saate cevrilip tam sayiya
+    # yuvarlanarak gosterilecek.
+    # DIZILERDE tum bolumlerin TOPLAM suresi girilir, tek bolum suresi
+    # degil. Dizi bitmeden bos birakilir.
+    # null=True bilincli: "sure girilmemis" ile "suresi 0" ayni sey degil.
+    # Toplam hesabinda bos kayitlar sayilmaz.
+    runtime = models.PositiveIntegerField("Süre (dakika)", null=True, blank=True)
     genre = models.CharField("Tarz (örn: Bilim Kurgu)", max_length=100, blank=True, default="")
 
     # --- Künye: çoklu ilişkiler (KB-32) ---
