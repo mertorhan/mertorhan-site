@@ -134,6 +134,30 @@ def _puan_secenekleri(secililer):
     ]
 
 
+def _ozet():
+    """
+    Ust kutudaki sayilar.
+
+    SAYILAR her zaman veritabanindaki TOPLAM yayinlanmis kayittan gelir:
+    filtre secimlerine gore DEGISMEZ. Bu yuzden hesap "books"/"others"
+    uzerinden degil, kendi tabani uzerinden yapiliyor.
+
+    Degeri 0 olan istatistik listeye GIRMEZ: kunye iliskileri elle
+    doldurulmayi bekliyor, sayac 0 iken "0 YAZAR" basmak gereksiz
+    gurultu. Veri girildikce satir kendiliginden dolar.
+
+    Kitapta sure yok — filmdeki SAAT istatistiginin karsiligi burada
+    bilerek yok.
+    """
+    taban = Book.objects.filter(is_published=True)
+
+    sayilar = [
+        (taban.count(), "KİTAP"),
+        (Author.objects.filter(book__is_published=True).distinct().count(), "YAZAR"),
+    ]
+    return [{"sayi": sayi, "etiket": etiket} for sayi, etiket in sayilar if sayi]
+
+
 def book_list(request):
     books = Book.objects.filter(is_published=True)
 
@@ -225,6 +249,7 @@ def book_list(request):
         "books": others,
         "filtreler": filtreler,
         "filtre_var": filtre_var,
+        "ozet": _ozet(),
     })
 
 

@@ -2919,3 +2919,97 @@ main {
         min-width: 0;
     }
 }
+
+
+/* ============================================
+   45. SAYFA NOTU (liste sayfalari)
+   --- Film ve Kitap listelerinde sayfa basliginin ustunde ---
+   Madde isareti kare: 12. bolumdeki .eyebrow-tick ile
+   ayni dil, yuvarlak nokta degil.
+   ============================================ */
+.sayfa-notu {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--terracotta);
+    border-radius: 4px;
+    padding: 13px 20px 14px;
+    margin-bottom: 26px;
+}
+
+.sayfa-notu-baslik {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 7px;
+}
+
+/* --- Maddeler --- */
+.sayfa-notu-liste {
+    list-style: none;
+}
+.sayfa-notu-liste li {
+    position: relative;
+    padding-left: 15px;
+    font-size: 13.5px;
+    color: var(--secondary);
+    line-height: 1.5;
+}
+.sayfa-notu-liste li + li {
+    margin-top: 2px;
+}
+/* Kare isaret. line-height 1.5 x 13.5px = 20.25px satir yuksekligi;
+   ust bosluk 7px isareti ilk satirin ortasina getiriyor. */
+.sayfa-notu-liste li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 6px;
+    height: 6px;
+    background: var(--terracotta);
+}
+
+/* --- Ozet satiri: sayilar --- */
+.sayfa-notu-ozet {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 34px;
+    margin-top: 12px;
+    padding-top: 11px;
+    border-top: 1px solid var(--line);
+}
+
+/* 34px bosluk OGELER arasina girer; sayi ile kendi etiketi 7px ile
+   birbirine bagli kalir. baseline: 21px serif sayi ile 11px sans
+   etiket farkli yukseklikte, center etiketi sayinin ortasinda asili
+   birakirdi. */
+.ozet-oge {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+}
+
+.ozet-sayi {
+    font-family: var(--font-serif);
+    font-size: 21px;
+    font-weight: 500;
+    color: var(--ink);
+}
+
+.ozet-etiket {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--faint);
+}
+
+/* --- Dar ekran: kutu daralsin, sayilar sikissin --- */
+@media (max-width: 700px) {
+    .sayfa-notu {
+        padding: 12px 16px;
+    }
+    .sayfa-notu-ozet {
+        gap: 20px;
+    }
+}

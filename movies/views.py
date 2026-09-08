@@ -1,4 +1,4 @@
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Sum
 from django.db.models.functions import ExtractYear
 from django.shortcuts import render, get_object_or_404
 
@@ -109,6 +109,38 @@ def _puan_secenekleri(secililer):
     ]
 
 
+def _ozet():
+    """
+    Ust kutudaki sayilar.
+
+    SAYILAR her zaman veritabanindaki TOPLAM yayinlanmis kayittan gelir:
+    ustteki Film/Dizi sekmesine ve yedi filtre secimine gore DEGISMEZ.
+    Bu yuzden hesap "reviews"/"others" uzerinden degil, kendi tabani
+    uzerinden yapiliyor.
+
+    Degeri 0 olan istatistik listeye GIRMEZ: kunye iliskileri elle
+    doldurulmayi bekliyor, sayac 0 iken "0 YÖNETMEN" basmak gereksiz
+    gurultu. Veri girildikce satir kendiliginden dolar.
+
+    Bunun sonucu: toplam sure 30 dakikanin ALTINDAYKEN saat 0 cikar ve
+    SAAT istatistigi hic basilmaz. Beklenen davranis, hata degil.
+    """
+    taban = Review.objects.filter(is_published=True)
+
+    dakika = taban.aggregate(Sum("runtime"))["runtime__sum"] or 0
+    # Tam sayi aritmetigi, round() DEGIL: Python'un round'u bankaci
+    # yuvarlamasi yapar (round(2.5) == 2) ve 150 dakika "2 saat"
+    # gorunurdu. (dakika + 30) // 60 yarimi her zaman yukari atar.
+    saat = (dakika + 30) // 60
+
+    sayilar = [
+        (taban.count(), "KAYIT"),
+        (Director.objects.filter(review__is_published=True).distinct().count(), "YÖNETMEN"),
+        (saat, "SAAT"),
+    ]
+    return [{"sayi": sayi, "etiket": etiket} for sayi, etiket in sayilar if sayi]
+
+
 def review_list(request):
     reviews = Review.objects.filter(is_published=True)
 
@@ -204,6 +236,7 @@ def review_list(request):
         "type_choices": Review.CONTENT_TYPE_CHOICES,
         "filtreler": filtreler,
         "filtre_var": filtre_var,
+        "ozet": _ozet(),
     })
 
 
