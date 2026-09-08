@@ -57,14 +57,22 @@ class ReviewOzetTests(TestCase):
         self.assertEqual(ozet["SAAT"], 2)
 
     def test_doksan_dakika_iki_saat(self):
-        # Yarim saat YUKARI yuvarlanir. round() olsaydi bankaci
-        # yuvarlamasiyla 1 cikardi.
+        # 90 dk = 1,5 saat -> 2. Bu test yuvarlama YONUNU olcer, yontemi
+        # degil: round() de ayni sonucu verir. Yontemi civileyen test
+        # test_yuzelli_dakika_uc_saat.
         Review.objects.create(title="Doksan", slug="doksan", body="Y.", runtime=90)
         self.assertEqual(self._ozet()["SAAT"], 2)
 
     def test_seksendokuz_dakika_bir_saat(self):
         Review.objects.create(title="Seksendokuz", slug="seksendokuz", body="Y.", runtime=89)
         self.assertEqual(self._ozet()["SAAT"], 1)
+
+    def test_yuzelli_dakika_uc_saat(self):
+        # Tek ayirt edici durum: 150 dk = 2,5 saat.
+        # round(2.5) == 2 (bankaci yuvarlamasi), bizim formul 3 verir.
+        # Bu test kirilmadan (dakika + 30) // 60 degistirilemez.
+        Review.objects.create(title="Yuzelli", slug="yuzelli", body="Y.", runtime=150)
+        self.assertEqual(self._ozet()["SAAT"], 3)
 
     def test_yayinda_olmayan_kayit_hicbir_sayaca_girmiyor(self):
         yonetmen = Director.objects.create(name="Gizli Yönetmen")

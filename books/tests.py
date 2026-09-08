@@ -25,9 +25,9 @@ class BookOzetTests(TestCase):
         self.assertEqual(self._ozet()["KİTAP"], 3)
 
     def test_yazar_sayisi_dogru(self):
-        # Ayni yazar iki kitapta: sayac 1 demeli, 2 degil.
         yazar = Author.objects.create(name="Tek Yazar")
-        oteki = Author.objects.create(name="Öteki Yazar")
+        # Hicbir kitaba baglanmayan yazar: sayaca girmemeli.
+        Author.objects.create(name="Öteki Yazar")
         for i in range(2):
             kitap = Book.objects.create(
                 title=f"Kitap {i}", slug=f"kitap-{i}", author="Yazar", body="Ozet."
@@ -36,9 +36,8 @@ class BookOzetTests(TestCase):
 
         ozet = self._ozet()
         self.assertEqual(ozet["KİTAP"], 2)
+        # Ayni yazar iki kitapta 1 sayilir, "Öteki Yazar" hic sayilmaz.
         self.assertEqual(ozet["YAZAR"], 1)
-        # Hicbir kitaba baglanmamis yazar sayilmaz.
-        self.assertTrue(Author.objects.filter(pk=oteki.pk).exists())
 
     def test_yayinda_olmayan_kitap_sayilmiyor(self):
         yazar = Author.objects.create(name="Gizli Yazar")
