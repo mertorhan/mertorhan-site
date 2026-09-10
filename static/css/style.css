@@ -2434,7 +2434,7 @@ main {
 
 /* --- Alinti bloklari --- */
 /* .pullquote'un sade akrabasi: daha kucuk, cizgi terracotta yerine soluk.
-   Boylece sayfadaki tek vurgulu alinti .pullquote olarak kalir. */
+   Blogdaki tek alinti bicimi bu; .pullquote sadece kitap detayinda kaldi. */
 .section-quote {
     border-left: 2px solid var(--line);
     padding-left: 20px;
