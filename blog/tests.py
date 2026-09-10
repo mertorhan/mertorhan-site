@@ -9,9 +9,6 @@ class PostDetailTests(TestCase):
     """KB-28: yazi govdesi sadece PostSection bloklarindan basiliyor."""
 
     def _yazi(self, **alanlar):
-        # body hala zorunlu alan (model bu kartta degismiyor); ayirt edici
-        # metin istemeyen testlerde notr bir deger yeterli.
-        alanlar.setdefault("body", "notr govde")
         return BlogPost.objects.create(title="Deneme", slug="deneme", **alanlar)
 
     def _sayfa(self, yazi):
@@ -37,18 +34,10 @@ class PostDetailTests(TestCase):
         self.assertContains(yanit, "ALFABLOK")
         self.assertContains(yanit, "BETABLOK")
 
-    def test_body_metni_sayfada_gorunmuyor(self):
-        # Iddia: body alanindaki metin (iki paragrafi da) sayfaya hic dusmuyor.
-        yazi = self._yazi(body="OLUGOVDEBIR\n\nOLUGOVDEIKI")
+    def test_pullquote_sinifi_sayfada_yok(self):
+        # Iddia: HTML'de class="pullquote" hic gecmiyor; eski blok sablona geri eklenirse yakalar.
+        yazi = self._yazi()
         yanit = self._sayfa(yazi)
-        self.assertNotContains(yanit, "OLUGOVDEBIR")
-        self.assertNotContains(yanit, "OLUGOVDEIKI")
-
-    def test_pullquote_metni_ve_sinifi_sayfada_yok(self):
-        # Iddia: pullquote metni basilmiyor ve HTML'de class="pullquote" hic gecmiyor.
-        yazi = self._yazi(pullquote="OLUALINTI")
-        yanit = self._sayfa(yazi)
-        self.assertNotContains(yanit, "OLUALINTI")
         self.assertNotContains(yanit, 'class="pullquote"')
 
     def test_iki_isaretli_baslik_icindekiler_basar(self):
@@ -72,3 +61,13 @@ class BlogPostAdminTests(TestCase):
     def test_admin_aramasi_body_kullanmiyor(self):
         # Iddia: BlogPostAdmin.search_fields icinde "body" yok.
         self.assertNotIn("body", BlogPostAdmin.search_fields)
+
+
+class BlogPostModelTests(TestCase):
+    """KB-28: silinen body ve pullquote alanlari modele geri donmedi."""
+
+    def test_body_ve_pullquote_alanlari_modelde_yok(self):
+        # Iddia: BlogPost'un alan adlari arasinda "body" ve "pullquote" yok; yanlislikla geri eklenirse yakalar.
+        alanlar = {alan.name for alan in BlogPost._meta.get_fields()}
+        self.assertNotIn("body", alanlar)
+        self.assertNotIn("pullquote", alanlar)
