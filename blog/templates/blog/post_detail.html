@@ -39,18 +39,10 @@
         </nav>
         {% endif %}
 
-        {# Yazi govdesi: once ilk paragraf, sonra (varsa) alinti, sonra geri kalani #}
+        {# Yazi govdesi: PostSection bloklarindan, model sirasiyla #}
         <div class="article-body">
-            {{ first_part|linebreaks }}
-
-            {% if post.pullquote %}
-            <blockquote class="pullquote">{{ post.pullquote|linebreaksbr }}</blockquote>
-            {% endif %}
-
-            {{ rest_part|linebreaks }}
-
             {% comment %}
-              Bloklar: govdenin ALTINA gelir. Sira model Meta'sindan
+              Bloklar: yazinin govdesi. Sira model Meta'sindan
               (ordering = order, id) gelir, burada ayrica siralanmaz.
               Validasyon yok, o yuzden her dal iceriginin dolu oldugunu
               dogrular; bos/celiskili blok sessizce atlanir.
