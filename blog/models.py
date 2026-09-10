@@ -41,9 +41,6 @@ class BlogPost(models.Model):
         verbose_name="Kategori",
     )
     summary = models.TextField("Özet", blank=True, default="")
-    body = models.TextField("İçerik")
-    # CharField -> TextField: admin'de artik cok satirli kutu cikar (siir, dize vb.)
-    pullquote = models.TextField("Vurgulu alıntı", blank=True, default="")
     cover_image = models.ImageField("Kapak görseli", upload_to="blog/", blank=True, null=True)
     is_featured = models.BooleanField("Öne çıkan", default=False)
     # is_featured bolum ici one cikaniligi, is_hero ana sayfa vitrinini
@@ -99,8 +96,8 @@ class BlogPost(models.Model):
         # save() DEGIL property: admin once ana kaydi, SONRA inline bloklari
         # kaydeder. save() icinde hesaplasaydik sure bir kayit geriden gelirdi.
         #
-        # body BILEREK sayilmiyor, sadece bloklar sayiliyor. body KB-28'de
-        # silinecek; o zaman bu ayrim kendiliginden dogal hale gelir.
+        # body alani yok (KB-28'de silindi): yazinin tum metni bloklarda,
+        # sure yalnizca onlardan hesaplanir.
         #
         # .all() (.filter() degil): boylece view'daki prefetch_related onbellegi
         # kullanilir, liste sayfasinda her yazi icin ayri sorgu atilmaz.
@@ -120,7 +117,7 @@ class PostSection(models.Model):
     """Bir yazinin govdesini olusturan sirali bloklar.
 
     Yazinin iskeleti bloklardan kurulur; paragraf ve alinti bloklarinin ICI
-    ileride markdown olarak islenecek (ayri kart).
+    sablonda |markdown filtresiyle islenir (blog/templatetags/blog_extras.py).
     """
 
     KIND_CHOICES = [
