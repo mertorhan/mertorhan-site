@@ -12,7 +12,7 @@
         {# Tur artik iliski: eski genre metin alani ekrana hicbir yerden basilmiyor #}
         <p class="article-cat">{{ review.get_content_type_display }}{% if review.genres.all %} · {{ review.genres.all|join:" · " }}{% endif %}</p>
         <h1 class="article-title">{{ review.title }}</h1>
-        <p class="article-byline">
+        <p class="article-byline article-byline--tight">
             Mert Orhan · Yayın tarihi · {{ review.published_at|date:"d.m.Y" }}
         </p>
 
@@ -90,7 +90,7 @@
                 {% if review.actors.all %}
                 <div class="kunye-row">
                     <div class="kunye-cell">
-                        <p class="kunye-label">Başrol</p>
+                        <p class="kunye-label">Oyuncular</p>
                         <p class="kunye-value">{{ review.actors.all|join:" · " }}</p>
                     </div>
                 </div>
