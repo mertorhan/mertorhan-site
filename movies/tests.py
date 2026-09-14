@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Director, Review
+from .models import Actor, Director, Review
 
 
 class ReviewRuntimeTests(TestCase):
@@ -104,3 +104,17 @@ class ReviewOzetTests(TestCase):
         self.assertIn("KAYIT", ozet)
         self.assertNotIn("YÖNETMEN", ozet)
         self.assertNotIn("SAAT", ozet)
+
+
+class ReviewDetailKunyeTests(TestCase):
+    """KB-1234: kunye etiketi."""
+
+    def test_oyuncu_etiketi_oyuncular(self):
+        # Kunye artik tum oyunculari basiyor; etiket "Başrol" kalmamali.
+        oyuncu = Actor.objects.create(name="Bir Oyuncu")
+        review = Review.objects.create(title="Oyunculu", slug="oyunculu", body="Y.")
+        review.actors.add(oyuncu)
+
+        yanit = self.client.get(reverse("review_detail", args=[review.slug]))
+        self.assertContains(yanit, "Oyuncular")
+        self.assertNotContains(yanit, "Başrol")

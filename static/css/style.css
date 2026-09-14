@@ -1086,6 +1086,13 @@ main {
     margin-bottom: 36px;
 }
 
+/* Film/kitap detayi: byline yildiz satirina yaklassin.
+   .criteria'nin 14px ust boslugu bununla ust uste biner (margin collapse),
+   gorunen bosluk 22px olur. */
+.article-byline--tight {
+    margin-bottom: 22px;
+}
+
 /* Kapak gorseli */
 .article-cover {
     height: 320px;
@@ -2732,7 +2739,7 @@ main {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--faint);
+    color: var(--secondary);
     margin-bottom: 4px;
 }
 
@@ -2768,6 +2775,13 @@ main {
     margin-top: 40px;
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
+}
+
+/* One cikan kartin alt cizgisi zaten orada. Komsu secici kullanildi cunku
+   one cikan kart yoksa cubuk kendi ust cizgisini korumali. */
+.feature-card + .filtre-cubugu {
+    border-top: none;
+    margin-top: 0;
 }
 
 .filtre-liste {
