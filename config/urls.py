@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.templatetags.static import static as static_url
+from django.views.generic.base import RedirectView
 from decouple import config
 
 # Admin adresi .env'den gelir (depo public — gercek adres koda yazilmaz).
@@ -17,6 +19,9 @@ urlpatterns = [
     path('filmler/', include('movies.urls')),
     path('kitaplar/', include('books.urls')),
     path('api/v1/', include('api.urls')),
+    # Tarayicilar ve botlar <link> etiketine bakmadan dogrudan /favicon.ico
+    # isteyebiliyor; kok adresi static dosyaya yonlendir, 404 donmesin.
+    path('favicon.ico', RedirectView.as_view(url=static_url('img/favicon.ico'))),
     path('', include('core.urls')),
 ]
 
