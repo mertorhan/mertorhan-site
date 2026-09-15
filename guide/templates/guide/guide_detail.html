@@ -212,9 +212,12 @@
 
         // 2) Haritayı kur (scrollWheelZoom kapalı: sayfa kaydırırken zoom'a girmesin)
         const map = L.map("guide-map", { scrollWheelZoom: false, dragging: !L.Browser.mobile });
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        // OSM {s}. alt alan adlarını bıraktı, tek host kullanılıyor. Site geneli same-origin
+        // olduğu için karolara Referer ayrıca açılıyor; OSM Referer'sız isteğe 403 veriyor.
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
             maxZoom: 19,
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            referrerPolicy: 'strict-origin-when-cross-origin',
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> katkıda bulunanlar'
         }).addTo(map);
 
         // 3) Her nokta için numaralı pin + tıklayınca isim balonu
