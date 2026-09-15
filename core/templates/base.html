@@ -13,6 +13,11 @@
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
+    {# Kucuk boyutta sade isaret (ico, svg), buyukte tam isaret (apple-touch). Bilincli. #}
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" sizes="any">
+    <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
+
     {% if GA_MEASUREMENT_ID %}
     {% comment %}
         Google Analytics 4 (gtag.js). Olcum kimligi .env'den geliyor;
